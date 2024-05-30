@@ -5,12 +5,17 @@
 
 <mapper namespace="com.portfolio.www.dao.mybatis.NoticeRepository">
 
-
+	<!-- 회원가입 -->
 	<insert id="joinMember" parameterType="hashmap">
 		INSERT INTO forum.`member`
 		(member_id, passwd, member_nm, email, auth_yn,
 		pwd_chng_dtm, join_dtm)
 		VALUES(#{memberID}, #{passwd}, #{memberNM}, #{email}, 'N', '', now());
 	</insert>
+	
+	<!-- 아이디중복검사 -->
+	<select id="memberSelectAll">
+		SELECT member_id  FROM `member` m
+	</select>
 
 </mapper>
