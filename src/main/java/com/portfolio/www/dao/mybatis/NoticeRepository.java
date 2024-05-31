@@ -10,4 +10,7 @@ public interface NoticeRepository {
 	
 	//아이디중복검사
 	public List<String> memberSelectAll();
+	
+	//로그인
+	public String login(String memberID);
 }

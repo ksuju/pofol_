@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.portfolio.www.message.MessageEnum;
 import com.portfolio.www.service.JoinService;
 
 @Controller
@@ -23,8 +24,7 @@ public class JoinController {
 	
 	//joinPage 진입
 	@RequestMapping("/auth/joinPage.do")
-	public ModelAndView joinPage(@RequestParam HashMap<String, String> params,
-			HttpServletRequest request) {
+	public ModelAndView joinPage(@RequestParam HashMap<String, String> params) {
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("key", Calendar.getInstance().getTimeInMillis());
 		mv.setViewName("auth/join");
@@ -32,61 +32,133 @@ public class JoinController {
 		System.out.println("==============================JoinController > joinPage.do진입==============================");
 		return mv;
 	}
+	// 비밀번호 유효성 체크 기능
+	@ResponseBody
+	@RequestMapping("/auth/validPasswd.do")
+	public int validPasswd(@RequestParam String passwordCheck) {
+		System.out.println("==============================JoinController > passCheck.do진입==============================");
+		// 비밀번호 제약사항 체크
+		if(!isValidPassword(passwordCheck)) {
+			return Integer.parseInt(MessageEnum.VALLID_PASSWD.getCode());
+		}
+		return 999999;
+	}
+	
+	
+	// 비밀번호 = 비밀번호확인 체크 기능
+	@ResponseBody
+	@RequestMapping("/auth/passCheck.do")
+	public int passCheck(@RequestParam String conPassCheck,
+			@RequestParam String passwordCheck) {
+		System.out.println("==============================JoinController > passCheck.do진입==============================");
+		// 비밀번호 제약사항 체크
+		if(isValidPassword(passwordCheck)) {
+			// 비밀번호 비교
+			if(conPassCheck.equals(passwordCheck)) {
+				System.out.println("controller > passCheck > 비밀번호 같음");
+				System.out.println("==============================JoinController > passCheck.do종료==============================");
+				return Integer.parseInt(MessageEnum.EQUAL_PASSWD.getCode());
+			} else {
+				System.out.println("controller > passCheck > 비밀번호 다름");
+				System.out.println("==============================JoinController > passCheck.do종료==============================");
+				return Integer.parseInt(MessageEnum.NOT_EQUAL_PASSWD.getCode());
+			}
+		} else {
+			return Integer.parseInt(MessageEnum.VALLID_PASSWD.getCode());
+		}
+
+	}
 	
 	
 	// 아이디 중복체크 기능
 	@ResponseBody
 	@RequestMapping("/auth/idCheck.do")
-	public int idCheck(@RequestParam String idCheck,
-			HttpServletRequest request) {
+	public int idCheck(@RequestParam String idCheck) {
 		System.out.println("==============================JoinController > idCheck.do진입==============================");
 		int idCheckCode = joinService.idCheck(idCheck);
 		
-		if(idCheckCode == 1) {
-			System.out.println("controller > idCheck > 아이디중복");
-			System.out.println("==============================JoinController > idCheck.do종료==============================");
-			return idCheckCode;
+		// 유효한 아이디
+		if(isValidUsername(idCheck)) {
+			if(idCheckCode == Integer.parseInt(MessageEnum.DUPL_ID.getCode())) {
+				System.out.println("controller > idCheck > 아이디중복");
+				System.out.println("==============================JoinController > idCheck.do종료==============================");
+				return idCheckCode;
+			} else {
+				System.out.println("controller > idCheck > 아이디중복없음");
+				System.out.println("==============================JoinController > idCheck.do종료==============================");
+				return idCheckCode;
+			}
 		} else {
-			System.out.println("controller > idCheck > 아이디중복없음");
-			System.out.println("==============================JoinController > idCheck.do종료==============================");
-			return idCheckCode;
+			// 유효하지 않은 아이디
+			return Integer.parseInt(MessageEnum.VALLID_USER_NAME.getCode());
 		}
 	}
 	
-	// 회원가입 기능  조건별로 알람 넣던가 해야함 enum 활용?
+	// 회원가입 기능
 	@ResponseBody
 	@RequestMapping("/auth/join.do")
-	public int join(@RequestParam HashMap<String, String> params,
-			HttpServletRequest request) {
+	public String join(@RequestParam HashMap<String, String> params) {
 		
 		System.out.println("==============================JoinController > join.do진입==============================");
 		
 		if(params.isEmpty()) {
-			return 0;
+			return MessageEnum.FAILED.getCode();
 		} else {
-			System.out.println("join params 확인 ========================>"+params);
+			// System.out.println("join params 확인 ========================>"+params);
 			
-			// 비밀번호와 확인용 비밀번호가 일치하는지 확인하는 조건
-			if (!params.get("passwd").isEmpty() && !params.get("con_pass").isEmpty() && params.get("passwd").equals(params.get("con_pass"))) {
-			    // 아이디가 사용 가능한지 확인하는 조건
-			    if (!params.get("successMessage").isEmpty()) {
-			        // 비밀번호와 확인용 비밀번호가 모두 비어 있지 않고, 일치하며, 아이디가 사용 가능한 경우
-			    	int joinCheck = joinService.joinMember(params);
-			    	
-					//회원가입 성공시 1 반환
-					if(joinCheck == 1) {
-						System.out.println("=====================회원가입 성공 확인=====================");
-						System.out.println("==============================JoinController > join.do종료==============================");
-						return 1;
-						//회원가입 실패시 0 반환
-					} else {
-						System.out.println("=====================회원가입 실패 확인=====================");
-						System.out.println("==============================JoinController > join.do종료==============================");
-						return 0;
-					}
-			    }
+			String username = params.get("memberID");
+			String password = params.get("passwd");
+			String confirmPassword = params.get("con_pass");
+			
+			// 아이디 유효성 검사
+			if (!isValidUsername(username)) {
+				System.out.println("유효하지 않은 아이디.");
+				return MessageEnum.VALLID_USER_NAME.getCode();
 			}
-			return 0;
+			
+			// 비밀번호 유효성 검사
+			if (!isValidPassword(password)) {
+				System.out.println("유효하지 않은 패스워드.");
+				return MessageEnum.VALLID_PASSWD.getCode();
+			}
+			
+			// 비밀번호와 확인용 비밀번호가 일치하는지 확인
+			if (!password.equals(confirmPassword)) {
+				System.out.println("비밀번호가 일치하지 않습니다.");
+				return MessageEnum.EQUAL_PASSWD.getCode();
+			}
+			
+			// 아이디가 사용 가능한지 확인하는 조건
+			int idCheckCode = joinService.idCheck(username);
+			if (idCheckCode == Integer.parseInt(MessageEnum.DUPL_ID.getCode())) {
+				System.out.println("중복된 아이디 입니다.");
+				return MessageEnum.DUPL_ID.getCode();
+			}
+			
+			// 모든 조건을 통과한 경우 회원가입 진행
+			int joinCheck = joinService.joinMember(params);
+			
+			if (joinCheck == 1) {
+				System.out.println("=====================회원가입 성공 확인=====================");
+				System.out.println("==============================JoinController > join.do종료==============================");
+				return MessageEnum.SUCCESS.getCode();
+			} else {
+				System.out.println("=====================회원가입 실패 확인=====================");
+				System.out.println("==============================JoinController > join.do종료==============================");
+				return MessageEnum.FAILED.getCode();
+			}
 		}
+	}
+	
+	// 아이디 제약사항 - 아이디는 공백 또는 빈 칸일 수 없고 4~20자의 영어 소문자, 숫자만 사용 가능함.
+	private boolean isValidUsername(String username) {
+	    return username != null && username.matches("^[a-z0-9]{4,20}$");
+	}
+
+	// 비밀번호 제약사항 - 비밀번호는 8~16자의 영문 대/소문자, 숫자, 특수문자를 1개 이상 포함해야 함.
+	private boolean isValidPassword(String password) {
+	    return password != null && password.length() >= 8 && password.length() <= 16 &&
+	           password.matches(".*[A-Z].*") && password.matches(".*[a-z].*") &&
+	           password.matches(".*\\d.*") && password.matches(".*[!@#$%^&*()\\-_=+\\[\\]{}|;:'\",.<>?/].*");
 	}
 }

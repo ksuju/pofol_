@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.portfolio.www.dao.mybatis.NoticeRepository;
+import com.portfolio.www.message.MessageEnum;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 
@@ -22,12 +23,11 @@ public class JoinService {
 		List<String> memberList = noticeRepository.memberSelectAll();
 		if(memberList.contains(idCheck)) {
 			System.out.println("========================service > idCheck > 아이디중복========================");
-			return 1;
+			return Integer.parseInt(MessageEnum.DUPL_ID.getCode());
 		} else {
 			System.out.println("========================service > idCheck > 아이디중복없음========================");
-			return 0;
+			return Integer.parseInt(MessageEnum.NO_DUPL_ID.getCode());
 		}
-		
 	}
 	
 	public int joinMember(HashMap<String, String> params){

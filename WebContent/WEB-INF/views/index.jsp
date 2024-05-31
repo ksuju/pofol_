@@ -26,7 +26,11 @@
                     <!-- end /.feature -->
                 </div>
                 <!-- end /.col-lg-4 col-md-6 -->
-
+				<h1>
+                    <% if (session.getAttribute("logInUser") != null) { %>
+                        로그인! <a href="logout.do">로그아웃</a>
+                    <% } %>
+                </h1>
                 <!-- start search-area -->
                 <div class="col-lg-4 col-md-6">
                     <div class="feature">

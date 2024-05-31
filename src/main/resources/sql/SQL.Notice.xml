@@ -5,6 +5,11 @@
 
 <mapper namespace="com.portfolio.www.dao.mybatis.NoticeRepository">
 
+	<!-- 로그인 -->
+	<select id="login">
+		SELECT passwd FROM member WHERE member_id = #{memberID};
+	</select>
+
 	<!-- 회원가입 -->
 	<insert id="joinMember" parameterType="hashmap">
 		INSERT INTO forum.`member`
