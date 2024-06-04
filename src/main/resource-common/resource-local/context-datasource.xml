@@ -10,6 +10,4 @@
 		<property name="username" value="root"/>
 		<property name="password" value="admin_123"/>
 	</bean>
-
-	
 </beans>

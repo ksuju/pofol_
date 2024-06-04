@@ -10,9 +10,14 @@ import com.portfolio.www.dto.EmailDto;
 public class EmailUtil {
 	  // property 설정으로 받아보기
 	 private JavaMailSender mailSender;
+	 private String fromEmail;
 	 
 	 public void setMailSender(JavaMailSender mailSender) {
 		 this.mailSender = mailSender;
+	 }
+	 
+	 public void setFromEmail(String fromEmail) {
+		 this.fromEmail = fromEmail;
 	 }
 	 
 	 public String sendMail(EmailDto email) {
@@ -24,7 +29,7 @@ public class EmailUtil {
 	         MimeMessage message = mailSender.createMimeMessage();
 	         MimeMessageHelper messageHelper = new MimeMessageHelper(message, true, "UTF-8");
 	         messageHelper.setTo(email.getReceiver());
-	         messageHelper.setFrom(email.getFrom());
+	         messageHelper.setFrom(this.fromEmail);
 	         messageHelper.setSubject(email.getSubject());	// 메일제목은 생략이 가능하다
 	
 	//         messageHelper.setText(email.getText());
