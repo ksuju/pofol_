@@ -87,9 +87,9 @@ public class JoinService {
 		//BCrypt를 사용한 비밀번호 암호화
 		String passwd = params.get("passwd");
 		String encPasswd = BCrypt.withDefaults().hashToString(12, passwd.toCharArray());
-		System.out.println("encPasswd >>>>>>>>> " + encPasswd);
-		BCrypt.Result result = BCrypt.verifyer().verify(passwd.toCharArray(), encPasswd);
-		System.out.println("result.verified >>>>>>> " + result.verified);
+		//System.out.println("encPasswd >>>>>>>>> " + encPasswd);
+		//BCrypt.Result result = BCrypt.verifyer().verify(passwd.toCharArray(), encPasswd);
+		//System.out.println("result.verified >>>>>>> " + result.verified);
 		
 		params.put("passwd", encPasswd);
 		//BCrypt를 사용한 비밀번호 암호화 끝

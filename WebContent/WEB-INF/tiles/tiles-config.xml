@@ -19,6 +19,11 @@
 	    <put-attribute name="title" value="로그인" /> 
 	    <put-attribute name="body" value="/WEB-INF/views/auth/login.jsp" /> 
 	</definition>  
+	<!-- 패스워드 변경 -->
+	<definition name="auth/passwordChange" extends="tiles-default"> 
+	    <put-attribute name="title" value="비밀번호 변경" /> 
+	    <put-attribute name="body" value="/WEB-INF/views/auth/passwordChange.jsp" /> 
+	</definition>
 
 	<!-- 모든 요청에 대해 매핑 화면 반환 -->
 	<!-- 해당 결과로 /WEB-INF/views/layout/default.jsp 화면이 반환되며, 해당 화면에는 menu, body, footer가 존재 -->

@@ -98,7 +98,16 @@
                             </div>
                             <div class="pull-right join desktop-size d-md-block d-none">
                                 <a href="<c:url value='/auth/joinPage.do'/>" class="btn btn--round btn-secondary  btn--xs">Join Now</a>
-                                <a href="<c:url value='/auth/loginPage.do'/>" class="btn btn--round btn--xs">Login</a>
+                                <c:choose>
+								    <c:when test="${loggedIn}">
+								        <!-- 세션에 로그인 정보가 있는 경우 -->
+								        <a href="<c:url value='/logout.do'/>" class="btn btn--round btn--xs">logout</a>
+								    </c:when>
+								    <c:otherwise>
+								        <!-- 세션에 로그인 정보가 없는 경우 -->
+								        <a href="<c:url value='/auth/loginPage.do'/>" class="btn btn--round btn--xs">login</a>
+								    </c:otherwise>
+								</c:choose>
                             </div>
                             <div class="pull-right join mobile-size d-md-none d-flex">
                                 <a href="#" class="btn btn--round btn-secondary "><span class="lnr lnr-user"></span></a>

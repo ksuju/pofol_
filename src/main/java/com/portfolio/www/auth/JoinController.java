@@ -178,10 +178,10 @@ public class JoinController {
 	    return username != null && username.matches("^[a-z0-9]{4,20}$");
 	}
 
-	// 비밀번호 제약사항 - 비밀번호는 8~16자의 영문 대/소문자, 숫자, 특수문자를 1개 이상 포함해야 함.
+	// 비밀번호 제약사항 - 비밀번호는 8~16자의 영문, 숫자, 특수문자를 1개 이상 포함해야 함.
 	private boolean isValidPassword(String password) {
 	    return password != null && password.length() >= 8 && password.length() <= 16 &&
-	           password.matches(".*[A-Z].*") && password.matches(".*[a-z].*") &&
-	           password.matches(".*\\d.*") && password.matches(".*[!@#$%^&*()\\-_=+\\[\\]{}|;:'\",.<>?/].*");
+	           password.matches(".*[a-z].*") && password.matches(".*\\d.*") &&
+	           password.matches(".*[!@#$%^&*()\\-_=+\\[\\]{}|;:'\",.<>?/].*");
 	}
 }

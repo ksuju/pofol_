@@ -8,19 +8,18 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 offset-lg-3">
-                    <form action="#">
+                    <form action="<c:url value='/auth/convertPw.do'/>" method="POST">
                         <div class="cardify recover_pass">
                             <div class="login--header">
-                                <p>Please enter the email address for your account. A verification code will be sent to you.
-                                    Once you have received the verification code, you will be able to choose a new password
-                                    for your account.</p>
+                                <p>계정의 이메일 주소를 입력하세요. 인증 코드가 발송됩니다.</p>
+                                <p>인증 코드를 받으면 계정의 새 비밀번호를 설정할 수 있습니다.</p>
                             </div>
                             <!-- end .login_header -->
 
                             <div class="login--form">
                                 <div class="form-group">
                                     <label for="email_ad">Email Address</label>
-                                    <input id="email_ad" type="text" class="text_field" placeholder="Enter your email address">
+                                    <input name="email" id="email_ad" type="text" class="text_field" placeholder="Enter your email address">
                                 </div>
 
                                 <button class="btn btn--md btn--round register_btn" type="submit">Register Now</button>

@@ -9,6 +9,18 @@ import com.portfolio.www.dto.EmailAuthDto;
 import com.portfolio.www.dto.MemberAuthDto;
 
 public interface NoticeRepository {
+	
+	// 비밀번호 변경
+	public int changePasswd(HashMap<String, String> params);
+	
+	// authNumSelect db에 저장된 authNum 조회
+	public int authNumSelect(String email);
+	
+	// auth_num update to null
+	public int updateAuthNumToNull(String email);
+	
+	// auth_num update
+	public int updateAuthNum(HashMap<String, String> params);
 
 	//회원가입
 	public int joinMember(HashMap<String, String> params);

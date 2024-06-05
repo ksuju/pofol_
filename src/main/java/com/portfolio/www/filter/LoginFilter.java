@@ -1,6 +1,7 @@
 package com.portfolio.www.filter;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 
 /**
@@ -61,20 +63,26 @@ public class LoginFilter extends HttpFilter implements Filter {
 		// TODO Auto-generated method stub
 		// place your code here
 		HttpServletRequest req = (HttpServletRequest) request;
-		HttpServletResponse resp = (HttpServletResponse) response;
 		String uri = req.getRequestURI();
 		//System.out.println("URI==============================="+uri);
 		List<String> UriList = new ArrayList<String>(Arrays.asList(LOGIN_REQUIRED_URI));
 		//System.out.println("UriList==============================="+UriList);
 		if(UriList.contains(uri)) {
 			HttpSession session = req.getSession();
-			System.out.println("session================>"+session.getAttribute("memberId"));
+			//System.out.println("session================>"+session.getAttribute("memberId"));
 			if(ObjectUtils.isEmpty(session.getAttribute("logInUser"))) {
-				resp.sendRedirect(req.getContextPath() + "/auth/loginPage.do");
+				
+				// redirect를 사용하면 새로운 페이지가 반환되기 때문에 스크립트가 실행되지 않음
+				//resp.sendRedirect(req.getContextPath() + "/auth/loginPage.do");
+				
+				response.setContentType("text/html; charset=UTF-8");
+				PrintWriter out = response.getWriter();
+				out.println("<script>alert('로그인 후 이용해주세요.'); location.href='" + req.getContextPath() + "/auth/loginPage.do';</script>");
 	            return;
 			}
+			// 로그인 상태를 확인하여 메뉴에 표시될 버튼을 설정
+	        request.setAttribute("loggedIn", true);
 		}
-
 		// pass the request along the filter chain
 		chain.doFilter(request, response);
 	}
