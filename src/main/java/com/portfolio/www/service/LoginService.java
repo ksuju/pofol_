@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.portfolio.www.dao.mybatis.NoticeRepository;
 import com.portfolio.www.dto.EmailDto;
+import com.portfolio.www.message.MessageEnum;
+import com.portfolio.www.util.EmailProp;
 import com.portfolio.www.util.EmailUtil;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
@@ -20,6 +22,9 @@ public class LoginService {
 	@Autowired
 	private EmailUtil emailutil;
 	
+	@Autowired
+	private EmailProp emailprop;
+	
 	//비밀번호 변경
 	public int changePasswd(HashMap<String,String> params) {
 		//BCrypt를 사용한 비밀번호 암호화
@@ -28,10 +33,24 @@ public class LoginService {
 		//System.out.println("encPasswd >>>>>>>>> " + encPasswd);
 		//System.out.println("result.verified >>>>>>> " + result.verified);
 		
-		params.put("passwd", encPasswd);
-		//BCrypt를 사용한 비밀번호 암호화 끝
-		noticeRepository.updateAuthNumToNull(params.get("email"));
-		return noticeRepository.changePasswd(params);
+		long expireDtm = noticeRepository.getExpireDtm(params.get("email"));
+		long now = System.currentTimeMillis();
+		
+		System.out.println("expireDtm============================>"+expireDtm);
+		System.out.println("now============================>"+now);
+		
+		if(expireDtm>now) {
+			params.put("passwd", encPasswd);
+			//BCrypt를 사용한 비밀번호 암호화 끝
+			//인증번호 null로 바꾸기
+			noticeRepository.updateAuthNumToNull(params.get("email"));
+			
+			return noticeRepository.changePasswd(params);
+		} else {
+			//인증번호 null로 바꾸기
+			noticeRepository.updateAuthNumToNull(params.get("email"));
+			return Integer.parseInt(MessageEnum.EXPIRE_AUTH_DTM.getCode());
+		}
 	}
 	
 	// 비밀번호 변경을 위한 메일 인증 완료
@@ -46,8 +65,6 @@ public class LoginService {
 			
 			// db에 저장된 auth_num과 인증메일로부터 받은 authNum이 일치하면
 			if(dbAuthNum == authNum) {
-				// db에 저장된 auth_num을 null로 바꾸고 (=지우고)
-				//noticeRepository.updateAuthNumToNull(params.get("email"));
 				// 1(성공) 을 반환함
 				return 1;
 			}
@@ -66,8 +83,9 @@ public class LoginService {
 			email.setReceiver(params.get("email"));
 			email.setSubject("비밀번호 변경 인증 메일입니다.");
 			// host + contextRoot + URI
-			String html = "<a href='http://localhost:8080/pf/emailAuthPw.do?authNum="
-			+ params.get("authNum") + "&email=" + params.get("email") + "'>인증하기</a>";
+			String html = emailprop.getPwChangeUri()
+			+ params.get("authNum") + "&email=" + params.get("email") + "'>비밀번호 변경하기</a>";
+			
 			email.setText(html);
 			
 			emailutil.sendMail(email,true);
@@ -76,8 +94,16 @@ public class LoginService {
 		return cnt;
 	}
 	
-	public String login(String memberID) {
+	public boolean loginCheak(String memberID, String passwd) {
 		
-		return noticeRepository.login(memberID);
+		String dbPasswd = noticeRepository.loginCheak(memberID);
+		
+		if(dbPasswd != null) {
+			BCrypt.Result result = BCrypt.verifyer().verify(passwd.toCharArray(), dbPasswd);
+			return result.validFormat && result.verified;
+		}
+		return false;
 	}
+	
+	
 }

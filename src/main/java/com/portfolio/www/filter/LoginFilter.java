@@ -50,8 +50,9 @@ public class LoginFilter extends HttpFilter implements Filter {
 	
 	// 로그인이 필요한 페이지의 URI
 	private final String[] LOGIN_REQUIRED_URI = {
-			"/pf/index.do"
-			//,"/pf/auth/joinPage.do"
+			"/pf/forum/notice/listPage.do",
+			"/pf/forum/notice/writePage.do",
+			"/pf/forum/notice/readPage.do"
 	};
 
 	/**
@@ -67,19 +68,16 @@ public class LoginFilter extends HttpFilter implements Filter {
 		//System.out.println("URI==============================="+uri);
 		List<String> UriList = new ArrayList<String>(Arrays.asList(LOGIN_REQUIRED_URI));
 		//System.out.println("UriList==============================="+UriList);
-		if(UriList.contains(uri)) {
-			HttpSession session = req.getSession();
-			//System.out.println("session================>"+session.getAttribute("memberId"));
-			if(ObjectUtils.isEmpty(session.getAttribute("logInUser"))) {
-				
-				// redirect를 사용하면 새로운 페이지가 반환되기 때문에 스크립트가 실행되지 않음
-				//resp.sendRedirect(req.getContextPath() + "/auth/loginPage.do");
-				
+		HttpSession session = req.getSession();
+		
+		if(ObjectUtils.isEmpty(session.getAttribute("logInUser"))) {
+			if(UriList.contains(uri)) {
 				response.setContentType("text/html; charset=UTF-8");
 				PrintWriter out = response.getWriter();
 				out.println("<script>alert('로그인 후 이용해주세요.'); location.href='" + req.getContextPath() + "/auth/loginPage.do';</script>");
 	            return;
 			}
+		} else {
 			// 로그인 상태를 확인하여 메뉴에 표시될 버튼을 설정
 	        request.setAttribute("loggedIn", true);
 		}

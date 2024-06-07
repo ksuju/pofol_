@@ -82,8 +82,15 @@ public class LoginController {
 		if(!params.isEmpty()) {
 			mv.setViewName("auth/login");
 			if(isValidPassword(params.get("passwd"))) {
-				loginService.changePasswd(params);
-				return mv;
+				int changePW = loginService.changePasswd(params);
+				if(changePW == 1) {
+					return mv;
+				} else if (changePW == Integer.parseInt(MessageEnum.EXPIRE_AUTH_DTM.getCode())) {
+					mv.setViewName("auth/login");
+					model.addAttribute("alert",MessageEnum.EXPIRE_AUTH_DTM.getDescription());
+					return mv;
+				}
+				
 			}
 			mv.setViewName("auth/passwordChange");
 			model.addAttribute("email", params.get("email"));
@@ -107,17 +114,10 @@ public class LoginController {
 
 	@RequestMapping("/auth/login.do")
 	public String login(@RequestParam HashMap<String, String> params, HttpServletRequest request, Model model) {
-
 		// 아이디로 비밀번호 찾기
-		String dbPasswd = loginService.login(params.get("memberID"));
-
-		String passwd = params.get("passwd");
-
-		BCrypt.Result result = BCrypt.verifyer().verify(passwd.toCharArray(), dbPasswd);
-
-		// System.out.println("result=====비밀번호확인========>"+result);
-
-		if (result.validFormat && result.verified) {
+		boolean loginCheak = loginService.loginCheak(params.get("memberID"), params.get("passwd"));
+		
+		if (loginCheak) {
 			// 비밀번호가 일치하는 경우
 			// 로그인 성공 처리
 			HttpSession session = request.getSession();
@@ -126,6 +126,7 @@ public class LoginController {
 		} else {
 			// 비밀번호가 일치하지 않는 경우
 			// 로그인 실패 처리
+			System.out.println("로그인실패==========================");
 			model.addAttribute("errorMessage", MessageEnum.LOGIN_FAILD.getDescription());
 			return "auth/login";
 		}

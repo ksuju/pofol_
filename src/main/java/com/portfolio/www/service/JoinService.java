@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,7 @@ import com.portfolio.www.dto.EmailAuthDto;
 import com.portfolio.www.dto.EmailDto;
 import com.portfolio.www.dto.MemberAuthDto;
 import com.portfolio.www.message.MessageEnum;
+import com.portfolio.www.util.EmailProp;
 import com.portfolio.www.util.EmailUtil;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
@@ -28,6 +30,9 @@ public class JoinService {
 	@Autowired
 	private EmailUtil emailutil;
 	
+	@Autowired
+	private EmailProp emailprop;
+	
 	// auth_yn 변경하기 트랜잭션으로 member_auth 테이블과 member 테이블에 있는 auth_yn 컬럼을 동시에 바꿈
     @Transactional
     public boolean updateAuthAndMemAuth(EmailAuthDto emailAuthDto) {
@@ -41,6 +46,36 @@ public class JoinService {
         	return true;
         }
         return false;
+    }
+    
+    // 비밀번호 유효성 체크 기능
+    public int validPasswd(String passwordCheck) {
+		// 비밀번호 제약사항 체크
+		if (!isValidPassword(passwordCheck)) {
+			return Integer.parseInt(MessageEnum.VALLID_PASSWD.getCode());
+		}
+		return 999999;
+    }
+    
+	// 비밀번호 = 비밀번호확인 체크 기능
+    public int passCheck(String conPassCheck, String passwordCheck) {
+		// 비밀번호 제약사항 체크
+		if (isValidPassword(passwordCheck)) {
+			// 비밀번호 비교
+			if (conPassCheck.equals(passwordCheck)) {
+				System.out.println("controller > passCheck > 비밀번호 같음");
+				System.out.println(
+						"==============================JoinController > passCheck.do종료==============================");
+				return Integer.parseInt(MessageEnum.EQUAL_PASSWD.getCode());
+			} else {
+				System.out.println("controller > passCheck > 비밀번호 다름");
+				System.out.println(
+						"==============================JoinController > passCheck.do종료==============================");
+				return Integer.parseInt(MessageEnum.NOT_EQUAL_PASSWD.getCode());
+			}
+		} else {
+			return Integer.parseInt(MessageEnum.VALLID_PASSWD.getCode());
+		}
     }
 	
 	// 이메일 인증하기
@@ -73,17 +108,52 @@ public class JoinService {
 	public int idCheck(String idCheck) {
 		System.out.println("========================service > idCheck========================");
 		List<String> memberList = noticeRepository.memberSelectAll();
-		if(memberList.contains(idCheck)) {
-			System.out.println("========================service > idCheck > 아이디중복========================");
-			return Integer.parseInt(MessageEnum.DUPL_ID.getCode());
-		} else {
-			System.out.println("========================service > idCheck > 아이디중복없음========================");
-			return Integer.parseInt(MessageEnum.NO_DUPL_ID.getCode());
+		if(isValidUsername(idCheck)) {
+			if(memberList.contains(idCheck)) {
+				System.out.println("========================service > idCheck > 아이디중복========================");
+				return Integer.parseInt(MessageEnum.DUPL_ID.getCode());
+			} else {
+				System.out.println("========================service > idCheck > 아이디중복없음========================");
+				return Integer.parseInt(MessageEnum.NO_DUPL_ID.getCode());
+			
+			}
 		}
+		// 유효하지 않은 아이디
+		return Integer.parseInt(MessageEnum.VALLID_USER_NAME.getCode());
 	}
 	
 	public int joinMember(HashMap<String, String> params){
 		System.out.println("========================service > joinMember========================");
+		
+		String username = params.get("memberID");
+		String password = params.get("passwd");
+		String confirmPassword = params.get("con_pass");
+		
+		// 아이디 유효성 검사
+		if (!isValidUsername(username)) {
+			System.out.println("유효하지 않은 아이디.");
+			return Integer.parseInt(MessageEnum.VALLID_USER_NAME.getCode());
+		}
+		
+		// 비밀번호 유효성 검사
+		if (!isValidPassword(password)) {
+			System.out.println("유효하지 않은 패스워드.");
+			return Integer.parseInt(MessageEnum.VALLID_PASSWD.getCode());
+		}
+		
+		// 비밀번호와 확인용 비밀번호가 일치하는지 확인
+		if (!password.equals(confirmPassword)) {
+			System.out.println("비밀번호가 일치하지 않습니다.");
+			return Integer.parseInt(MessageEnum.NOT_EQUAL_PASSWD.getCode());
+		}
+		
+		// 아이디가 사용 가능한지 확인하는 조건
+		int idCheckCode = idCheck(username);
+		if (idCheckCode == Integer.parseInt(MessageEnum.DUPL_ID.getCode())) {
+			System.out.println("중복된 아이디 입니다.");
+			return Integer.parseInt(MessageEnum.DUPL_ID.getCode());
+		}
+		
 		//BCrypt를 사용한 비밀번호 암호화
 		String passwd = params.get("passwd");
 		String encPasswd = BCrypt.withDefaults().hashToString(12, passwd.toCharArray());
@@ -94,34 +164,54 @@ public class JoinService {
 		params.put("passwd", encPasswd);
 		//BCrypt를 사용한 비밀번호 암호화 끝
 		
-		int cnt = noticeRepository.joinMember(params);
-		int memberSeq = noticeRepository.getMemberSeq(params.get("memberID"));
-		
-		if(cnt == 1) {
-			//인증 메일구조 만들기
-			MemberAuthDto authDto = new MemberAuthDto();
-			authDto.setMemberSeq(memberSeq);
-			//UUID
-			authDto.setAuthUri(UUID.randomUUID().toString().replaceAll("-",""));
+		try {
+			int cnt = noticeRepository.joinMember(params);
 			
-			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.MINUTE, 30); // 30분만 유효
-			authDto.setExpireDtm(cal.getTimeInMillis());
-			
-			noticeRepository.addAuthInfo(authDto);
-			
-			//인증 메일 발송
-			EmailDto email = new EmailDto();
-			email.setReceiver(params.get("email"));
-			email.setSubject("인증하세요.");
-			// host + contextRoot + URI
-			String html = "<a href='http://localhost:8080/pf/emailAuth.do?uri="+ authDto.getAuthUri() + "'>인증하기</a>";
-			email.setText(html);
-			
-			emailutil.sendMail(email,true);
+			if(cnt == 1) {
+				int memberSeq = noticeRepository.getMemberSeq(params.get("memberID"));
+				//인증 메일구조 만들기
+				MemberAuthDto authDto = new MemberAuthDto();
+				authDto.setMemberSeq(memberSeq);
+				//UUID
+				authDto.setAuthUri(UUID.randomUUID().toString().replaceAll("-",""));
+				
+				Calendar cal = Calendar.getInstance();
+				cal.add(Calendar.MINUTE, 30); // 30분만 유효
+				authDto.setExpireDtm(cal.getTimeInMillis());
+				
+				noticeRepository.addAuthInfo(authDto);
+				
+				//인증 메일 발송
+				EmailDto email = new EmailDto();
+				email.setReceiver(params.get("email"));
+				email.setSubject("인증하세요.");
+				// host + contextRoot + URI
+				String html = emailprop.getJoinUri() + authDto.getAuthUri() + "'>회원가입 인증하기</a>";
+				email.setText(html);
+				
+				emailutil.sendMail(email,true);
+			}
+			return cnt;
+		} catch (DuplicateKeyException sqlEx) {
+			System.out.println("이미 가입된 이메일 입니다.");
+	        return Integer.parseInt(MessageEnum.DUPL_EMAIL.getCode());
 		}
 		
-		return cnt;
 	}
 	
+	
+	// 아이디 제약사항 - 아이디는 공백 또는 빈 칸일 수 없고 4~20자의 영어 소문자, 숫자만 사용 가능함.
+	private boolean isValidUsername(String username) {
+	    return username != null && username.matches("^[a-z0-9]{4,20}$");
+	}
+
+	// 비밀번호 제약사항 - 비밀번호는 8~16자의 영문, 숫자, 특수문자를 1개 이상 포함해야 함.
+	private boolean isValidPassword(String password) {
+	    return password != null && 
+	           password.length() >= 8 && 
+	           password.length() <= 16 &&
+	           password.matches(".*[a-zA-Z].*") &&  // 영문 대소문자
+	           password.matches(".*\\d.*") &&       // 숫자
+	           password.matches(".*[!@#$%^&*()\\-_=+\\[\\]{}|;:'\",.<>?/].*");  // 특수문자
+	}
 }

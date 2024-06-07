@@ -12,7 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class NoticeController {
 	
 	
-	@RequestMapping("/forum//notice/listPage.do")
+	@RequestMapping("/forum/notice/listPage.do")
 	public ModelAndView listPage(@RequestParam HashMap<String, String> params) {
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("key", Calendar.getInstance().getTimeInMillis());
@@ -40,7 +40,7 @@ public class NoticeController {
 	}
 	
 	
-	@RequestMapping("contact.do")
+	@RequestMapping("/contact.do")
 	public ModelAndView contactView() {
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("key", Calendar.getInstance().getTimeInMillis());

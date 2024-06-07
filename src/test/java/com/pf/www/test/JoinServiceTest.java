@@ -45,7 +45,7 @@ class JoinServiceTest {
         params.put("passwd", "test006");
         params.put("memberNM", "테스트계정");
         params.put("email", "kyd546@naver.com");
-
+        
         int cnt = joinService.joinMember(params);
         // Assume joinMember returns memberSeq; adapt as necessary
         int memberSeq = joinService.getMemberSeq(params.get("memberID"));

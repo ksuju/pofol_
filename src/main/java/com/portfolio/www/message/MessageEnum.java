@@ -12,7 +12,9 @@ public enum MessageEnum {
 	NOT_EQUAL_PASSWD("2001","비밀번호가 일치하지 않습니다."),
 	DUPL_ID("1103","중복된 아이디 입니다."),
 	NO_DUPL_ID("1104","사용 가능한 아이디 입니다."),
-	LOGIN_FAILD("9999","로그인에 실패하셨습니다.");
+	LOGIN_FAILD("9999","로그인에 실패하셨습니다."),
+	DUPL_EMAIL("3000","이미 가입된 이메일 주소입니다."),
+	EXPIRE_AUTH_DTM("99999","인증기간이 만료되었습니다.");
 
     MessageEnum(String code, String description){
         this.code = code;

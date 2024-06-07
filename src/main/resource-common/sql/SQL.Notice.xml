@@ -5,6 +5,13 @@
 
 <mapper namespace="com.portfolio.www.dao.mybatis.NoticeRepository">
 
+	<!-- 만료시간 가져오는 쿼리 -->
+	<select id="getExpireDtm">
+		SELECT ma.expire_dtm  FROM member_auth ma 
+		JOIN member m ON ma.member_seq = m.member_seq
+		WHERE m.email = #{email} ;
+	</select>
+
 	<!-- 비밀번호 변경 쿼리 -->
 	<update id="changePasswd">
 		UPDATE member
@@ -31,7 +38,7 @@
 	<update id="updateAuthNum">
 	    UPDATE member_auth ma
 	    JOIN member m ON ma.member_seq = m.member_seq
-	    SET ma.auth_num = #{authNum}
+	    SET ma.auth_num = #{authNum}, ma.expire_dtm = DATE_ADD(NOW(), INTERVAL 30 MINUTE)
 	    WHERE m.email = #{email};
 	</update>
 
@@ -65,7 +72,7 @@
     </insert>
 
 	<!-- 로그인 -->
-	<select id="login">
+	<select id="loginCheak">
 		SELECT passwd FROM member WHERE member_id = #{memberID};
 	</select>
 	
@@ -88,9 +95,14 @@
 		VALUES(#{memberID}, #{passwd}, #{memberNM}, #{email}, 'N', '', now());
 	</insert>
 	
-	<!-- 아이디중복검사 -->
+	<!-- 아이디 중복검사 -->
 	<select id="memberSelectAll">
 		SELECT member_id  FROM `member` m
+	</select>
+	
+	<!-- email 중복검사 -->
+	<select id="emailSelectAll">
+		SELECT email  FROM `member` m
 	</select>
 
 </mapper>

@@ -83,7 +83,6 @@
 
 	<bean id="emailUtil" class="com.portfolio.www.util.EmailUtil">
 		<property name="mailSender" ref="mailSender"></property>
-		<property name="fromEmail" value="${email.username}" />
 	</bean>
 
 	<bean id="encryptorConfig"
