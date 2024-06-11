@@ -14,51 +14,51 @@
 				<form action="#" method="POST">
 					<div class="cardify signup_form">
 						<div class="login--header">
-							<h3>Create Your Account</h3>
-							<p>Please fill the following fields with appropriate
-								information to register a new MartPlace account.</p>
+							<h3>회원가입</h3>
+							<p>회원가입을 위해 아래 정보를 입력해 주세요.</p>
 						</div>
 						<!-- end .login_header -->
 
 						<div class="login--form">
 
 							<div class="form-group">
-								<label for="urname">Your Name</label> <input id="urname"
+								<label for="urname">이름</label> <input id="urname"
 									type="text" class="text_field" name="memberNM"
 									placeholder="Enter your Name">
 							</div>
 
 							<div class="form-group">
-								<label for="email_ad">Email Address</label> <input id="email_ad"
-									type="text" class="text_field" name="email"
+								<label for="email_ad">이메일</label>
+								<button id="emailButton" type="button" class="btn btn--round btn-secondary btn--xs" 
+								style="float: right;">중복확인</button>
+								<input id="email_ad" type="text" class="text_field" name="email"
 									placeholder="Enter your email address">
 							</div>
 
 							<div class="form-group">
-								<label for="user_name">UserID</label> <input id="user_name"
+								<label for="user_name">아이디</label> <input id="user_name"
 									type="text" class="text_field" name="memberID"
 									placeholder="Enter your username...">
 							</div>
 
 							<div class="form-group">
-								<label for="password">Password</label> <input id="password"
+								<label for="password">비밀번호</label> <input id="password"
 									type="password" class="text_field" name="passwd"
 									placeholder="Enter your password...">
 							</div>
 
 							<div class="form-group">
-								<label for="con_pass">Confirm Password</label> <input
+								<label for="con_pass">비밀번호확인</label> <input
 									id="con_pass" type="password" class="text_field"
 									placeholder="Confirm password">
 							</div>
 
-							<button class="btn btn--md btn--round register_btn" type="submit">Register
-								Now</button>
+							<button class="btn btn--md btn--round register_btn" type="submit">회원가입</button>
 
 							<div class="login_assist">
 								<p>
-									Already have an account? <a
-										href="<c:url value='/auth/loginPage.do'/>">Login</a>
+									이미 가입된 회원이신가요? <a
+										href="<c:url value='/auth/loginPage.do'/>">로그인</a>
 								</p>
 							</div>
 						</div>
@@ -115,7 +115,7 @@
                         
                         switch (messageEnum) {
                             case "0000":
-                                alert("회원가입에 성공하셨습니다! " + messageEnum);
+                                alert("회원가입에 성공하셨습니다! ");
                                 window.location.href = 'loginPage.do';
                                 break;
                             case "0001":
@@ -311,7 +311,46 @@
                     }
                 });
             });
-            <!-- 비밀번호, 비밀번호확인 일치여부 검사 -->
+            <!-- 비밀번호, 비밀번호확인 일치여부 검사 끝 -->
+            
+            
+            <!-- 이메일 중복체크 버튼 클릭 이벤트 -->
+            let emailButton = document.querySelector("#emailButton");
+            emailButton.addEventListener("click", function() {
+            	let url = 'emailCheck.do';
+            	let email = document.querySelector("#email_ad").value;
+            	$.ajax({
+            		type: 'POST',
+                    url: url,
+    	            dataType: 'JSON',
+    	            data: {
+    	            	email: email
+    	            },
+    	            success: function(response) {
+    	            	// 유효성검사부터 확인해야됨
+    	            	if(response === <%=MessageEnum.VALLID_EMAIL.getCode()%>){
+    	            		alert('<%= MessageEnum.VALLID_EMAIL.getDescription() %>');
+    	            	// 이메일 인증여부 확인	
+    	            	} else if (response === <%=MessageEnum.NOT_EMAIL_AUTH.getCode()%>){
+    	            		alert('<%= MessageEnum.NOT_EMAIL_AUTH.getDescription() %>');
+    	            	// 이메일 중복여부 확인	
+    	            	} else if (response === <%=MessageEnum.DUPL_EMAIL.getCode()%>) {
+    	            		alert('<%= MessageEnum.DUPL_EMAIL.getDescription() %>');
+    	            	// 사용 가능한 이메일	
+    	            	} else {
+    	            		if(confirm("사용 가능한 이메일입니다 사용하시겠습니까?")) {
+    	            			document.getElementById("email_ad").disabled = true;
+    	            			document.getElementById("email_ad").style.backgroundColor = "rgba(0, 128, 0, 0.2)";
+    	            		}
+    	            	}
+    	            	
+    	            },
+    	            error: function(request, status, error) {
+    	             alert(error);
+    	            }
+    	            
+            	})
+            })
         }
         </script>
 

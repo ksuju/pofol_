@@ -21,7 +21,7 @@
 
 	<!-- 공용 설정 파일 -->
 	<util:properties id="config"
-		location="classpath:*config.ini" />
+		location="classpath:*config.properties" />
 
 	<!-- Annotation 기반의 Component Scan 필터(service package 만 검색) -->
 	<context:component-scan

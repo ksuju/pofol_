@@ -10,6 +10,12 @@ import com.portfolio.www.dto.MemberAuthDto;
 
 public interface NoticeRepository {
 	
+	// 이메일 유무 확인
+	public int emailCount(String email);
+	
+	// 계정인증여부 가져오기
+	public String getAuthYN(String memberID);
+	
 	// 인증만료시간 가져오기
 	public long getExpireDtm(String email);
 	

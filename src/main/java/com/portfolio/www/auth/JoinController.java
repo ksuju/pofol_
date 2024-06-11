@@ -22,6 +22,16 @@ public class JoinController {
 	@Autowired
 	JoinService joinService;
 
+	// 이메일 중복확인 버튼 > 이메일 중복, 유효성 검사
+	@ResponseBody
+	@RequestMapping("/auth/emailCheck.do")
+	public int emailCheck(@RequestParam String email) {
+
+		int seq = joinService.emailCount(email);
+		
+		return seq;
+	}
+
 	// joinPage 진입
 	@RequestMapping("/auth/joinPage.do")
 	public ModelAndView joinPage(@RequestParam HashMap<String, String> params) {
@@ -109,7 +119,7 @@ public class JoinController {
 
 		// 모든 조건을 통과한 경우 회원가입 진행
 		int joinCheck = joinService.joinMember(params);
-		
+
 		if (joinCheck == 1) {
 			System.out.println("=====================회원가입 성공 확인=====================");
 			System.out

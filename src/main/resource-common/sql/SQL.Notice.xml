@@ -5,6 +5,13 @@
 
 <mapper namespace="com.portfolio.www.dao.mybatis.NoticeRepository">
 
+	<!-- 계정인증여부 가져오는 쿼리 -->
+	<select id="getAuthYN">
+		SELECT m.auth_yn
+		FROM member m
+		where m.member_id = #{memberID} ;
+	</select>
+
 	<!-- 만료시간 가져오는 쿼리 -->
 	<select id="getExpireDtm">
 		SELECT ma.expire_dtm  FROM member_auth ma 
@@ -103,6 +110,13 @@
 	<!-- email 중복검사 -->
 	<select id="emailSelectAll">
 		SELECT email  FROM `member` m
+	</select>
+	
+	<!-- email 셀렉트 -->
+	<select id="emailCount">
+		SELECT count(*)
+		FROM `member` m
+		WHERE email = #{email};
 	</select>
 
 </mapper>

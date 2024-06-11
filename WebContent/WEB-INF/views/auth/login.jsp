@@ -13,41 +13,41 @@
 					<div class="cardify login">
 						<div class="login--header">
 							<c:if test="${not empty alert}">
-							<h5 style="color:red;">${alert}</h5>
+								<h5 style="color: red;">${alert}</h5>
 							</c:if>
-							<h3>Welcome Back</h3>
-							<p>You can sign in with your username</p>
+							<h3>환영합니다!</h3>
+							<p>아이디와 비밀번호를 입력해주세요.</p>
 						</div>
 						<!-- end .login_header -->
 
 						<div class="login--form">
 							<div class="form-group">
-								<label for="user_name">Username</label>
-								<input id="user_name" name="memberID" type="text"
-									class="text_field" placeholder="Enter your username...">
+								<label for="user_name">아이디</label> <input id="user_name"
+									name="memberID" type="text" class="text_field"
+									placeholder="Enter your username...">
 							</div>
 
 							<div class="form-group">
-								<label for="pass">Password</label> <input id="pass"
-									name="passwd" type="text" class="text_field"
+								<label for="pass">비밀번호</label> <input id="pass" name="passwd"
+									type="text" class="text_field"
 									placeholder="Enter your password...">
 							</div>
 							<!-- 로그인 실패 시 메시지 표시 -->
 							<c:if test="${not empty errorMessage}">
-								<div style="color:red;">
+								<div style="color: red;">
 									<c:out value="${errorMessage}" />
 								</div>
 							</c:if>
 							<div class="form-group">
 								<div class="custom_checkbox">
 									<input type="checkbox" id="ch2"> <label for="ch2">
-										<span class="shadow_checkbox"></span> <span class="label_text">Remember me</span>
+										<span class="shadow_checkbox"></span> <span class="label_text">아이디저장</span>
 									</label>
 								</div>
 							</div>
 
-							<button class="btn btn--md btn--round" type="submit">Login
-								Now</button>
+							<button id="loginButton" class="btn btn--md btn--round"
+								type="submit">Login Now</button>
 
 							<div class="login_assist">
 								<p class="recover">
@@ -69,6 +69,7 @@
 		<!-- end .row -->
 	</div>
 	<!-- end .container -->
+
 </section>
 <!--================================
             END LOGIN AREA

@@ -13,13 +13,13 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="page_title">
-						<h3>Contact Us</h3>
-						<p class="subtitle">You came to the right place</p>
+						<h3>문의게시판</h3>
+						<p class="subtitle">무엇이든 물어보세요!</p>
 					</div>
 					<div class="breadcrumb">
 						<ul>
 							<li><a href="index.html">Home</a></li>
-							<li class="active"><a href="#">Contact Us</a></li>
+							<li class="active"><a href="#">고객센터</a></li>
 						</ul>
 					</div>
 				</div>
@@ -46,7 +46,7 @@
 						<div class="col-md-12">
 							<div class="section-title">
 								<h1>
-									How can We <span class="highlighted">Help?</span>
+									어떤 <span class="highlighted">도움</span>이 필요하세요?
 								</h1>
 								<p>Laborum dolo rumes fugats untras. Etharums ser quidem
 									rerum facilis dolores nemis omnis fugats. Lid est laborum dolo
@@ -98,7 +98,7 @@
 						<div class="col-md-12">
 							<div class="contact_form cardify">
 								<div class="contact_form__title">
-									<h3>Leave Your Messages</h3>
+									<h3>문의내용</h3>
 								</div>
 
 								<div class="row">
@@ -136,8 +136,7 @@
 												<textarea cols="30" rows="10" placeholder="Yout text here"></textarea>
 
 												<div class="sub_btn">
-													<button type="button" class="btn btn--round btn--default">Send
-														Request</button>
+													<button type="button" class="btn btn--round btn--default">문의하기</button>
 												</div>
 											</form>
 										</div>
