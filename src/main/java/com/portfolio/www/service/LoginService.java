@@ -2,9 +2,12 @@ package com.portfolio.www.service;
 
 import java.util.HashMap;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.ibatis.binding.BindingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +30,32 @@ public class LoginService {
 
 	@Autowired
 	private EmailProp emailprop;
+	
+	// 아이디 저장 쿠키 생성
+	public boolean saveIdCookie(HashMap<String, String> params, HttpServletResponse response) {
+		String memberId = params.get("memberID");
 
+		// on 또는 null
+		String checkBox = params.get("checkBox");
+		
+		
+		try {
+			noticeRepository.getMemberSeq(memberId);
+			// 체크박스가 "on"일때 입력받은 아이디 쿠키로 저장
+			if("on".equals(checkBox)) {
+				Cookie saveId = new Cookie("saveId",memberId);
+				saveId.setMaxAge(60 * 60 * 24 * 7); // 만료기한 7일
+				response.addCookie(saveId);
+				return true;
+			}
+			return false;	
+		} catch (BindingException be) {
+			return false;
+		} catch (NullPointerException ne) {
+			return false;
+		}
+		
+	}
 	// 비밀번호 변경
 	public int changePasswd(HashMap<String, String> params) {
 		// BCrypt를 사용한 비밀번호 암호화
@@ -117,6 +145,9 @@ public class LoginService {
 				session.setAttribute("logInUser", memberID);
 				return Integer.parseInt(MessageEnum.SUCCESS.getCode());
 			}
+		} else if (dbPasswd == null) {
+			System.out.println("================== 가입되지 않은 아이디 ==================");
+			return -1;
 		} else if(!("Y").equals(getAuthYN)) {
 			System.out.println("================== 인증되지 않은 아이디 ==================");
 			return Integer.parseInt(MessageEnum.NOT_EMAIL_AUTH.getCode());
