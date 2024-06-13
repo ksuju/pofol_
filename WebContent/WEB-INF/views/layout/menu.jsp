@@ -306,11 +306,11 @@
                                     </li>
                                     
                                     <li class="has_dropdown">
-                                        <a href="<c:url value='/forum/notice/listPage.do'/>">게시판</a>
+                                        <a href="<c:url value='/forum/notice/listPage.do?bdTypeSeq=1'/>">게시판</a>
                                         <div class="dropdowns dropdown--menu">
                                             <ul>
                                                 <li>
-                                                    <a href="<c:url value='/forum/notice/listPage.do'/>">공지사항</a>
+                                                    <a href="<c:url value='/forum/notice/listPage.do?bdTypeSeq=1'/>">공지사항</a>
                                                 </li>
                                                 <li>
                                                     <a href="all-products.html">Popular Items</a>

@@ -5,10 +5,17 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.portfolio.www.dto.BoardDto;
 import com.portfolio.www.dto.EmailAuthDto;
 import com.portfolio.www.dto.MemberAuthDto;
 
 public interface NoticeRepository {
+	
+	// 게시판 내에 있는 게시글 가져오기
+	public List<BoardDto> getList(HashMap<String, Integer> params);
+	
+	// 게시판 내에 있는 전체 게시글의 수
+	public int totalCnt(int boardTypeSeq);
 	
 	// 이메일 유무 확인
 	public int emailCount(String email);

@@ -5,6 +5,43 @@
 
 <mapper namespace="com.portfolio.www.dao.mybatis.NoticeRepository">
 
+	<!-- 게시글 리스트 가져오기 -->
+	<select id="getList" parameterType="map" resultType="BoardDto">
+	    SELECT 
+	        b.board_seq,
+	        b.board_type_seq,
+	        b.title,
+	        b.content,
+	        b.hit,
+	        b.del_yn,
+	        b.reg_dtm,
+	        b.reg_member_seq,
+	        m.member_id,
+	        b.update_dtm,
+	        b.update_member_seq,
+	        bt.board_type_nm
+	    FROM 
+	        board b
+	    JOIN 
+	        board_type bt ON bt.board_type_seq = b.board_type_seq
+	    JOIN 
+	        member m ON m.member_seq = b.reg_member_seq
+	    WHERE 
+	        b.board_type_seq = #{bdTypeSeq}
+	    ORDER BY 
+	        b.board_seq DESC
+	    LIMIT 
+	        #{start}, #{size};
+	</select>
+	
+	<!-- 게시글 총 개수 가져오기 -->
+	<select id="totalCnt">
+		select count(*)
+		from board
+		where board_type_seq = #{bdTypeSeq};
+	</select>
+
+
 	<!-- 계정인증여부 가져오는 쿼리 -->
 	<select id="getAuthYN">
 		SELECT m.auth_yn
