@@ -11,6 +11,11 @@ import com.portfolio.www.dto.MemberAuthDto;
 
 public interface NoticeRepository {
 	
+	// 게시글 삭제
+	public int boardDelete(@Param("memberId") String memberId,
+			@Param("boardTypeSeq") int boardTypeSeq,
+			@Param("boardSeq") int boardSeq);
+	
 	// 게시판 내에 있는 게시글 가져오기
 	public List<BoardDto> getList(HashMap<String, Integer> params);
 	

@@ -16,11 +16,20 @@ public class NoticeService {
 	@Autowired
 	private NoticeRepository noticeRepository;
 	
+	// 게시글 삭제하기
+	public int boardDelete(String memberId, int boardTypeSeq, int boardSeq) {
+		System.out.println("=========================== service > boardDelete ===========================");
+		return noticeRepository.boardDelete(memberId, boardTypeSeq, boardSeq);
+		
+	}
+	
+	// 게시판 내 게시글 불러오기
 	public List<BoardDto> getList(HashMap<String, Integer> params){
 		
 		return noticeRepository.getList(params);
 	}
 	
+	// 게시판 내 총 게시글 수
 	public int totalCnt(int bdTypeSeq) {
 		return noticeRepository.totalCnt(bdTypeSeq);
 	}

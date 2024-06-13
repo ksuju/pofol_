@@ -5,6 +5,16 @@
 
 <mapper namespace="com.portfolio.www.dao.mybatis.NoticeRepository">
 
+	<!-- 게시글삭제 -->
+	<delete id="boardDelete">
+		DELETE b FROM
+			board b
+			JOIN member m ON b.reg_member_seq = m.member_seq
+		WHERE
+			m.member_id = #{memberId} AND b.board_type_seq = #{boardTypeSeq} AND b.board_seq = #{boardSeq};
+	</delete>
+	
+
 	<!-- 게시글 리스트 가져오기 -->
 	<select id="getList" parameterType="map" resultType="BoardDto">
 	    SELECT 

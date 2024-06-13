@@ -4,9 +4,11 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -21,8 +23,20 @@ public class NoticeController {
 	@Autowired
 	NoticeService noticeService;
 	
+	// 게시글 삭제 > 댓글이 있을 경우 댓글도 다 같이 삭제해줘야 함 noticeService에서 처리할 것
+	@RequestMapping("/forum/notice/deleteBoard.do")
+	public String deleteBoard(@RequestParam String memberId,
+			@RequestParam int boardTypeSeq,
+			@RequestParam int boardSeq) {
+		
+		noticeService.boardDelete(memberId, boardTypeSeq, boardSeq);
+		
+		return "redirect:/forum/notice/listPage.do?bdTypeSeq=" + boardTypeSeq;
+	}
+	
 	@RequestMapping("/forum/notice/listPage.do")
-	public ModelAndView listPage(@RequestParam HashMap<String, String> params) {
+	public ModelAndView listPage(@RequestParam HashMap<String, String> params,
+			HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("key", Calendar.getInstance().getTimeInMillis());
 		mv.setViewName("forum/notice/list");
@@ -62,6 +76,12 @@ public class NoticeController {
 		
 		mv.addObject("list",list);
 		// 게시글리스트 출력 끝
+		
+		HttpSession session = request.getSession();
+		String loginMember = (String)session.getAttribute("logInUser");
+		
+		mv.addObject("loginMember",loginMember);
+		
 		return mv;
 	}
 	
