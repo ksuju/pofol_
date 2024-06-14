@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -22,6 +23,39 @@ public class NoticeController {
 	
 	@Autowired
 	NoticeService noticeService;
+	
+	// 게시글 작성
+	@RequestMapping("/forum/notice/createBoard.do")
+	public String createBoard(@RequestParam HashMap<String, String> params,
+			ServletRequest request) {
+		
+		System.out.println("======= NoticeController > cteateBoard =======");
+		System.out.println("======= NoticeController > cteateBoard ======="+params);
+		
+		int boardTypeSeq = Integer.parseInt(params.get("boardTypeSeq"));
+		System.out.println("======= boardTypeSeq > boardTypeSeq ======="+boardTypeSeq);
+		String content = params.get("trumbowyg-demo");
+		String title = params.get("title");
+		
+		HttpServletRequest req = (HttpServletRequest) request;
+		HttpSession session = req.getSession();
+		
+		String logInUser = (String) session.getAttribute("logInUser");
+		String errorMsg = "로그인이 필요한 서비스입니다.";
+		
+		if(logInUser.isEmpty()) {
+			return "redirect:/forum/notice/listPage.do?bdTypeSeq="+ boardTypeSeq + "&errorMsg=" + errorMsg;
+		} else {
+			// 임시 하드코딩
+			int memberSeq = 45;
+			
+			noticeService.boardCreate(boardTypeSeq, title, content, memberSeq);
+			
+			return "redirect:/forum/notice/listPage.do?bdTypeSeq="+ boardTypeSeq;
+		}
+		
+
+	}
 	
 	// 게시글 삭제 > 댓글이 있을 경우 댓글도 다 같이 삭제해줘야 함 noticeService에서 처리할 것
 	@RequestMapping("/forum/notice/deleteBoard.do")
@@ -90,6 +124,9 @@ public class NoticeController {
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("key", Calendar.getInstance().getTimeInMillis());
 		mv.setViewName("forum/notice/write");
+		
+		int boardTypeSeq = Integer.parseInt(params.get("boardTypeSeq"));
+		mv.addObject("boardTypeSeq",boardTypeSeq);
 		
 		return mv;
 	}

@@ -5,7 +5,14 @@
 
 <mapper namespace="com.portfolio.www.dao.mybatis.NoticeRepository">
 
-	<!-- 게시글삭제 -->
+	<!-- 게시글 생성 -->
+	<insert id="boardCreate">
+		INSERT INTO forum.board
+		(board_type_seq, title, content, del_yn, reg_dtm, reg_member_seq, update_dtm, update_member_seq)
+		VALUES(#{boardTypeSeq}, #{title}, #{content}, 'N', #{now}, #{memberSeq}, #{now}, 0);
+	</insert>
+
+	<!-- 게시글 삭제 -->
 	<delete id="boardDelete">
 		DELETE b FROM
 			board b

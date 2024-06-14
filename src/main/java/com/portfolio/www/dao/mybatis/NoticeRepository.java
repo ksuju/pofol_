@@ -11,6 +11,13 @@ import com.portfolio.www.dto.MemberAuthDto;
 
 public interface NoticeRepository {
 	
+	// 게시글 작성
+	public int boardCreate(@Param("boardTypeSeq") int boardTypeSeq,
+			@Param("title") String title,
+			@Param("content") String content,
+			@Param("memberSeq") int memberSeq,
+			@Param("now") String now);
+	
 	// 게시글 삭제
 	public int boardDelete(@Param("memberId") String memberId,
 			@Param("boardTypeSeq") int boardTypeSeq,

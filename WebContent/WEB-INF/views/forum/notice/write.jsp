@@ -17,10 +17,11 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="question-form cardify p-4">
-                        <form action="#">
+                        <form action="createBoard.do">
+                         	<input type="hidden" name="boardTypeSeq" value="${boardTypeSeq}" />
                             <div class="form-group">
                                 <label>제목</label>
-                                <input type="text" placeholder="Enter title here" required>
+                                <input type="text" name="title" placeholder="Enter title here" required>
                             </div>
                             <div class="form-group">
                                 <label>Description</label>
@@ -38,7 +39,7 @@
                             </div>
                             <div class="form-group">
                                 <button type="submit" class="btn btn--md btn-primary">Submit Request</button>
-                            	<a href="<c:url value='/forum/notice/listPage.do'/>" class="btn btn--md btn-light">Cancel</a>
+                            	<a href="<c:url value='/forum/notice/listPage.do?bdTypeSeq=${boardTypeSeq}'/>" class="btn btn--md btn-light">Cancel</a>
                             </div>
                         </form>
                     </div><!-- ends: .question-form -->

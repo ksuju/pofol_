@@ -1,5 +1,7 @@
 package com.portfolio.www.service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -15,6 +17,18 @@ public class NoticeService {
 	
 	@Autowired
 	private NoticeRepository noticeRepository;
+	
+	// 게시글 작성
+	public int boardCreate (int boardTypeSeq, String title, String content, int memberSeq) {
+		System.out.println("=========================== service > boardCreate ===========================");
+		
+		
+	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	    Date nowDate = new Date();
+	    String now = sdf.format(nowDate);
+	    
+		return noticeRepository.boardCreate(boardTypeSeq, title, content, memberSeq, now);
+	}
 	
 	// 게시글 삭제하기
 	public int boardDelete(String memberId, int boardTypeSeq, int boardSeq) {

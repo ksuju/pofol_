@@ -51,7 +51,7 @@ String ctx = request.getContextPath();
 								</table>
 								<div
 									style="display: inline-block; margin: 0 5px; float: right; padding-right: 10px;">
-									<a href="<c:url value='/forum/notice/writePage.do'/>">
+									<a href="<c:url value='/forum/notice/writePage.do?boardTypeSeq=${bdTypeSeq}'/>">
 										<button
 											class="btn btn--round btn--bordered btn-sm btn-secondary">작성</button>
 									</a>
@@ -102,12 +102,22 @@ String ctx = request.getContextPath();
 	<script>
 		function confirmDelete(memberId, boardTypeSeq, boardSeq) {
 			if (confirm("게시글을 삭제하시겠습니까?")) {
-				var url = '<c:url value="/forum/notice/deleteBoard.do"/>';
+				let url = '<c:url value="/forum/notice/deleteBoard.do"/>';
 				url += '?memberId=' + encodeURIComponent(memberId);
 				url += '&boardTypeSeq=' + encodeURIComponent(boardTypeSeq);
 				url += '&boardSeq=' + encodeURIComponent(boardSeq);
 
 				window.location.href = url;
+			}
+		}
+		
+		window.onload = function() {
+			let errorMsg = '<c:out value="${errorMsg}" />';
+			
+			if (errorMsg.trim() === '') {
+				console.log("에러메세지 없음");
+			} else {
+				alert(errorMsg);
 			}
 		}
 	</script>
