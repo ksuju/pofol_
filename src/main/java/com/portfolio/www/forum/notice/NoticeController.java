@@ -24,33 +24,67 @@ public class NoticeController {
 	@Autowired
 	NoticeService noticeService;
 	
+	// 게시글 수정
+	@RequestMapping("/forum/notice/updateBoard.do")
+	public String updateBoard(@RequestParam HashMap<String, Object> params,
+			ServletRequest request) {	
+		
+		System.out.println("======= NoticeController > updateBoard ======="+params);
+		
+		int boardTypeSeq = Integer.parseInt((String)params.get("boardTypeSeq"));
+		
+		noticeService.updateBoard(params, request);
+		
+		return "redirect:/forum/notice/listPage.do?bdTypeSeq="+ boardTypeSeq;
+	}
+	
+	// 게시글 수정 jsp 이동
+	@RequestMapping("/forum/notice/updatePage.do")
+	public ModelAndView updatePage(@RequestParam HashMap<String, String> params) {
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("key", Calendar.getInstance().getTimeInMillis());
+		mv.setViewName("forum/notice/update");
+		
+		System.out.println("======= NoticeController > updatePage =======");
+		
+		int boardSeq = Integer.parseInt(params.get("boardSeq"));
+		int boardTypeSeq = Integer.parseInt(params.get("boardTypeSeq"));
+		String memberId = params.get("memberId");
+		
+		HashMap<String, String> getBoard = new HashMap<String, String>();
+		
+		getBoard = noticeService.selectBoard(boardSeq, boardTypeSeq);
+		
+		String title = getBoard.get("title");
+		String content = getBoard.get("content");
+		
+		mv.addObject("title",title);
+		mv.addObject("content",content);
+		mv.addObject("boardTypeSeq",boardTypeSeq);
+		mv.addObject("boardSeq",boardSeq);
+		mv.addObject("memberId",memberId);
+		
+		return mv;
+	}
+	
 	// 게시글 작성
 	@RequestMapping("/forum/notice/createBoard.do")
 	public String createBoard(@RequestParam HashMap<String, String> params,
 			ServletRequest request) {
 		
 		System.out.println("======= NoticeController > cteateBoard =======");
-		System.out.println("======= NoticeController > cteateBoard ======="+params);
 		
 		int boardTypeSeq = Integer.parseInt(params.get("boardTypeSeq"));
-		System.out.println("======= boardTypeSeq > boardTypeSeq ======="+boardTypeSeq);
 		String content = params.get("trumbowyg-demo");
 		String title = params.get("title");
 		
-		HttpServletRequest req = (HttpServletRequest) request;
-		HttpSession session = req.getSession();
-		
-		String logInUser = (String) session.getAttribute("logInUser");
 		String errorMsg = "로그인이 필요한 서비스입니다.";
 		
-		if(logInUser.isEmpty()) {
+		int createResult = noticeService.boardCreate(boardTypeSeq, title, content, request);
+		
+		if(createResult == 0) {
 			return "redirect:/forum/notice/listPage.do?bdTypeSeq="+ boardTypeSeq + "&errorMsg=" + errorMsg;
 		} else {
-			// 임시 하드코딩
-			int memberSeq = 45;
-			
-			noticeService.boardCreate(boardTypeSeq, title, content, memberSeq);
-			
 			return "redirect:/forum/notice/listPage.do?bdTypeSeq="+ boardTypeSeq;
 		}
 		
@@ -125,6 +159,8 @@ public class NoticeController {
 		mv.addObject("key", Calendar.getInstance().getTimeInMillis());
 		mv.setViewName("forum/notice/write");
 		
+		System.out.println("sajfnkjsanvanvklasnkjnas===writePage==>"+params);
+		
 		int boardTypeSeq = Integer.parseInt(params.get("boardTypeSeq"));
 		mv.addObject("boardTypeSeq",boardTypeSeq);
 		
@@ -139,7 +175,6 @@ public class NoticeController {
 		
 		return mv;
 	}
-	
 	
 	@RequestMapping("/contact.do")
 	public ModelAndView contactView() {

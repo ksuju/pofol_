@@ -5,6 +5,23 @@
 
 <mapper namespace="com.portfolio.www.dao.mybatis.NoticeRepository">
 
+
+
+	<!-- 게시글 수정 -->
+	<update id="updateBoard" parameterType="HashMap">
+		UPDATE forum.board
+		SET title = #{title}, content = #{trumbowyg-demo}, reg_dtm = #{now},
+		 	 update_dtm = #{now}, update_member_seq = #{memberSeq}
+		WHERE board_seq = #{boardSeq} AND board_type_seq = #{boardTypeSeq};
+	</update>
+
+	<!-- 특정 게시글 가져오기 -->
+	<select id="selectBoard" resultType="HashMap">
+		SELECT b.title, b.content
+		FROM board b
+		WHERE b.board_seq = #{boardSeq} AND b.board_type_seq = #{boardTypeSeq};
+	</select>
+
 	<!-- 게시글 생성 -->
 	<insert id="boardCreate">
 		INSERT INTO forum.board
@@ -137,7 +154,7 @@
 		SELECT passwd FROM member WHERE member_id = #{memberID};
 	</select>
 	
-	<!-- test memberSeq 가져오기 -->
+	<!-- memberSeq 가져오기 -->
 	<select id="getMemberSeq" parameterType="string" resultType="int">
 		SELECT member_seq
 		FROM member

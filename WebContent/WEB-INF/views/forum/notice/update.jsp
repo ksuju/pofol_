@@ -17,16 +17,17 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="question-form cardify p-4">
-                        <form action="createBoard.do">
+                        <form action="updateBoard.do">
                          	<input type="hidden" name="boardTypeSeq" value="${boardTypeSeq}" />
-                         	<input type="hidden" name="boardTypeSeq" value="${memberId}" />
+                         	<input type="hidden" name="boardSeq" value="${boardSeq}" />
+                         	<input type="hidden" name="memberId" value="${memberId}" />
                             <div class="form-group">
                                 <label>제목</label>
-                                <input type="text" name="title" placeholder="Enter title here" required>
+                                <input value="${title}" type="text" name="title" placeholder="Enter title here" required>
                             </div>
                             <div class="form-group">
                                 <label>Description</label>
-                                <div id="trumbowyg-demo"></div>
+                                <div id="trumbowyg-demo">${content}</div>
                             </div>
                             <div class="form-group">
                                 <div class="attachments">

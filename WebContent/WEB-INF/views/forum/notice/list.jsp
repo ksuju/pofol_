@@ -20,9 +20,10 @@ String ctx = request.getContextPath();
 										<tr>
 											<th>No</th>
 											<th>제목</th>
+											<th></th>
+											<th></th>
 											<th>Date</th>
 											<th>작성자</th>
-											<th></th>
 										</tr>
 									</thead>
 
@@ -34,15 +35,21 @@ String ctx = request.getContextPath();
 													href="<c:url value='/forum/notice/readPage.do?boardSeq=${i.boardSeq}&boardTypeSeq=${i.boardTypeSeq}'/>">
 														${i.title} </a> <%-- &nbsp;<c:if test="${commentCounts[i.boardSeq] != 0}"><a>(${commentCounts[i.boardSeq]})</a></c:if> --%>
 												</td>
-												<td>${i.regDtm}</td>
-												<td>${i.memberId}</td>
-												<c:if test="${loginMember eq i.memberId}">
-													<td>
+
+												<td><c:if test="${loginMember eq i.memberId}">
+														<button
+															onclick="confirmUpdate('${i.memberId}', '${i.boardTypeSeq}', '${i.boardSeq}', '${i.memberId}')"
+															class="btn btn--round btn--bordered btn-sm btn-secondary">수정</button>
+													</c:if></td>
+
+												<td><c:if test="${loginMember eq i.memberId}">
 														<button
 															onclick="confirmDelete('${i.memberId}', '${i.boardTypeSeq}', '${i.boardSeq}')"
 															class="btn btn--round btn--bordered btn-sm btn-secondary">삭제</button>
-													</td>
-												</c:if>
+													</c:if></td>
+
+												<td>${i.regDtm}</td>
+												<td>${i.memberId}</td>
 												<%-- <td><a id="deleteBoard" href="<c:url value='/forum/deleteBoard.do?boardSeq=${i.boardSeq}&boardTypeSeq=${i.boardTypeSeq}'/>" onclick="confirmDelete()">삭제</a></td> --%>
 											</tr>
 										</c:forEach>
@@ -51,7 +58,8 @@ String ctx = request.getContextPath();
 								</table>
 								<div
 									style="display: inline-block; margin: 0 5px; float: right; padding-right: 10px;">
-									<a href="<c:url value='/forum/notice/writePage.do?boardTypeSeq=${bdTypeSeq}'/>">
+									<a
+										href="<c:url value='/forum/notice/writePage.do?boardTypeSeq=${bdTypeSeq}'/>">
 										<button
 											class="btn btn--round btn--bordered btn-sm btn-secondary">작성</button>
 									</a>
@@ -100,6 +108,7 @@ String ctx = request.getContextPath();
 	<!-- end .container -->
 
 	<script>
+		//게시글 삭제
 		function confirmDelete(memberId, boardTypeSeq, boardSeq) {
 			if (confirm("게시글을 삭제하시겠습니까?")) {
 				let url = '<c:url value="/forum/notice/deleteBoard.do"/>';
@@ -110,10 +119,22 @@ String ctx = request.getContextPath();
 				window.location.href = url;
 			}
 		}
-		
+		// 게시글 수정
+		function confirmUpdate(memberId, boardTypeSeq, boardSeq, memberId) {
+			if (confirm("게시글을 수정하시겠습니까?")) {
+				let url = '<c:url value="/forum/notice/updatePage.do"/>';
+				url += '?memberId=' + encodeURIComponent(memberId);
+				url += '&boardTypeSeq=' + encodeURIComponent(boardTypeSeq);
+				url += '&boardSeq=' + encodeURIComponent(boardSeq);
+				url += '&memberId=' + encodeURIComponent(memberId);
+
+				window.location.href = url;
+			}
+		}
+
 		window.onload = function() {
 			let errorMsg = '<c:out value="${errorMsg}" />';
-			
+
 			if (errorMsg.trim() === '') {
 				console.log("에러메세지 없음");
 			} else {

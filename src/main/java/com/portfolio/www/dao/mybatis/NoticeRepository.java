@@ -11,6 +11,13 @@ import com.portfolio.www.dto.MemberAuthDto;
 
 public interface NoticeRepository {
 	
+	// 게시글 수정하기
+	public int updateBoard(HashMap<String, Object> params);
+	
+	// 특정 게시글 가져오기
+	public HashMap<String, String> selectBoard(@Param("boardSeq") int boardSeq,
+			@Param("boardTypeSeq") int boardTypeSeq);
+	
 	// 게시글 작성
 	public int boardCreate(@Param("boardTypeSeq") int boardTypeSeq,
 			@Param("title") String title,
@@ -23,7 +30,7 @@ public interface NoticeRepository {
 			@Param("boardTypeSeq") int boardTypeSeq,
 			@Param("boardSeq") int boardSeq);
 	
-	// 게시판 내에 있는 게시글 가져오기
+	// 게시판 내에 있는 게시글 모두 가져오기
 	public List<BoardDto> getList(HashMap<String, Integer> params);
 	
 	// 게시판 내에 있는 전체 게시글의 수

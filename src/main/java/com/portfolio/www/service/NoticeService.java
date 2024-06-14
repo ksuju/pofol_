@@ -5,6 +5,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +22,41 @@ public class NoticeService {
 	@Autowired
 	private NoticeRepository noticeRepository;
 	
+	// 게시글 수정
+	public int updateBoard (HashMap<String, Object> params, ServletRequest request) {
+		
+		System.out.println("======= NoticeService > updateBoard =======");
+		
+	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	    Date nowDate = new Date();
+	    String now = sdf.format(nowDate);
+	    
+	    params.put("now", now);
+	    
+		HttpServletRequest req = (HttpServletRequest) request;
+		HttpSession session = req.getSession();
+		
+		String logInUser = (String) session.getAttribute("logInUser");
+		
+		int memberSeq = noticeRepository.getMemberSeq((String)params.get("memberId"));
+		
+		params.put("memberSeq", memberSeq);
+		
+		if(logInUser.isEmpty()) {
+			return 0;
+		} else {
+			return noticeRepository.updateBoard(params);
+		}
+		
+	}
+	
+	// 게시글 하나만 가져오기
+    public HashMap<String, String> selectBoard(int boardSeq, int boardTypeSeq) {
+    	return noticeRepository.selectBoard(boardSeq, boardTypeSeq);
+    }
+    
 	// 게시글 작성
-	public int boardCreate (int boardTypeSeq, String title, String content, int memberSeq) {
+	public int boardCreate (int boardTypeSeq, String title, String content, ServletRequest request) {
 		System.out.println("=========================== service > boardCreate ===========================");
 		
 		
@@ -27,7 +64,19 @@ public class NoticeService {
 	    Date nowDate = new Date();
 	    String now = sdf.format(nowDate);
 	    
-		return noticeRepository.boardCreate(boardTypeSeq, title, content, memberSeq, now);
+		HttpServletRequest req = (HttpServletRequest) request;
+		HttpSession session = req.getSession();
+		
+		String logInUser = (String) session.getAttribute("logInUser");
+		
+		if(logInUser.isEmpty()) {
+			return 0;
+		} else {
+			int memberSeq = noticeRepository.getMemberSeq(logInUser);
+			return noticeRepository.boardCreate(boardTypeSeq, title, content, memberSeq, now);
+		}
+	    
+		
 	}
 	
 	// 게시글 삭제하기
