@@ -11,11 +11,14 @@ import com.portfolio.www.dto.MemberAuthDto;
 
 public interface NoticeRepository {
 	
+	// reg_member_seq로 member_id 가져오기
+	public HashMap<String, String> selectMemberId(int regMemberSeq);
+	
 	// 게시글 수정하기
 	public int updateBoard(HashMap<String, Object> params);
 	
 	// 특정 게시글 가져오기
-	public HashMap<String, String> selectBoard(@Param("boardSeq") int boardSeq,
+	public HashMap<String, Object> selectBoard(@Param("boardSeq") int boardSeq,
 			@Param("boardTypeSeq") int boardTypeSeq);
 	
 	// 게시글 작성

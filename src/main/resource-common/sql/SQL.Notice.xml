@@ -5,7 +5,12 @@
 
 <mapper namespace="com.portfolio.www.dao.mybatis.NoticeRepository">
 
-
+	<!-- reg_member_seq로 member_id 가져오기 -->
+	<select id="selectMemberId" parameterType="int">
+		SELECT member_id
+		FROM member
+		WHERE member_seq = #{regMemberSeq};
+	</select>
 
 	<!-- 게시글 수정 -->
 	<update id="updateBoard" parameterType="HashMap">
@@ -17,7 +22,7 @@
 
 	<!-- 특정 게시글 가져오기 -->
 	<select id="selectBoard" resultType="HashMap">
-		SELECT b.title, b.content
+		SELECT b.title, b.content, reg_dtm, reg_member_seq
 		FROM board b
 		WHERE b.board_seq = #{boardSeq} AND b.board_type_seq = #{boardTypeSeq};
 	</select>

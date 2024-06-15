@@ -29,7 +29,7 @@ public class NoticeController {
 	public String updateBoard(@RequestParam HashMap<String, Object> params,
 			ServletRequest request) {	
 		
-		System.out.println("======= NoticeController > updateBoard ======="+params);
+		System.out.println("======= NoticeController > updateBoard =======");
 		
 		int boardTypeSeq = Integer.parseInt((String)params.get("boardTypeSeq"));
 		
@@ -51,12 +51,12 @@ public class NoticeController {
 		int boardTypeSeq = Integer.parseInt(params.get("boardTypeSeq"));
 		String memberId = params.get("memberId");
 		
-		HashMap<String, String> getBoard = new HashMap<String, String>();
+		HashMap<String, Object> getBoard = new HashMap<String, Object>();
 		
 		getBoard = noticeService.selectBoard(boardSeq, boardTypeSeq);
 		
-		String title = getBoard.get("title");
-		String content = getBoard.get("content");
+		String title =(String)getBoard.get("title");
+		String content = (String)getBoard.get("content");
 		
 		mv.addObject("title",title);
 		mv.addObject("content",content);
@@ -159,8 +159,6 @@ public class NoticeController {
 		mv.addObject("key", Calendar.getInstance().getTimeInMillis());
 		mv.setViewName("forum/notice/write");
 		
-		System.out.println("sajfnkjsanvanvklasnkjnas===writePage==>"+params);
-		
 		int boardTypeSeq = Integer.parseInt(params.get("boardTypeSeq"));
 		mv.addObject("boardTypeSeq",boardTypeSeq);
 		
@@ -172,6 +170,21 @@ public class NoticeController {
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("key", Calendar.getInstance().getTimeInMillis());
 		mv.setViewName("forum/notice/read");
+		
+		System.out.println("========= NoticeController > readPage =========");
+
+		int boardSeq = Integer.parseInt(params.get("boardSeq"));
+		int boardTypeSeq = Integer.parseInt(params.get("boardTypeSeq"));
+		
+		HashMap<String, Object> selectBoard = new HashMap<String, Object>();
+		// 클릭한 게시글 가져오기
+		selectBoard = noticeService.getReadBoard(boardSeq, boardTypeSeq);
+		//{reg_member_seq=45, reg_dtm=2024-06-14, title=asd, content=asdasd, memberId=asd}
+		
+		mv.addObject("title", selectBoard.get("title"));
+		mv.addObject("content", selectBoard.get("content"));
+		mv.addObject("memberId", selectBoard.get("memberId"));
+		mv.addObject("regDtm", selectBoard.get("reg_dtm"));
 		
 		return mv;
 	}

@@ -50,8 +50,25 @@ public class NoticeService {
 		
 	}
 	
+	public HashMap<String, Object> getReadBoard(int boardSeq, int boardTypeSeq) {
+		System.out.println("============getReadBoard > boardInfo=================");
+		HashMap<String, Object> boardInfo = new HashMap<String, Object>();
+		
+		boardInfo = selectBoard(boardSeq, boardTypeSeq);
+
+		// reg_member_seq=45, reg_dtm=2024-06-14, title=asd, content=asdasd}
+		
+	    Integer regMemberSeq = (Integer) boardInfo.get("reg_member_seq");
+		
+		String memberId = noticeRepository.selectMemberId(regMemberSeq).get("member_id");
+		
+		boardInfo.put("memberId", memberId);
+		
+		return boardInfo;
+	}
+	
 	// 게시글 하나만 가져오기
-    public HashMap<String, String> selectBoard(int boardSeq, int boardTypeSeq) {
+    public HashMap<String, Object> selectBoard(int boardSeq, int boardTypeSeq) {
     	return noticeRepository.selectBoard(boardSeq, boardTypeSeq);
     }
     
