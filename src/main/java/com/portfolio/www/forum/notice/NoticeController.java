@@ -1,29 +1,79 @@
 package com.portfolio.www.forum.notice;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.portfolio.www.dto.BoardAttachDto;
 import com.portfolio.www.dto.BoardDto;
 import com.portfolio.www.forum.notice.dto.PageHandler;
 import com.portfolio.www.service.NoticeService;
+import com.portfolio.www.service.ZipService;
 
 @Controller
 public class NoticeController {
 	
 	@Autowired
+	ZipService zipService;
+	
+	@Autowired
 	NoticeService noticeService;
 	
+	// 모든 첨부파일 다운로드
+	@RequestMapping("/forum/notice/downloadAll.do")
+	public void downloadAll(Model model,
+			@RequestParam Integer boardSeq,
+			@RequestParam Integer boardTypeSeq,
+			HttpServletResponse response) {
+		
+		System.out.println("============ NoticeController > downloadAll.do 진입 ============");
+		
+		HashMap<String, Object> boardInfo = noticeService.getReadBoard(boardSeq, boardTypeSeq);
+		
+        // 파일이름 저장할 List 생성
+        List<String> fileNames = (List<String>)boardInfo.get("fileNames");
+        // 파일이 현재 저장된 경로를 저장한 List 생성
+        List<String> filePaths = (List<String>)boardInfo.get("filePaths");
+        
+		try {
+			zipService.createZip(fileNames,filePaths);
+			zipService.downloadZip(response);
+			zipService.deleteZip();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	// 첨부파일 개별 다운로드
+	@RequestMapping("/forum/notice/download.do")
+	public String download(@RequestParam int attachSeq,
+			Model model) {
+		BoardAttachDto dto = noticeService.getDownloadFileInfo(attachSeq);
+		File file = new File(dto.getSavePath());
+		
+		Map<String, Object> fileInfo = new HashMap<>();
+		fileInfo.put("downloadFile", file);
+		fileInfo.put("orgFileNm", dto.getOrgFileNm());
+		model.addAttribute("fileInfo", fileInfo);
+		
+		return "fileDownloadView";
+	}
 	// 게시글 수정
 	@RequestMapping("/forum/notice/updateBoard.do")
 	public String updateBoard(@RequestParam HashMap<String, Object> params,
@@ -69,20 +119,19 @@ public class NoticeController {
 	
 	// 게시글 작성
 	@RequestMapping("/forum/notice/createBoard.do")
-	public String createBoard(@RequestParam HashMap<String, String> params,
-			ServletRequest request) {
+	public String createBoard(@RequestParam HashMap<String, Object> params,
+			ServletRequest request,
+			@RequestParam(value = "attFile",required = false) MultipartFile[] attFiles) {
 		
 		System.out.println("======= NoticeController > cteateBoard =======");
 		
-		int boardTypeSeq = Integer.parseInt(params.get("boardTypeSeq"));
-		String content = params.get("trumbowyg-demo");
-		String title = params.get("title");
+		String boardTypeSeq = (String)params.get("boardTypeSeq");
 		
 		String errorMsg = "로그인이 필요한 서비스입니다.";
 		
-		int createResult = noticeService.boardCreate(boardTypeSeq, title, content, request);
+		boolean createResult = noticeService.boardCreate(params, request, attFiles);
 		
-		if(createResult == 0) {
+		if(createResult == false) {
 			return "redirect:/forum/notice/listPage.do?bdTypeSeq="+ boardTypeSeq + "&errorMsg=" + errorMsg;
 		} else {
 			return "redirect:/forum/notice/listPage.do?bdTypeSeq="+ boardTypeSeq;
@@ -180,11 +229,15 @@ public class NoticeController {
 		// 클릭한 게시글 가져오기
 		selectBoard = noticeService.getReadBoard(boardSeq, boardTypeSeq);
 		//{reg_member_seq=45, reg_dtm=2024-06-14, title=asd, content=asdasd, memberId=asd}
+		List<BoardAttachDto> fileList = (List<BoardAttachDto>) selectBoard.get("fileList");
 		
 		mv.addObject("title", selectBoard.get("title"));
 		mv.addObject("content", selectBoard.get("content"));
 		mv.addObject("memberId", selectBoard.get("memberId"));
 		mv.addObject("regDtm", selectBoard.get("reg_dtm"));
+		mv.addObject("fileList", fileList);
+		mv.addObject("boardSeq", boardSeq);
+		mv.addObject("boardTypeSeq", boardTypeSeq);
 		
 		return mv;
 	}

@@ -50,7 +50,6 @@ String ctx = request.getContextPath();
 
 												<td>${i.regDtm}</td>
 												<td>${i.memberId}</td>
-												<%-- <td><a id="deleteBoard" href="<c:url value='/forum/deleteBoard.do?boardSeq=${i.boardSeq}&boardTypeSeq=${i.boardTypeSeq}'/>" onclick="confirmDelete()">삭제</a></td> --%>
 											</tr>
 										</c:forEach>
 									</tbody>

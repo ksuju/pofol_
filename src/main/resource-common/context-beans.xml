@@ -60,7 +60,7 @@
 		<property name="basePackage"
 			value="com.portfolio.www.dao.mybatis" />
 	</bean>
-
+	
 	<!-- 트랜잭션 관리를 위한 bean -->
 	<bean id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
@@ -98,9 +98,10 @@
 		<property name="config" ref="encryptorConfig" />
 	</bean>
 
-	<bean id="propertyConfigurer" class="org.jasypt.spring31.properties.EncryptablePropertyPlaceholderConfigurer">
+	<bean id="propertyConfigurer"
+		class="org.jasypt.spring31.properties.EncryptablePropertyPlaceholderConfigurer">
 		<constructor-arg ref="encryptor" />
 		<property name="locations" value="classpath:email.properties" />
 	</bean>
-	
+
 </beans>
