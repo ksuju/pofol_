@@ -3,81 +3,142 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.portfolio.www.dao.mybatis.NoticeRepository">
+<mapper
+	namespace="com.portfolio.www.dao.mybatis.NoticeRepository">
+
+	<!-- attach_seq로 첨부파일 정보 가져오기 -->
+	<select id="getAttachInfo" resultType="BoardAttachDto">
+		SELECT * FROM board_attach
+		WHERE attach_seq = #{attachSeq}
+	</select>
+
+	<!-- 게시글에 저정된 첨부파일 정보 모두 가져오기 -->
+	<select id="selectAllFile" parameterType="HashMap"
+		resultType="BoardAttachDto">
+		SELECT * FROM board_attach
+		WHERE board_seq = #{boardSeq}
+		AND
+		board_type_seq = #{boardTypeSeq};
+	</select>
+
+	<!-- 게시글에 있는 첨부된 파일 전체삭제 -->
+	<delete id="deleteBoardAttach">
+		DELETE FROM board_attach
+		WHERE board_seq=#{boardSeq}
+		AND board_type_seq=#{boardTypeSeq};
+	</delete>
+
+	<!-- 파일첨부 > boardAttach insert -->
+	<insert id="insertBoardAttach" parameterType="BoardAttachDto">
+		<selectKey keyProperty="attachSeq" order="AFTER"
+			resultType="java.lang.Integer">
+			SELECT LAST_INSERT_ID() AS attachSeq
+		</selectKey>
+		INSERT INTO
+		board_attach
+		(board_seq, board_type_seq, org_file_nm,
+		save_path,
+		chng_file_nm, file_size,
+		file_type, access_uri, reg_dtm)
+		VALUES(#{boardSeq}, #{boardTypeSeq}, #{orgFileNm}, #{savePath},
+		#{chngFileNm}, #{fileSize}, #{fileType}, #{accessUri}, #{regDtm});
+	</insert>
 
 	<!-- reg_member_seq로 member_id 가져오기 -->
 	<select id="selectMemberId" parameterType="int">
 		SELECT member_id
-		FROM member
+		FROM
+		member
 		WHERE member_seq = #{regMemberSeq};
 	</select>
 
 	<!-- 게시글 수정 -->
 	<update id="updateBoard" parameterType="HashMap">
 		UPDATE forum.board
-		SET title = #{title}, content = #{trumbowyg-demo}, reg_dtm = #{now},
-		 	 update_dtm = #{now}, update_member_seq = #{memberSeq}
-		WHERE board_seq = #{boardSeq} AND board_type_seq = #{boardTypeSeq};
+		SET
+		title = #{title}, content = #{trumbowyg-demo}, reg_dtm = #{now},
+		update_dtm = #{now}, update_member_seq = #{memberSeq}
+		WHERE board_seq =
+		#{boardSeq} AND board_type_seq = #{boardTypeSeq};
 	</update>
 
 	<!-- 특정 게시글 가져오기 -->
 	<select id="selectBoard" resultType="HashMap">
-		SELECT b.title, b.content, reg_dtm, reg_member_seq
+		SELECT b.title, b.content,
+		reg_dtm, reg_member_seq
 		FROM board b
-		WHERE b.board_seq = #{boardSeq} AND b.board_type_seq = #{boardTypeSeq};
+		WHERE b.board_seq = #{boardSeq} AND
+		b.board_type_seq = #{boardTypeSeq};
 	</select>
 
 	<!-- 게시글 생성 -->
 	<insert id="boardCreate">
 		INSERT INTO forum.board
-		(board_type_seq, title, content, del_yn, reg_dtm, reg_member_seq, update_dtm, update_member_seq)
-		VALUES(#{boardTypeSeq}, #{title}, #{content}, 'N', #{now}, #{memberSeq}, #{now}, 0);
+		(board_type_seq, title,
+		content, del_yn,
+		reg_dtm, reg_member_seq, update_dtm,
+		update_member_seq)
+		VALUES(#{boardTypeSeq}, #{title}, #{trumbowyg-demo}, 'N',
+		#{now},
+		#{memberSeq}, #{now}, 0);
+
+		<!-- 자동 생성된 키를 selectKey를 통해 가져옴 -->
+		<selectKey keyProperty="boardSeq" keyColumn="board_seq"
+			order="AFTER" resultType="int">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
 	</insert>
 
 	<!-- 게시글 삭제 -->
 	<delete id="boardDelete">
 		DELETE b FROM
-			board b
-			JOIN member m ON b.reg_member_seq = m.member_seq
+		board b
+		JOIN member m ON b.reg_member_seq
+		= m.member_seq
 		WHERE
-			m.member_id = #{memberId} AND b.board_type_seq = #{boardTypeSeq} AND b.board_seq = #{boardSeq};
+		m.member_id = #{memberId} AND b.board_type_seq =
+		#{boardTypeSeq} AND b.board_seq
+		= #{boardSeq};
 	</delete>
-	
+
 
 	<!-- 게시글 리스트 가져오기 -->
 	<select id="getList" parameterType="map" resultType="BoardDto">
-	    SELECT 
-	        b.board_seq,
-	        b.board_type_seq,
-	        b.title,
-	        b.content,
-	        b.hit,
-	        b.del_yn,
-	        b.reg_dtm,
-	        b.reg_member_seq,
-	        m.member_id,
-	        b.update_dtm,
-	        b.update_member_seq,
-	        bt.board_type_nm
-	    FROM 
-	        board b
-	    JOIN 
-	        board_type bt ON bt.board_type_seq = b.board_type_seq
-	    JOIN 
-	        member m ON m.member_seq = b.reg_member_seq
-	    WHERE 
-	        b.board_type_seq = #{bdTypeSeq}
-	    ORDER BY 
-	        b.board_seq DESC
-	    LIMIT 
-	        #{start}, #{size};
+		SELECT
+		b.board_seq,
+		b.board_type_seq,
+		b.title,
+		b.content,
+		b.hit,
+		b.del_yn,
+		b.reg_dtm,
+		b.reg_member_seq,
+		m.member_id,
+		b.update_dtm,
+		b.update_member_seq,
+		bt.board_type_nm
+		FROM
+		board b
+		JOIN
+		board_type bt ON
+		bt.board_type_seq = b.board_type_seq
+		JOIN
+		member m ON m.member_seq =
+		b.reg_member_seq
+		WHERE
+		b.board_type_seq = #{bdTypeSeq}
+		ORDER BY
+		b.board_seq DESC
+		LIMIT
+		#{start}, #{size};
 	</select>
-	
+
 	<!-- 게시글 총 개수 가져오기 -->
 	<select id="totalCnt">
 		select count(*)
 		from board
-		where board_type_seq = #{bdTypeSeq};
+		where board_type_seq =
+		#{bdTypeSeq};
 	</select>
 
 
@@ -85,13 +146,15 @@
 	<select id="getAuthYN">
 		SELECT m.auth_yn
 		FROM member m
-		where m.member_id = #{memberID} ;
+		where m.member_id =
+		#{memberID} ;
 	</select>
 
 	<!-- 만료시간 가져오는 쿼리 -->
 	<select id="getExpireDtm">
-		SELECT ma.expire_dtm  FROM member_auth ma 
-		JOIN member m ON ma.member_seq = m.member_seq
+		SELECT ma.expire_dtm FROM member_auth ma
+		JOIN member m
+		ON ma.member_seq = m.member_seq
 		WHERE m.email = #{email} ;
 	</select>
 
@@ -99,73 +162,88 @@
 	<update id="changePasswd">
 		UPDATE member
 		SET passwd = #{passwd}
-		WHERE email = #{email};
+		WHERE email =
+		#{email};
 	</update>
 
 	<!-- auth_num 조회 쿼리 -->
 	<select id="authNumSelect">
 		SELECT ma.auth_num FROM member_auth ma
-		JOIN member m ON ma.member_seq = m.member_seq
+		JOIN member m
+		ON ma.member_seq = m.member_seq
 		WHERE m.email = #{email};
 	</select>
-	
+
 	<!-- auth_num 삭제 쿼리 -->
 	<update id="updateAuthNumToNull">
-	    UPDATE member_auth ma
-	    JOIN member m ON ma.member_seq = m.member_seq
-	    SET ma.auth_num = NULL
-	    WHERE m.email = #{email};
+		UPDATE member_auth ma
+		JOIN member m ON ma.member_seq =
+		m.member_seq
+		SET ma.auth_num = NULL
+		WHERE m.email = #{email};
 	</update>
 
 	<!-- auth_num 업데이트 쿼리 -->
 	<update id="updateAuthNum">
-	    UPDATE member_auth ma
-	    JOIN member m ON ma.member_seq = m.member_seq
-	    SET ma.auth_num = #{authNum}, ma.expire_dtm = DATE_ADD(NOW(), INTERVAL 30 MINUTE)
-	    WHERE m.email = #{email};
+		UPDATE member_auth ma
+		JOIN member m ON ma.member_seq =
+		m.member_seq
+		SET ma.auth_num = #{authNum}, ma.expire_dtm =
+		DATE_ADD(NOW(), INTERVAL 30
+		MINUTE)
+		WHERE m.email = #{email};
 	</update>
 
 	<!-- 인증상태 N > Y로 변경 -->
 	<update id="updateMemAuth">
 		UPDATE member
 		SET auth_yn = 'Y'
-		WHERE member_seq = #{memberSeq};
+		WHERE member_seq =
+		#{memberSeq};
 	</update>
 
 	<!-- 인증상태 N > Y로 변경 -->
 	<update id="updateAuth">
 		UPDATE member_auth
 		SET auth_yn = 'Y'
-		WHERE member_seq = #{memberSeq} AND auth_uri = #{authUri};
+		WHERE member_seq =
+		#{memberSeq} AND auth_uri = #{authUri};
 	</update>
 
 	<!-- auth_uri 가져오기 > 현재시간에서 30분 전까지만 가져옴 -->
 	<select id="authURI">
 		SELECT auth_uri, member_seq
-		FROM member_auth ma 
-		WHERE reg_dtm >= DATE_SUB(NOW(), INTERVAL 30 MINUTE);
+		FROM member_auth ma
+		WHERE
+		reg_dtm >= DATE_SUB(NOW(), INTERVAL 30 MINUTE);
 	</select>
-	
+
 
 	<!-- 멤버 authinfo 추가 -->
-    <insert id="addAuthInfo" parameterType="memberAuthDto">
-        INSERT INTO forum.member_auth 
-        (member_seq, auth_num, auth_uri, reg_dtm, expire_dtm, auth_yn) 
-        VALUES (#{memberSeq}, '', #{authUri}, DATE_FORMAT(NOW(), '%Y%m%d%H%i%s'), #{expireDtm}, 'N')
-    </insert>
+	<insert id="addAuthInfo" parameterType="memberAuthDto">
+		INSERT INTO
+		forum.member_auth
+		(member_seq, auth_num, auth_uri, reg_dtm, expire_dtm,
+		auth_yn)
+		VALUES (#{memberSeq}, '', #{authUri}, DATE_FORMAT(NOW(),
+		'%Y%m%d%H%i%s'),
+		#{expireDtm}, 'N')
+	</insert>
 
 	<!-- 로그인 -->
 	<select id="loginCheak">
-		SELECT passwd FROM member WHERE member_id = #{memberID};
+		SELECT passwd FROM member WHERE member_id =
+		#{memberID};
 	</select>
-	
+
 	<!-- memberSeq 가져오기 -->
-	<select id="getMemberSeq" parameterType="string" resultType="int">
+	<select id="getMemberSeq" parameterType="string"
+		resultType="int">
 		SELECT member_seq
 		FROM member
 		WHERE member_id = #{memberID};
 	</select>
-	
+
 	<!-- 아이디삭제(테스트용임 간단히) -->
 	<delete id="deleteMember">
 		DELETE FROM member WHERE member_seq = #{memberSeq};
@@ -177,17 +255,17 @@
 		pwd_chng_dtm, join_dtm)
 		VALUES(#{memberID}, #{passwd}, #{memberNM}, #{email}, 'N', '', now());
 	</insert>
-	
+
 	<!-- 아이디 중복검사 -->
 	<select id="memberSelectAll">
-		SELECT member_id  FROM `member` m
+		SELECT member_id FROM `member` m
 	</select>
-	
+
 	<!-- email 중복검사 -->
 	<select id="emailSelectAll">
-		SELECT email  FROM `member` m
+		SELECT email FROM `member` m
 	</select>
-	
+
 	<!-- email 셀렉트 -->
 	<select id="emailCount">
 		SELECT count(*)

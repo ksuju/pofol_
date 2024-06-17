@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%
 String ctx = request.getContextPath();
 %>
@@ -40,6 +41,28 @@ String ctx = request.getContextPath();
                             </div>
                             <p style="    margin-bottom: 0; margin-top: 19px;">
                             	${content}</p>
+                            <br>
+                            <br>
+                            <h1>${attachSeq}</h1>
+                            <c:if test="${fileList!=null}">
+								<c:forEach var="entry" items="${fileList}">
+									<c:if test="${not empty entry}">
+										<a href='download.do?attachSeq=${entry.attachSeq}'>
+										<!-- <a href='/forum/notice/download.do'> -->
+											fileName="${entry.orgFileNm}"&nbsp;&nbsp;fileSize="${entry.fileSize}"
+										</a>
+									</c:if>
+									<br>
+								</c:forEach>
+
+								<!-- 조건 : 파일이 하나만 첨부되어 있거나 첨부되어 있지 않을때 a태그 출력 xxxxx -->
+ 								<c:if test="${fn:length(fileList)>1}">
+									<a
+										href="<c:url value='downloadAll.do?boardSeq=${boardSeq}&boardTypeSeq=${boardTypeSeq}'/>"
+										id="downAllButton">전체다운로드</a>
+								</c:if>
+								
+							</c:if>
                         </div>
                         <!-- end .forum_issue -->
 

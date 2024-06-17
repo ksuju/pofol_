@@ -5,11 +5,26 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.portfolio.www.dto.BoardAttachDto;
 import com.portfolio.www.dto.BoardDto;
 import com.portfolio.www.dto.EmailAuthDto;
 import com.portfolio.www.dto.MemberAuthDto;
 
 public interface NoticeRepository {
+	
+	// attach_seq로 첨부파일 정보 가져오기
+	public BoardAttachDto getAttachInfo(int attachSeq);
+	
+	// 저장되어 있는 모든 파일 가져오기
+	public List<BoardAttachDto> selectAllFile(@Param("boardTypeSeq") int boardTypeSeq,
+			@Param("boardSeq") int boardSeq);
+	
+	// boardAttach delete
+	public int deleteBoardAttach(@Param("boardTypeSeq") int boardTypeSeq,
+			@Param("boardSeq") int boardSeq);
+	
+	// 파일첨부 > boardAttach insert
+	public int insertBoardAttach(BoardAttachDto boardAttachDto);
 	
 	// reg_member_seq로 member_id 가져오기
 	public HashMap<String, String> selectMemberId(int regMemberSeq);
@@ -22,11 +37,7 @@ public interface NoticeRepository {
 			@Param("boardTypeSeq") int boardTypeSeq);
 	
 	// 게시글 작성
-	public int boardCreate(@Param("boardTypeSeq") int boardTypeSeq,
-			@Param("title") String title,
-			@Param("content") String content,
-			@Param("memberSeq") int memberSeq,
-			@Param("now") String now);
+	public int boardCreate(HashMap<String, Object> params);
 	
 	// 게시글 삭제
 	public int boardDelete(@Param("memberId") String memberId,

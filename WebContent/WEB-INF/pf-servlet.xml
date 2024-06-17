@@ -18,11 +18,14 @@
 		annotation. -->
 	<context:component-scan
 		base-package="com.portfolio.www" use-default-filters="false">
-		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
-		<context:include-filter type="annotation" expression="org.springframework.stereotype.Component" />
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Component" />
 	</context:component-scan>
 
-	<bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
+	<bean id="tilesConfigurer"
+		class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
 		<property name="completeAutoload" value="true" />
 		<property name="definitions">
 			<list>
@@ -30,9 +33,17 @@
 			</list>
 		</property>
 	</bean>
-	<bean id="tilesViewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
-		<property name="viewClass" value="org.springframework.web.servlet.view.tiles3.TilesView" />
+	<bean id="tilesViewResolver"
+		class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.tiles3.TilesView" />
 		<property name="order" value="1" />
+	</bean>
+
+	<!-- 파일 업로드 MultipartHttpServletRequest resolver -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="-1" />
 	</bean>
 
 	<bean
@@ -40,6 +51,14 @@
 		<property name="prefix" value="/WEB-INF/views/" />
 		<property name="suffix" value=".jsp" />
 		<property name="order" value="2" />
+	</bean>
+
+	<!-- 파일 다운로드 위한 -->
+	<bean id="fileDownloadView"
+		class="com.portfolio.www.util.view.FileDownloadView" />
+	<bean id="fileViewResolver"
+		class="org.springframework.web.servlet.view.BeanNameViewResolver">
+		<property name="order" value="0" />
 	</bean>
 
 	<mvc:resources mapping="/assest/**" location="/assest/" />
