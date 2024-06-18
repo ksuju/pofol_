@@ -35,6 +35,18 @@ public class NoticeController {
 	@Autowired
 	NoticeService noticeService;
 	
+	// 수정페이지 파일삭제
+	@RequestMapping("/forum/notice/deleteFile.do")
+	public String deleteFile (@RequestParam HashMap<String, Object> params) {
+		noticeService.deleteFile(params);
+		
+	    Integer boardSeq = Integer.parseInt((String) params.get("boardSeq"));
+	    Integer boardTypeSeq = Integer.parseInt((String) params.get("boardTypeSeq"));
+	    String memberId = (String) params.get("memberId");
+	    
+		return "redirect:/forum/notice/updatePage.do?boardSeq="+ boardSeq + "&boardTypeSeq=" + boardTypeSeq + "&memberId=" + memberId;
+	}
+	
 	// 모든 첨부파일 다운로드
 	@RequestMapping("/forum/notice/downloadAll.do")
 	public void downloadAll(Model model,
@@ -77,13 +89,14 @@ public class NoticeController {
 	// 게시글 수정
 	@RequestMapping("/forum/notice/updateBoard.do")
 	public String updateBoard(@RequestParam HashMap<String, Object> params,
-			ServletRequest request) {	
+			ServletRequest request,
+			@RequestParam(value = "attFile",required = false) MultipartFile[] attFiles) {	
 		
 		System.out.println("======= NoticeController > updateBoard =======");
 		
 		int boardTypeSeq = Integer.parseInt((String)params.get("boardTypeSeq"));
 		
-		noticeService.updateBoard(params, request);
+		noticeService.updateBoard(params, request, attFiles);
 		
 		return "redirect:/forum/notice/listPage.do?bdTypeSeq="+ boardTypeSeq;
 	}
@@ -101,9 +114,9 @@ public class NoticeController {
 		int boardTypeSeq = Integer.parseInt(params.get("boardTypeSeq"));
 		String memberId = params.get("memberId");
 		
-		HashMap<String, Object> getBoard = new HashMap<String, Object>();
+		HashMap<String, Object> getBoard = noticeService.getReadBoard(boardSeq, boardTypeSeq);
 		
-		getBoard = noticeService.selectBoard(boardSeq, boardTypeSeq);
+		List<BoardAttachDto> fileList = (List<BoardAttachDto>) getBoard.get("fileList");
 		
 		String title =(String)getBoard.get("title");
 		String content = (String)getBoard.get("content");
@@ -113,6 +126,7 @@ public class NoticeController {
 		mv.addObject("boardTypeSeq",boardTypeSeq);
 		mv.addObject("boardSeq",boardSeq);
 		mv.addObject("memberId",memberId);
+		mv.addObject("fileList", fileList);
 		
 		return mv;
 	}
@@ -225,9 +239,9 @@ public class NoticeController {
 		int boardSeq = Integer.parseInt(params.get("boardSeq"));
 		int boardTypeSeq = Integer.parseInt(params.get("boardTypeSeq"));
 		
-		HashMap<String, Object> selectBoard = new HashMap<String, Object>();
-		// 클릭한 게시글 가져오기
-		selectBoard = noticeService.getReadBoard(boardSeq, boardTypeSeq);
+		// 클릭한 게시글 가져오기		
+		HashMap<String, Object> selectBoard = noticeService.getReadBoard(boardSeq, boardTypeSeq);
+
 		//{reg_member_seq=45, reg_dtm=2024-06-14, title=asd, content=asdasd, memberId=asd}
 		List<BoardAttachDto> fileList = (List<BoardAttachDto>) selectBoard.get("fileList");
 		

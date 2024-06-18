@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.portfolio.www.dao.mybatis.NoticeRepository;
@@ -30,6 +31,15 @@ public class NoticeService {
 
 	@Autowired
 	FileUtil fileUtil;
+	
+	// 수정페이지 파일 개별 삭제
+	public boolean deleteFile(@RequestParam HashMap<String, Object> params) {
+		int attachSeq = Integer.parseInt((String)params.get("attachSeq"));
+		int boardSeq = Integer.parseInt((String)params.get("boardSeq"));
+		int boardTypeSeq = Integer.parseInt((String)params.get("boardTypeSeq"));
+		
+		return noticeRepository.deleteFile(attachSeq, boardSeq, boardTypeSeq);
+	}
 
 	// attach_seq로 첨부파일 정보 가져오기
 	public BoardAttachDto getDownloadFileInfo(int attachSeq) {
@@ -37,10 +47,17 @@ public class NoticeService {
 	}
 
 	// 게시글 수정
-	public int updateBoard(HashMap<String, Object> params, ServletRequest request) {
+	public int updateBoard(HashMap<String, Object> params, ServletRequest request, MultipartFile[] attFiles) {
 
 		System.out.println("======= NoticeService > updateBoard =======");
+		File destFile = null;
+		
+		int boardSeq = Integer.parseInt((String)params.get("boardSeq"));
+		int boardTypeSeq = Integer.parseInt((String)params.get("boardTypeSeq"));
 
+		String memberId = (String) params.get("memberId");
+		
+		// 가져오기 끝
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date nowDate = new Date();
 		String now = sdf.format(nowDate);
@@ -52,13 +69,33 @@ public class NoticeService {
 
 		String logInUser = (String) session.getAttribute("logInUser");
 
-		int memberSeq = noticeRepository.getMemberSeq((String) params.get("memberId"));
+		int memberSeq = noticeRepository.getMemberSeq(memberId);
 
 		params.put("memberSeq", memberSeq);
 
 		if (logInUser.isEmpty()) {
 			return 0;
 		} else {
+			for (MultipartFile mf : attFiles) {
+				// 물리적 파일 저장
+				destFile = fileUtil.saveFile(mf);
+				
+//				String unqFileNm = UUID.randomUUID().toString().replaceAll("-", "");
+				BoardAttachDto boardAttachDto = new BoardAttachDto();
+				boardAttachDto.setOrgFileNm(mf.getOriginalFilename());
+				boardAttachDto.setBoardTypeSeq(boardTypeSeq);
+				boardAttachDto.setBoardSeq(boardSeq);
+				boardAttachDto.setChngFileNm(destFile.getName());
+				boardAttachDto.setFileType(mf.getContentType());
+				boardAttachDto.setFileSize(mf.getSize());
+				boardAttachDto.setSavePath(destFile.getPath());
+				
+				if(mf.getOriginalFilename().isEmpty()) {
+					continue;
+				} else {
+					noticeRepository.insertBoardAttach(boardAttachDto);
+				}
+			}
 			return noticeRepository.updateBoard(params);
 		}
 
@@ -135,19 +172,23 @@ public class NoticeService {
 				// 물리적 파일 저장
 				destFile = fileUtil.saveFile(mf);
 
+
+				
 //				String unqFileNm = UUID.randomUUID().toString().replaceAll("-", "");
 				BoardAttachDto boardAttachDto = new BoardAttachDto();
-
+				boardAttachDto.setOrgFileNm(mf.getOriginalFilename());
 				boardAttachDto.setBoardTypeSeq(boardTypeSeq);
 				boardAttachDto.setBoardSeq(boardSeq);
-
-				boardAttachDto.setOrgFileNm(mf.getOriginalFilename());
 				boardAttachDto.setChngFileNm(destFile.getName());
 				boardAttachDto.setFileType(mf.getContentType());
 				boardAttachDto.setFileSize(mf.getSize());
 				boardAttachDto.setSavePath(destFile.getPath());
-
-				noticeRepository.insertBoardAttach(boardAttachDto);
+				
+				if(mf.getOriginalFilename().isEmpty()) {
+					continue;
+				} else {
+					noticeRepository.insertBoardAttach(boardAttachDto);
+				}
 			}
 			return true;
 		}
