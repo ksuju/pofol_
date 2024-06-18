@@ -6,11 +6,18 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.portfolio.www.dto.BoardAttachDto;
+import com.portfolio.www.dto.BoardCommentDto;
 import com.portfolio.www.dto.BoardDto;
 import com.portfolio.www.dto.EmailAuthDto;
 import com.portfolio.www.dto.MemberAuthDto;
 
 public interface NoticeRepository {
+	
+	// 댓글 목록 가져오기
+	public List<BoardCommentDto> selectComments( @Param("boardSeq")int boardSeq, @Param("boardTypeSeq")int boardTypeSeq);
+	
+	// insert comment
+	public int insertComment(BoardCommentDto dto);
 	
 	// 수정페이지 파일 개별 삭제
 	public boolean deleteFile(@Param("attachSeq")int attachSeq, @Param("boardSeq")int boardSeq, @Param("boardTypeSeq")int boardTypeSeq);
