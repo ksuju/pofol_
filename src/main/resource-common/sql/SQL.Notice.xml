@@ -6,6 +6,20 @@
 <mapper
 	namespace="com.portfolio.www.dao.mybatis.NoticeRepository">
 	
+	<select id="selectComments">
+		SELECT *
+		FROM board_comment
+		WHERE board_seq = #{boardSeq} AND board_type_seq = #{boardTypeSeq};
+	</select>
+	
+	<!-- 댓글 insert -->
+	<insert id="insertComment" parameterType="BoardCommentDto">
+	    INSERT INTO forum.board_comment
+	    (lvl, content, board_seq, board_type_seq, member_seq, parent_comment_seq, reg_dtm)
+	    VALUES
+	    (#{lvl}, #{content}, #{boardSeq}, #{boardTypeSeq}, #{memberSeq}, #{parentCommentSeq}, DATE_FORMAT(NOW(), '%Y-%m-%d'))
+	</insert>
+	
 	
 	<!-- 수정페이지 파일 개별 삭제 -->
 	<delete id="deleteFile">

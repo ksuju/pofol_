@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.portfolio.www.dao.mybatis.NoticeRepository;
 import com.portfolio.www.dto.BoardAttachDto;
+import com.portfolio.www.dto.BoardCommentDto;
 import com.portfolio.www.dto.BoardDto;
 import com.portfolio.www.util.FileUtil;
 
@@ -31,6 +32,30 @@ public class NoticeService {
 
 	@Autowired
 	FileUtil fileUtil;
+	
+	// addComment
+	public int addComment(BoardCommentDto dto,
+			HttpServletRequest request) {
+		
+		System.out.println("======= NoticeService > addComment =======");
+		HttpSession session = request.getSession();
+		
+		String memberId = (String) session.getAttribute("logInUser");
+		
+		if(noticeRepository.getMemberSeq(memberId) > 0) {
+			dto.setMemberSeq(noticeRepository.getMemberSeq(memberId));
+		} else {
+			return -1;
+		}
+		
+	    // parentCommentSeq가 null이거나 0이면 null로 설정
+	    if (dto.getParentCommentSeq() == null || dto.getParentCommentSeq() == 0) {
+	        dto.setParentCommentSeq(null);
+	    }
+		noticeRepository.insertComment(dto);
+		
+		return 1;
+	}
 	
 	// 수정페이지 파일 개별 삭제
 	public boolean deleteFile(@RequestParam HashMap<String, Object> params) {
@@ -125,13 +150,26 @@ public class NoticeService {
             fileNames.add(attachDto.getOrgFileNm());
             filePaths.add(attachDto.getSavePath());
         }
-
+        
+        // 댓글 목록 가져오기
+        List<BoardCommentDto> comments = noticeRepository.selectComments(boardSeq, boardTypeSeq);
+        
+        for (BoardCommentDto comment : comments) {
+        	int memberSeq = comment.getMemberSeq();
+            HashMap<String, String> memberInfo = noticeRepository.selectMemberId(memberSeq);
+            
+            String getMemberId = memberInfo.get("member_id");
+            comment.setMemberNm(getMemberId);
+        }
+        
+        boardInfo.put("comments", comments);
+        
 		boardInfo.put("memberId", memberId);
 		boardInfo.put("fileList", fileList);
 		// 전체다운로드 할 때 사용할 것
 		boardInfo.put("fileNames", fileNames);
 		boardInfo.put("filePaths", filePaths);
-
+		
 		return boardInfo;
 	}
 

@@ -15,12 +15,15 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.portfolio.www.dto.BoardAttachDto;
+import com.portfolio.www.dto.BoardCommentDto;
 import com.portfolio.www.dto.BoardDto;
 import com.portfolio.www.forum.notice.dto.PageHandler;
 import com.portfolio.www.service.NoticeService;
@@ -34,6 +37,21 @@ public class NoticeController {
 	
 	@Autowired
 	NoticeService noticeService;
+	
+	@RequestMapping("/forum/notice/reply.do")
+	@ResponseBody
+	public int addComment (@RequestBody BoardCommentDto dto,
+			HttpServletRequest request) {
+		System.out.println("======================= NoticeController > reply.do =======================");
+		
+		if(noticeService.addComment(dto, request)==1) {
+			return 1;
+		} else {
+			return -1;
+		}
+		
+		
+	}
 	
 	// 수정페이지 파일삭제
 	@RequestMapping("/forum/notice/deleteFile.do")
@@ -249,6 +267,7 @@ public class NoticeController {
 		mv.addObject("content", selectBoard.get("content"));
 		mv.addObject("memberId", selectBoard.get("memberId"));
 		mv.addObject("regDtm", selectBoard.get("reg_dtm"));
+		mv.addObject("comments", selectBoard.get("comments"));
 		mv.addObject("fileList", fileList);
 		mv.addObject("boardSeq", boardSeq);
 		mv.addObject("boardTypeSeq", boardTypeSeq);
