@@ -12,6 +12,9 @@ import com.portfolio.www.dto.MemberAuthDto;
 
 public interface NoticeRepository {
 	
+	// 수정페이지 파일 개별 삭제
+	public boolean deleteFile(@Param("attachSeq")int attachSeq, @Param("boardSeq")int boardSeq, @Param("boardTypeSeq")int boardTypeSeq);
+	
 	// attach_seq로 첨부파일 정보 가져오기
 	public BoardAttachDto getAttachInfo(int attachSeq);
 	
