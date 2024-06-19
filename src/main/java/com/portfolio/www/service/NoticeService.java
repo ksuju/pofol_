@@ -21,6 +21,8 @@ import com.portfolio.www.dao.mybatis.NoticeRepository;
 import com.portfolio.www.dto.BoardAttachDto;
 import com.portfolio.www.dto.BoardCommentDto;
 import com.portfolio.www.dto.BoardDto;
+import com.portfolio.www.dto.BoardLikeDto;
+import com.portfolio.www.dto.CommentLikeDto;
 import com.portfolio.www.util.FileUtil;
 
 @Service
@@ -32,6 +34,41 @@ public class NoticeService {
 	@Autowired
 	FileUtil fileUtil;
 	
+	// 댓글 좋아요 Y or N 셀렉트
+	public List<HashMap<String, Object>> commentIsLike(int memberSeq, int boardSeq, int boardTypeSeq) {
+		return noticeRepository.commentIsLike(memberSeq, boardSeq, boardTypeSeq);
+	}
+	
+	// 댓글 좋아요 Y or N
+	public int commentUpDownCvt(CommentLikeDto commentLikeDto) {
+		return noticeRepository.commentUpDownCvt(commentLikeDto);
+	}
+	
+	// 댓글 좋아요
+	public int commentUpDown(CommentLikeDto commentLikeDto) {
+		return noticeRepository.commentUpDown(commentLikeDto);
+	}
+	
+	// 게시글 좋아요 Y or N 셀렉트
+	public String selectIsLike(int memberSeq, int boardSeq, int boardTypeSeq) {
+		return noticeRepository.selectIsLike(memberSeq, boardSeq, boardTypeSeq);
+	}
+	
+	// 게시글 좋아요 Y or N
+	public int thumbUpDownCvt(BoardLikeDto boardLikeDto) {
+		return noticeRepository.thumbUpDownCvt(boardLikeDto);
+	}
+	
+	// 게시글 좋아요
+	public int thumbUpDown(BoardLikeDto boardLikeDto) {
+		return noticeRepository.thumbUpDown(boardLikeDto);
+	}
+	
+	// member_seq 가져오기
+	public int getMemberSeq(String memberId) {
+		return noticeRepository.getMemberSeq(memberId);
+	}
+	
 	// 댓글 삭제하기
 	public int deleteComment(HashMap<String,Object> params) {
 		return noticeRepository.deleteComment(params);
@@ -42,7 +79,7 @@ public class NoticeService {
 		return noticeRepository.updateComments(params);
 	}
 	
-	// addComment
+	// 댓글 작성하기
 	public int addComment(BoardCommentDto dto,
 			HttpServletRequest request) {
 		

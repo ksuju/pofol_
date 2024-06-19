@@ -6,6 +6,52 @@
 <mapper
 	namespace="com.portfolio.www.dao.mybatis.NoticeRepository">
 	
+	<!-- 댓글 is_like 'Y' or 'N' 가져오기 -->
+	<select id="commentIsLike">
+	    SELECT is_like, comment_seq 
+	    FROM comment_like_dislike
+	    WHERE member_seq = #{memberSeq}
+	    AND board_seq = #{boardSeq}
+	    AND board_type_seq = #{boardTypeSeq};
+	</select>
+	
+	<!-- 댓글 좋아요 Y or N -->
+	<update id="commentUpDownCvt">
+	    UPDATE comment_like_dislike
+	    SET reg_dtm = DATE_FORMAT(NOW(), '%Y-%m-%d'), is_like = #{cmtIsLike}
+	    WHERE board_seq = #{boardSeq} AND board_type_seq = #{boardTypeSeq} AND member_seq = #{memberSeq} AND comment_seq = #{commentSeq};
+	</update>
+	
+	<!-- 댓글 좋아요 -->
+	<insert id="commentUpDown">
+		INSERT INTO comment_like_dislike
+		(board_seq, board_type_seq, reg_dtm, is_like, member_seq, comment_seq)
+		VALUES(#{boardSeq}, #{boardTypeSeq}, DATE_FORMAT(NOW(), '%Y-%m-%d'), #{cmtIsLike}, #{memberSeq}, #{commentSeq});
+	</insert>
+	
+	<!-- is_like 'Y' or 'N' 가져오기 -->
+	<select id="selectIsLike">
+		SELECT is_like
+		FROM board_like_dislike
+		WHERE member_seq = #{memberSeq}
+		AND board_seq = #{boardSeq}
+		AND board_type_seq = #{boardTypeSeq};
+	</select>
+	
+	<!-- 게시글 좋아요 Y or N -->
+	<update id="thumbUpDownCvt">
+		UPDATE board_like_dislike
+		SET reg_dtm = DATE_FORMAT(NOW(), '%Y-%m-%d'), is_like = #{isLike}
+		WHERE board_seq = #{boardSeq} AND board_type_seq = #{boardTypeSeq} AND member_seq = #{memberSeq};
+	</update>
+	
+	<!-- 게시글 좋아요 -->
+	<insert id="thumbUpDown" parameterType="BoardLikeDto">
+		INSERT INTO board_like_dislike
+		(board_seq, board_type_seq, reg_dtm, is_like, member_seq)
+		VALUES(#{boardSeq}, #{boardTypeSeq}, DATE_FORMAT(NOW(), '%Y-%m-%d'), #{isLike}, #{memberSeq});
+	</insert>
+	
 	<!-- 댓글 삭제하기 -->
 	<delete id="deleteComment">
 		DELETE FROM board_comment

@@ -8,10 +8,34 @@ import org.apache.ibatis.annotations.Param;
 import com.portfolio.www.dto.BoardAttachDto;
 import com.portfolio.www.dto.BoardCommentDto;
 import com.portfolio.www.dto.BoardDto;
+import com.portfolio.www.dto.BoardLikeDto;
+import com.portfolio.www.dto.CommentLikeDto;
 import com.portfolio.www.dto.EmailAuthDto;
 import com.portfolio.www.dto.MemberAuthDto;
 
 public interface NoticeRepository {
+	
+	// 댓글 좋아요 Y or N 셀렉트
+	public List<HashMap<String, Object>> commentIsLike(@Param("memberSeq")int memberSeq,
+			@Param("boardSeq")int boardSeq,
+			@Param("boardTypeSeq")int boardTypeSeq);
+	
+	// 댓글 좋아요 Y or N
+	public int commentUpDownCvt(CommentLikeDto commentLikeDto);
+	
+	// 댓글 좋아요
+	public int commentUpDown(CommentLikeDto commentLikeDto);
+	
+	// 게시글 좋아요 Y or N 셀렉트
+	public String selectIsLike(@Param("memberSeq")int memberSeq,
+			@Param("boardSeq")int boardSeq,
+			@Param("boardTypeSeq")int boardTypeSeq);
+	
+	// 게시글 좋아요 Y or N
+	public int thumbUpDownCvt(BoardLikeDto boardLikeDto);
+	
+	// 게시글 좋아요
+	public int thumbUpDown(BoardLikeDto boardLikeDto);
 	
 	// 댓글 삭제하기
 	public int deleteComment(HashMap<String,Object> params);
@@ -20,7 +44,7 @@ public interface NoticeRepository {
 	public int updateComments(HashMap<String,Object> params);
 	
 	// 댓글 목록 가져오기
-	public List<BoardCommentDto> selectComments( @Param("boardSeq")int boardSeq, @Param("boardTypeSeq")int boardTypeSeq);
+	public List<BoardCommentDto> selectComments(@Param("boardSeq")int boardSeq, @Param("boardTypeSeq")int boardTypeSeq);
 	
 	// insert comment
 	public int insertComment(BoardCommentDto dto);
