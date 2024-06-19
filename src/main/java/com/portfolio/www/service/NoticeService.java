@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +31,16 @@ public class NoticeService {
 
 	@Autowired
 	FileUtil fileUtil;
+	
+	// 댓글 삭제하기
+	public int deleteComment(HashMap<String,Object> params) {
+		return noticeRepository.deleteComment(params);
+	}
+	
+	// 댓글 수정하기
+	public int updateComments(HashMap<String,Object> params) {
+		return noticeRepository.updateComments(params);
+	}
 	
 	// addComment
 	public int addComment(BoardCommentDto dto,

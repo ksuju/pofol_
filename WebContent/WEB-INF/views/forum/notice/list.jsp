@@ -38,7 +38,7 @@ String ctx = request.getContextPath();
 
 												<td><c:if test="${loginMember eq i.memberId}">
 														<button
-															onclick="confirmUpdate('${i.memberId}', '${i.boardTypeSeq}', '${i.boardSeq}', '${i.memberId}')"
+															onclick="confirmUpdate('${i.memberId}', '${i.boardTypeSeq}', '${i.boardSeq}')"
 															class="btn btn--round btn--bordered btn-sm btn-secondary">수정</button>
 													</c:if></td>
 
@@ -119,13 +119,12 @@ String ctx = request.getContextPath();
 			}
 		}
 		// 게시글 수정
-		function confirmUpdate(memberId, boardTypeSeq, boardSeq, memberId) {
+		function confirmUpdate(memberId, boardTypeSeq, boardSeq) {
 			if (confirm("게시글을 수정하시겠습니까?")) {
 				let url = '<c:url value="/forum/notice/updatePage.do"/>';
 				url += '?memberId=' + encodeURIComponent(memberId);
 				url += '&boardTypeSeq=' + encodeURIComponent(boardTypeSeq);
 				url += '&boardSeq=' + encodeURIComponent(boardSeq);
-				url += '&memberId=' + encodeURIComponent(memberId);
 
 				window.location.href = url;
 			}

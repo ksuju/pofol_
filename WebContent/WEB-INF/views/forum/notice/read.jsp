@@ -72,27 +72,65 @@ String ctx = request.getContextPath();
 							<!-- end .area_title -->
 							<div class="forum_single_reply">
 								<div class="reply_content">
-									<div class="name_vote">
-										<div class="pull-left">
-											<h4>${comment.memberNm}
-												<!-- <span>staff</span> -->
-											</h4>
-											<p>${comment.regDtm}</p>
-										</div>
-										<!-- end .pull-left -->
-
-										<div class="vote">
-											<a href="#" class="active"> <span
-												class="lnr lnr-thumbs-up"></span>
-											</a> <a href="#" class=""> <span class="lnr lnr-thumbs-down"></span>
-											</a>
-										</div>
+									<div class="name_vote" style="display: flex; justify-content: space-between; align-items: center;">
+									    <div class="pull-left" style="flex: 1;">
+									        <h4>${comment.memberNm}
+									            <!-- <span>staff</span> -->
+									        </h4>
+									        <p>${comment.regDtm}</p>
+									        <c:if test="${not empty comment.updateDtm}">
+									            <p>수정된 날짜 : ${comment.updateDtm}</p>
+									        </c:if>
+									    </div>
+									    <!-- end .pull-left -->
+									
+									    <c:if test="${logInUser eq comment.memberNm}">
+									        <div class="delete-button" style="margin-right: 10px;">
+									            <form action="deleteComment.do" method="post">
+													<input type="hidden" name="logInUser" value="${logInUser}"/>
+													<input type="hidden" name="boardTypeSeq" value="${boardTypeSeq}"/>
+													<input type="hidden" name="boardSeq" value="${boardSeq}"/>
+													<input type="hidden" name="commentSeq" value="${comment.commentSeq}"/>
+													
+									                <button
+									                    class="btn btn--round btn--bordered btn-sm btn-secondary">
+									                    <input type="submit" value="삭제"
+									                    style="background-color: rgba(0, 0, 0, 0); border: none"/>
+									                </button>
+									            </form>
+									        </div>
+									    </c:if>
+									
+									    <div class="vote" style="flex: 0 0 auto; text-align: right;">
+									        <a href="#" class="active">
+									            <span class="lnr lnr-thumbs-up"></span>
+									        </a>
+									        <a href="#" class="">
+									            <span class="lnr lnr-thumbs-down"></span>
+									        </a>
+									    </div>
 									</div>
 									<!-- end .vote -->
 									<p>${comment.content}</p>
 								</div>
 								<!-- end .reply_content -->
 							</div>
+							<!-- 댓글 수정내용 입력칸 -->
+							<c:if test="${logInUser eq comment.memberNm}">
+								<form action="updateComment.do" method="post" style="display:flex; border:1px solid rgba(0, 0, 0, 0.2)">
+									<input type="hidden" name="logInUser" value="${logInUser}"/>
+									<input type="hidden" name="boardTypeSeq" value="${boardTypeSeq}"/>
+									<input type="hidden" name="boardSeq" value="${boardSeq}"/>
+									<input type="hidden" name="commentSeq" value="${comment.commentSeq}"/>
+									<div style="width:90%">
+										<input type="text" name="content" placeholder="수정할 댓글 내용을 입력해주세요."/>
+									</div>
+									<div style="width:10%">
+										<input type="submit" value="수정" style="width:100%"/>
+									</div>
+								</form>
+							</c:if>
+							<!-- 댓글 수정내용 입력칸 끝 -->
 							<!-- end .forum_single_reply -->
 						</c:forEach>
 

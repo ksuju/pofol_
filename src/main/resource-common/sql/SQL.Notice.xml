@@ -6,6 +6,24 @@
 <mapper
 	namespace="com.portfolio.www.dao.mybatis.NoticeRepository">
 	
+	<!-- 댓글 삭제하기 -->
+	<delete id="deleteComment">
+		DELETE FROM board_comment
+		WHERE comment_seq = #{commentSeq}
+			AND board_seq = #{boardSeq}
+			AND board_type_seq = #{boardTypeSeq};
+	</delete>
+	
+	<!-- 댓글 수정하기 -->
+	<update id="updateComments">
+		UPDATE board_comment
+		SET content = #{content}, update_dtm = DATE_FORMAT(NOW(), '%Y-%m-%d')
+		WHERE comment_seq = #{commentSeq}
+			AND board_seq = #{boardSeq}
+			AND board_type_seq = #{boardTypeSeq};
+	</update>
+	
+	<!-- 댓글 가져오기 -->
 	<select id="selectComments">
 		SELECT *
 		FROM board_comment
