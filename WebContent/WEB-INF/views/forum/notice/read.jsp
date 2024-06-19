@@ -25,11 +25,13 @@ String ctx = request.getContextPath();
 					<div class="cardify forum--issue">
 						<div class="title_vote clearfix">
 							<h3>${title}</h3>
-
 							<div class="vote">
-								<a href="#"> <span class="lnr lnr-thumbs-up"></span>
-								</a> <a href="#"> <span class="lnr lnr-thumbs-down"></span>
-								</a>
+							    <a href="#" id='cThumbUpAnchor' onClick="javascript:thumbUpDown(${boardSeq}, ${boardTypeSeq}, 'Y');"<c:if test='${isLike eq "Y"}'>class="active"</c:if>>
+							        <span class="lnr lnr-thumbs-up"></span>
+							    </a>
+							    <a href="#" id='cThubDownAnchor' onClick="javascript:thumbUpDown(${boardSeq}, ${boardTypeSeq}, 'N');"<c:if test='${isLike eq "N"}'>class="active"</c:if>>
+							        <span class="lnr lnr-thumbs-down"></span>
+							    </a>
 							</div>
 							<!-- end .vote -->
 						</div>
@@ -62,8 +64,6 @@ String ctx = request.getContextPath();
 						</c:if>
 					</div>
 					<!-- end .forum_issue -->
-
-
 					<div class="forum--replays cardify">
 						<div class="area_title">
 							<h4>1 Replies</h4>
@@ -72,48 +72,52 @@ String ctx = request.getContextPath();
 							<!-- end .area_title -->
 							<div class="forum_single_reply">
 								<div class="reply_content">
-									<div class="name_vote" style="display: flex; justify-content: space-between; align-items: center;">
+									<div class="name_vote" style="display: flex; max-width: 1140px; min-width: 1000px; justify-content: space-between; align-items: center; padding: 10px; margin-bottom: 10px;">
 									    <div class="pull-left" style="flex: 1;">
-									        <h4>${comment.memberNm}
-									            <!-- <span>staff</span> -->
-									        </h4>
+									        <h4>${comment.memberNm}</h4>
 									        <p>${comment.regDtm}</p>
 									        <c:if test="${not empty comment.updateDtm}">
 									            <p>수정된 날짜 : ${comment.updateDtm}</p>
 									        </c:if>
+									        <br><br>
+									        <p>${comment.content}</p>
 									    </div>
-									    <!-- end .pull-left -->
 									
 									    <c:if test="${logInUser eq comment.memberNm}">
 									        <div class="delete-button" style="margin-right: 10px;">
 									            <form action="deleteComment.do" method="post">
-													<input type="hidden" name="logInUser" value="${logInUser}"/>
-													<input type="hidden" name="boardTypeSeq" value="${boardTypeSeq}"/>
-													<input type="hidden" name="boardSeq" value="${boardSeq}"/>
-													<input type="hidden" name="commentSeq" value="${comment.commentSeq}"/>
-													
-									                <button
-									                    class="btn btn--round btn--bordered btn-sm btn-secondary">
-									                    <input type="submit" value="삭제"
-									                    style="background-color: rgba(0, 0, 0, 0); border: none"/>
+									                <input type="hidden" name="logInUser" value="${logInUser}"/>
+									                <input type="hidden" name="boardTypeSeq" value="${boardTypeSeq}"/>
+									                <input type="hidden" name="boardSeq" value="${boardSeq}"/>
+									                <input type="hidden" name="commentSeq" value="${comment.commentSeq}"/>
+									                <button class="btn btn--round btn--bordered btn-sm btn-secondary">
+									                    <input type="submit" value="삭제" style="background-color: rgba(0, 0, 0, 0); border: none;"/>
 									                </button>
 									            </form>
 									        </div>
 									    </c:if>
 									
-									    <div class="vote" style="flex: 0 0 auto; text-align: right;">
-									        <a href="#" class="active">
-									            <span class="lnr lnr-thumbs-up"></span>
-									        </a>
-									        <a href="#" class="">
-									            <span class="lnr lnr-thumbs-down"></span>
-									        </a>
-									    </div>
+										<div class="vote" style="flex: 0 0 auto; text-align: right;">
+										    <a href="#" onClick="javascript:commentIsLike(${boardSeq}, ${boardTypeSeq}, 'Y', ${comment.commentSeq});"
+										       class="<c:forEach items="${cmtIsLike}" var="likeInfo">
+										                  <c:if test="${likeInfo.is_like == 'Y' && likeInfo.comment_seq == comment.commentSeq}">
+										                      active
+										                  </c:if>
+										              </c:forEach>">
+										        <span class="lnr lnr-thumbs-up"></span>
+										    </a>
+										    <a href="#" onClick="javascript:commentIsLike(${boardSeq}, ${boardTypeSeq}, 'N', ${comment.commentSeq});"
+										       class="<c:forEach items="${cmtIsLike}" var="likeInfo">
+										                  <c:if test="${likeInfo.is_like == 'N' && likeInfo.comment_seq == comment.commentSeq}">
+										                      active
+										                  </c:if>
+										              </c:forEach>">
+										        <span class="lnr lnr-thumbs-down"></span>
+										    </a>
+										</div>
 									</div>
-									<!-- end .vote -->
-									<p>${comment.content}</p>
-								</div>
 								<!-- end .reply_content -->
+								</div>
 							</div>
 							<!-- 댓글 수정내용 입력칸 -->
 							<c:if test="${logInUser eq comment.memberNm}">
@@ -190,6 +194,63 @@ String ctx = request.getContextPath();
 	      			alert('실패!');
 	    			}
 	    		},
+	    		error : function(request, status, error) {
+	    			console.log(error)
+	    		}
+	    	});
+	    }
+	    
+	    // 게시글 좋아요 or 싫어요
+	    function thumbUpDown(boardSeq, boardTypeSeq, isLike) {
+	    	let url = '<%=ctx%>/forum/notice/thumbUpDown.do?';
+	    	url += 'boardSeq='+boardSeq;
+	    	url += '&boardTypeSeq='+boardTypeSeq;
+	    	url += '&isLike='+isLike;   // 싫어요인 경우 isLike=N
+
+	    	$.ajax({
+	    		// 타입 (get, post, put 등등)    
+	    		type : 'GET',           
+	    		// 요청할 서버url
+	    		url : url,
+	    		// Http header
+	    		headers : {
+	    			"Content-Type" : "application/json"
+	    		},
+	    		dataType : 'text',
+	    		// 결과 성공 콜백함수 
+	    		success : function(result) {
+	    			console.log(result)
+	    		},
+	    		// 결과 에러 콜백함수
+	    		error : function(request, status, error) {
+	    			console.log(error)
+	    		}
+	    	});
+	    }
+	    
+	    // 댓글 좋아요 or 싫어요
+	    function commentIsLike(boardSeq, boardTypeSeq, cmtIsLike, commentSeq) {
+	    	let url = '<%=ctx%>/forum/notice/commentIsLike.do?';
+	    	url += 'boardSeq='+boardSeq;
+	    	url += '&boardTypeSeq='+boardTypeSeq;
+	    	url += '&cmtIsLike='+cmtIsLike; // 싫어요인 경우 cmtIsLike=N
+	    	url += '&commentSeq='+commentSeq; 
+
+	    	$.ajax({
+	    		// 타입 (get, post, put 등등)    
+	    		type : 'GET',           
+	    		// 요청할 서버url
+	    		url : url,
+	    		// Http header
+	    		headers : {
+	    			"Content-Type" : "application/json"
+	    		},
+	    		dataType : 'text',
+	    		// 결과 성공 콜백함수 
+	    		success : function(result) {
+	    			console.log(result)
+	    		},
+	    		// 결과 에러 콜백함수
 	    		error : function(request, status, error) {
 	    			console.log(error)
 	    		}
