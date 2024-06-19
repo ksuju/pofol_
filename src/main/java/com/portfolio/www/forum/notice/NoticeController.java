@@ -38,6 +38,32 @@ public class NoticeController {
 	@Autowired
 	NoticeService noticeService;
 	
+	// 댓글삭제
+	@RequestMapping("/forum/notice/deleteComment.do")
+	public String deleteComment(@RequestParam HashMap<String,Object> params) {
+		System.out.println("======================= NoticeController > deleteComment =======================");
+		
+		noticeService.deleteComment(params);
+		
+		int boardSeq = Integer.parseInt((String)params.get("boardSeq")) ;
+		int boardTypeSeq = Integer.parseInt((String)params.get("boardTypeSeq")) ;
+		return "redirect:/forum/notice/readPage.do?boardTypeSeq=" + boardTypeSeq + "&boardSeq=" + boardSeq;
+	}
+	
+	// 댓글수정
+	@RequestMapping("/forum/notice/updateComment.do")
+	public String updateComment(@RequestParam HashMap<String,Object> params) {
+		System.out.println("======================= NoticeController > updateComment =======================");
+		
+		noticeService.updateComments(params);
+		
+		int boardSeq = Integer.parseInt((String)params.get("boardSeq")) ;
+		int boardTypeSeq = Integer.parseInt((String)params.get("boardTypeSeq")) ;
+		
+		return "redirect:/forum/notice/readPage.do?boardTypeSeq=" + boardTypeSeq + "&boardSeq=" + boardSeq;
+	}
+	
+	// 댓글작성
 	@RequestMapping("/forum/notice/reply.do")
 	@ResponseBody
 	public int addComment (@RequestBody BoardCommentDto dto,
@@ -49,8 +75,6 @@ public class NoticeController {
 		} else {
 			return -1;
 		}
-		
-		
 	}
 	
 	// 수정페이지 파일삭제
@@ -247,7 +271,8 @@ public class NoticeController {
 	}
 	
 	@RequestMapping("/forum/notice/readPage.do")
-	public ModelAndView readPage(@RequestParam HashMap<String, String> params) {
+	public ModelAndView readPage(@RequestParam HashMap<String, String> params,
+			ServletRequest request) {
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("key", Calendar.getInstance().getTimeInMillis());
 		mv.setViewName("forum/notice/read");
@@ -260,8 +285,13 @@ public class NoticeController {
 		// 클릭한 게시글 가져오기		
 		HashMap<String, Object> selectBoard = noticeService.getReadBoard(boardSeq, boardTypeSeq);
 
-		//{reg_member_seq=45, reg_dtm=2024-06-14, title=asd, content=asdasd, memberId=asd}
 		List<BoardAttachDto> fileList = (List<BoardAttachDto>) selectBoard.get("fileList");
+		
+		// 현재 로그인한 사용자의 id 가져오기
+		HttpServletRequest req = (HttpServletRequest) request;
+		HttpSession session = req.getSession();
+
+		String logInUser = (String) session.getAttribute("logInUser");
 		
 		mv.addObject("title", selectBoard.get("title"));
 		mv.addObject("content", selectBoard.get("content"));
@@ -271,6 +301,7 @@ public class NoticeController {
 		mv.addObject("fileList", fileList);
 		mv.addObject("boardSeq", boardSeq);
 		mv.addObject("boardTypeSeq", boardTypeSeq);
+		mv.addObject("logInUser", logInUser);
 		
 		return mv;
 	}

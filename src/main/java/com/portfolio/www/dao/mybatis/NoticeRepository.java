@@ -13,6 +13,12 @@ import com.portfolio.www.dto.MemberAuthDto;
 
 public interface NoticeRepository {
 	
+	// 댓글 삭제하기
+	public int deleteComment(HashMap<String,Object> params);
+	
+	// 댓글 수정하기
+	public int updateComments(HashMap<String,Object> params);
+	
 	// 댓글 목록 가져오기
 	public List<BoardCommentDto> selectComments( @Param("boardSeq")int boardSeq, @Param("boardTypeSeq")int boardTypeSeq);
 	

@@ -119,8 +119,10 @@ public class LoginService {
 			email.setReceiver(params.get("email"));
 			email.setSubject("비밀번호 변경 인증 메일입니다.");
 			// host + contextRoot + URI
-			String html = emailprop.getPwChangeUri() + params.get("authNum") + "&email=" + params.get("email")
-					+ "'>비밀번호 변경하기</a>";
+			//String html = emailprop.getPwChangeUri() + params.get("authNum") + "&email=" + params.get("email")
+			//		+ "'>비밀번호 변경하기</a>";
+			
+			String html = emailprop.getPwChangeUri() + params.get("authNum") + "&email=" + params.get("email") + "'>비밀번호 변경하기</a>";
 
 			email.setText(html);
 
