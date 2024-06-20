@@ -37,6 +37,10 @@ public interface NoticeRepository {
 	// 게시글 좋아요
 	public int thumbUpDown(BoardLikeDto boardLikeDto);
 	
+	// 댓글 전부 삭제하기 (게시글 지울때 활용)
+	public int deleteAllComment(@Param("boardTypeSeq")int boardTypeSeq,
+			@Param("boardSeq")int boardSeq);
+	
 	// 댓글 삭제하기
 	public int deleteComment(HashMap<String,Object> params);
 	

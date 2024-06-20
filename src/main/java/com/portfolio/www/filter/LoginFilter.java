@@ -14,10 +14,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpFilter;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 
 /**
@@ -65,15 +63,18 @@ public class LoginFilter extends HttpFilter implements Filter {
 		// place your code here
 		HttpServletRequest req = (HttpServletRequest) request;
 		String uri = req.getRequestURI();
-		//System.out.println("URI==============================="+uri);
 		List<String> UriList = new ArrayList<String>(Arrays.asList(LOGIN_REQUIRED_URI));
 		//System.out.println("UriList==============================="+UriList);
+		//System.out.println("URI==============================="+uri);
 		HttpSession session = req.getSession();
 		
 		if(ObjectUtils.isEmpty(session.getAttribute("logInUser"))) {
 			if(UriList.contains(uri)) {
 				response.setContentType("text/html; charset=UTF-8");
 				PrintWriter out = response.getWriter();
+				
+				session.setAttribute("filterUri", uri);
+				
 				out.println("<script>alert('로그인 후 이용해주세요.'); location.href='" + req.getContextPath() + "/auth/loginPage.do';</script>");
 	            return;
 			}

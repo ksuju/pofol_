@@ -23,7 +23,7 @@
 						<div class="login--form">
 							<div class="form-group">
 							    <label for="user_name">아이디</label>
-							    <input id="user_name" name="memberID" type="text" class="text_field"
+							    <input value="testid" id="user_name" name="memberID" type="text" class="text_field"
 							           placeholder="Enter your username..."
 							           <c:if test="${not empty saveId}">
 							               value="${saveId}"
@@ -31,7 +31,7 @@
 							</div>
 
 							<div class="form-group">
-								<label for="pass">비밀번호</label> <input id="pass" name="passwd"
+								<label for="pass">비밀번호</label> <input value="asd" id="pass" name="passwd"
 									type="text" class="text_field"
 									placeholder="Enter your password...">
 							</div>
@@ -77,6 +77,8 @@
 	        var saveId = "${saveId}"; // saveId 속성을 가져옴
 	        if (saveId) { // saveId 값이 있으면
 	            document.getElementById("ch2").checked = true; // 체크박스를 체크함
+	        } else {
+	        	document.getElementById("ch2").checked = false; // 체크박스를 체크함
 	        }
 	    };
 	</script>

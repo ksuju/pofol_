@@ -20,8 +20,6 @@ String ctx = request.getContextPath();
 										<tr>
 											<th>No</th>
 											<th>제목</th>
-											<th></th>
-											<th></th>
 											<th>Date</th>
 											<th>작성자</th>
 										</tr>
@@ -35,19 +33,6 @@ String ctx = request.getContextPath();
 													href="<c:url value='/forum/notice/readPage.do?boardSeq=${i.boardSeq}&boardTypeSeq=${i.boardTypeSeq}'/>">
 														${i.title} </a> <%-- &nbsp;<c:if test="${commentCounts[i.boardSeq] != 0}"><a>(${commentCounts[i.boardSeq]})</a></c:if> --%>
 												</td>
-
-												<td><c:if test="${loginMember eq i.memberId}">
-														<button
-															onclick="confirmUpdate('${i.memberId}', '${i.boardTypeSeq}', '${i.boardSeq}', '${i.memberId}')"
-															class="btn btn--round btn--bordered btn-sm btn-secondary">수정</button>
-													</c:if></td>
-
-												<td><c:if test="${loginMember eq i.memberId}">
-														<button
-															onclick="confirmDelete('${i.memberId}', '${i.boardTypeSeq}', '${i.boardSeq}')"
-															class="btn btn--round btn--bordered btn-sm btn-secondary">삭제</button>
-													</c:if></td>
-
 												<td>${i.regDtm}</td>
 												<td>${i.memberId}</td>
 											</tr>

@@ -13,7 +13,27 @@ String ctx = request.getContextPath();
 	    $('#trumbowyg-demo').trumbowyg({
 	        lang: 'kr'
 	    });
-	</script>
+</script>
+<style>
+	.panel {
+		background-color: white;
+		opacity:0;
+		max-height: 0;
+		overflow: hidden;
+		transition: max-height 0.2s ease-out;
+	}
+	
+	.commentButton {
+		width:45px;
+		height:25px;
+		line-height: 10px;
+		text-align:center;
+		font-size:15px;
+	 	background-color: rgba(0, 0, 0, 0);
+	 	color: #007bff;
+	 	border-color: #007bff;
+	}
+</style>
 <!--================================
             START DASHBOARD AREA
     =================================-->
@@ -25,6 +45,13 @@ String ctx = request.getContextPath();
 					<div class="cardify forum--issue">
 						<div class="title_vote clearfix">
 							<h3>${title}</h3>
+							&nbsp;&nbsp;&nbsp;
+								<c:if test="${logInUser eq memberId}">
+									<a href="javascript:void(0)" style="border:1px solid; padding:2px 4px; border-radius:10%" onclick="confirmUpdate('${memberId}', '${boardTypeSeq}', '${boardSeq}')">수정</a>
+								</c:if>
+								<c:if test="${logInUser eq memberId}">
+									<a href="javascript:void(0)" style="border:1px solid; padding:2px 4px; border-radius:10%" onclick="confirmDelete('${memberId}', '${boardTypeSeq}', '${boardSeq}')">삭제</a>
+								</c:if>
 							<div class="vote">
 							    <a href="#" id='cThumbUpAnchor' onClick="javascript:thumbUpDown(${boardSeq}, ${boardTypeSeq}, 'Y');"<c:if test='${isLike eq "Y"}'>class="active"</c:if>>
 							        <span class="lnr lnr-thumbs-up"></span>
@@ -82,17 +109,19 @@ String ctx = request.getContextPath();
 									        <br><br>
 									        <p>${comment.content}</p>
 									    </div>
-									
+										
 									    <c:if test="${logInUser eq comment.memberNm}">
-									        <div class="delete-button" style="margin-right: 10px;">
+									    	<input class="commentButton" id="cmtEditToggle" type="submit" value="수정"/>
+									    	&nbsp;
+									        <div style="margin-right: 10px;">
 									            <form action="deleteComment.do" method="post">
 									                <input type="hidden" name="logInUser" value="${logInUser}"/>
 									                <input type="hidden" name="boardTypeSeq" value="${boardTypeSeq}"/>
 									                <input type="hidden" name="boardSeq" value="${boardSeq}"/>
 									                <input type="hidden" name="commentSeq" value="${comment.commentSeq}"/>
-									                <button class="btn btn--round btn--bordered btn-sm btn-secondary">
-									                    <input type="submit" value="삭제" style="background-color: rgba(0, 0, 0, 0); border: none;"/>
-									                </button>
+									                <a href="javascript:void(0)">
+									                    <input class="commentButton" type="submit" value="삭제"/>
+									                </a>
 									            </form>
 									        </div>
 									    </c:if>
@@ -121,7 +150,7 @@ String ctx = request.getContextPath();
 							</div>
 							<!-- 댓글 수정내용 입력칸 -->
 							<c:if test="${logInUser eq comment.memberNm}">
-								<form action="updateComment.do" method="post" style="display:flex; border:1px solid rgba(0, 0, 0, 0.2)">
+								<form class="panel" action="updateComment.do" method="post" style="display:flex; border:1px solid rgba(0, 0, 0, 0.2)">
 									<input type="hidden" name="logInUser" value="${logInUser}"/>
 									<input type="hidden" name="boardTypeSeq" value="${boardTypeSeq}"/>
 									<input type="hidden" name="boardSeq" value="${boardSeq}"/>
@@ -256,6 +285,42 @@ String ctx = request.getContextPath();
 	    		}
 	    	});
 	    }
+	    
+		//게시글 삭제
+		function confirmDelete(memberId, boardTypeSeq, boardSeq) {
+			if (confirm("게시글을 삭제하시겠습니까?")) {
+				let url = '<c:url value="/forum/notice/deleteBoard.do"/>';
+				url += '?memberId=' + encodeURIComponent(memberId);
+				url += '&boardTypeSeq=' + encodeURIComponent(boardTypeSeq);
+				url += '&boardSeq=' + encodeURIComponent(boardSeq);
+
+				window.location.href = url;
+			}
+		}
+		// 게시글 수정
+		function confirmUpdate(memberId, boardTypeSeq, boardSeq) {
+			if (confirm("게시글을 수정하시겠습니까?")) {
+				let url = '<c:url value="/forum/notice/updatePage.do"/>';
+				url += '?memberId=' + encodeURIComponent(memberId);
+				url += '&boardTypeSeq=' + encodeURIComponent(boardTypeSeq);
+				url += '&boardSeq=' + encodeURIComponent(boardSeq);
+
+				window.location.href = url;
+			}
+		}
+		
+		window.onload = function () {
+			document.getElementById('cmtEditToggle').addEventListener('click', function() {
+			    var panel = document.querySelector('.panel');
+			    if (panel.style.maxHeight) {
+			        panel.style.maxHeight = null;
+			        panel.style.opacity = 0;
+			    } else {
+			        panel.style.maxHeight = panel.scrollHeight + 'px';
+			        panel.style.opacity = 1;
+			    }
+			});
+		}
     </script>
 <!--================================
             END DASHBOARD AREA

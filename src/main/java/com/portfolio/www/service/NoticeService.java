@@ -281,9 +281,9 @@ public class NoticeService {
 	// 게시글 삭제하기
 	public int boardDelete(String memberId, int boardTypeSeq, int boardSeq) {
 		System.out.println("=========================== service > boardDelete ===========================");
-		noticeRepository.deleteBoardAttach(boardTypeSeq, boardSeq);
-		return noticeRepository.boardDelete(memberId, boardTypeSeq, boardSeq);
-
+		noticeRepository.deleteBoardAttach(boardTypeSeq, boardSeq); // 첨부파일 삭제
+		noticeRepository.deleteAllComment(boardTypeSeq, boardSeq); // 댓글 삭제
+		return noticeRepository.boardDelete(memberId, boardTypeSeq, boardSeq); // 게시글 삭제
 	}
 
 	// 게시판 내 게시글 불러오기
