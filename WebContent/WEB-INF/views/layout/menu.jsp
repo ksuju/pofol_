@@ -15,7 +15,7 @@
                     <div class="col-lg-3 col-md-3 col-6 v_middle">
                         <div class="logo">                        
                             <a href="<c:url value='/index.do'/>">                            	
-                                <img src="<c:url value='/assest/template/images/logo.png'/>" alt="logo image" class="img-fluid" />
+                                <img src="<c:url value='/assest/template/images/rundog.png'/>" style="height:80px" alt="logo image" class="img-fluid" />
                             </a>
                         </div>
                     </div>
@@ -156,7 +156,7 @@
                                             </ul>
                                         </div>
                                     </li>
-                                    <li class="has_dropdown">
+<!--                                     <li class="has_dropdown">
                                         <a href="all-products-list.html">all product</a>
                                         <div class="dropdowns dropdown--menu">
                                             <ul>
@@ -177,8 +177,8 @@
                                                 </li>
                                             </ul>
                                         </div>
-                                    </li>
-                                    <li class="has_dropdown">
+                                    </li> -->
+<!--                                     <li class="has_dropdown">
                                         <a href="#">categories</a>
                                         <div class="dropdowns dropdown--menu">
                                             <ul>
@@ -211,8 +211,8 @@
                                                 </li>
                                             </ul>
                                         </div>
-                                    </li>
-                                    <li class="has_megamenu">
+                                    </li> -->
+<!--                                     <li class="has_megamenu">
                                         <a href="#">Elements</a>
                                         <div class="dropdown_megamenu contained">
                                             <div class="megamnu_module">
@@ -303,7 +303,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </li>
+                                    </li> -->
                                     
                                     <li class="has_dropdown">
                                         <a href="<c:url value='/forum/notice/listPage.do?bdTypeSeq=1'/>">게시판</a>
@@ -313,17 +313,17 @@
                                                     <a href="<c:url value='/forum/notice/listPage.do?bdTypeSeq=1'/>">공지사항</a>
                                                 </li>
                                                 <li>
-                                                    <a href="all-products.html">Popular Items</a>
+                                                    <a href="#">자유게시판</a>
                                                 </li>
                                                 <li>
-                                                    <a href="index3.html">Free Templates</a>
+                                                    <a href="#">사진</a>
                                                 </li>
                                                 <li>
-                                                    <a href="#">Follow Feed</a>
+                                                    <a href="#">동영상</a>
                                                 </li>
-                                                <li>
-                                                    <a href="#">Top Authors</a>
-                                                </li>
+<!--                                                 <li>
+                                                    <a href="#">추후 개설</a>
+                                                </li> -->
                                             </ul>
                                         </div>
                                     </li>

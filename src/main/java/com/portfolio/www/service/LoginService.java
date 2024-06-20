@@ -38,6 +38,8 @@ public class LoginService {
 		// on 또는 null
 		String checkBox = params.get("checkBox");
 		
+		System.out.println("alalalaalalalal==============>"+checkBox);
+		
 		
 		try {
 			noticeRepository.getMemberSeq(memberId);
@@ -47,8 +49,13 @@ public class LoginService {
 				saveId.setMaxAge(60 * 60 * 24 * 7); // 만료기한 7일
 				response.addCookie(saveId);
 				return true;
+			} else {
+				Cookie saveId = new Cookie("saveId",memberId);
+				saveId.setMaxAge(0); // 만료기한 0초 > 삭제 > 쿠키를 삭제하는 기능은 없기에 만료시간을 0으로 설정함
+				response.addCookie(saveId);
+				return false;
 			}
-			return false;	
+			
 		} catch (BindingException be) {
 			return false;
 		} catch (NullPointerException ne) {

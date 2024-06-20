@@ -274,6 +274,7 @@ public class NoticeController {
 	public String deleteBoard(@RequestParam String memberId, @RequestParam int boardTypeSeq,
 			@RequestParam int boardSeq) {
 
+		
 		noticeService.boardDelete(memberId, boardTypeSeq, boardSeq);
 
 		return "redirect:/forum/notice/listPage.do?bdTypeSeq=" + boardTypeSeq;
@@ -281,6 +282,9 @@ public class NoticeController {
 
 	@RequestMapping("/forum/notice/listPage.do")
 	public ModelAndView listPage(@RequestParam HashMap<String, String> params, HttpServletRequest request) {
+		
+		System.out.println("======= NoticeController > listPage =======");
+		
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("key", Calendar.getInstance().getTimeInMillis());
 		mv.setViewName("forum/notice/list");

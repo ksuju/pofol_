@@ -52,6 +52,13 @@
 		VALUES(#{boardSeq}, #{boardTypeSeq}, DATE_FORMAT(NOW(), '%Y-%m-%d'), #{isLike}, #{memberSeq});
 	</insert>
 	
+	<!-- 댓글 전부 삭제하기 -->
+	<delete id="deleteAllComment">
+		DELETE FROM board_comment
+		WHERE board_type_seq = #{boardTypeSeq}
+			AND board_seq = #{boardSeq};
+	</delete>
+	
 	<!-- 댓글 삭제하기 -->
 	<delete id="deleteComment">
 		DELETE FROM board_comment

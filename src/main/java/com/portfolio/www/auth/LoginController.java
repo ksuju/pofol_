@@ -6,6 +6,7 @@ import java.util.HashMap;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -164,15 +165,17 @@ public class LoginController {
 	@RequestMapping("/auth/loginPage.do")
 	public ModelAndView loginPage(@RequestParam HashMap<String, String> params
 			, HttpServletRequest request) {
+		System.out.println("========================== LoginController > loginPage ========================");
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("key", Calendar.getInstance().getTimeInMillis());
-		mv.setViewName("auth/login");
 		
 		// 아이디저장 쿠키가 존재하면 request에 saveId라는 이름으로 저장됨
 		existCookie(request);
         // request에 설정된 속성을 ModelAndView에 추가
         String saveId = (String) request.getAttribute("saveId");
         mv.addObject("saveId", saveId);
+        
+		mv.setViewName("auth/login");
 		return mv;
 	}
 
