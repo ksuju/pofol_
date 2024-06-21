@@ -23,6 +23,11 @@ String ctx = request.getContextPath();
 		transition: max-height 0.2s ease-out;
 	}
 	
+	.panel.active {
+	    max-height: 300px; /* 수정 폼의 최대 높이 설정 */
+	    opacity: 1;
+	}
+	
 	.commentButton {
 		width:45px;
 		height:25px;
@@ -110,21 +115,22 @@ String ctx = request.getContextPath();
 									        <p>${comment.content}</p>
 									    </div>
 										
-									    <c:if test="${logInUser eq comment.memberNm}">
-									    	<input class="commentButton" id="cmtEditToggle" type="submit" value="수정"/>
-									    	&nbsp;
-									        <div style="margin-right: 10px;">
-									            <form action="deleteComment.do" method="post">
-									                <input type="hidden" name="logInUser" value="${logInUser}"/>
-									                <input type="hidden" name="boardTypeSeq" value="${boardTypeSeq}"/>
-									                <input type="hidden" name="boardSeq" value="${boardSeq}"/>
-									                <input type="hidden" name="commentSeq" value="${comment.commentSeq}"/>
-									                <a href="javascript:void(0)">
-									                    <input class="commentButton" type="submit" value="삭제"/>
-									                </a>
-									            </form>
-									        </div>
-									    </c:if>
+										<!-- 수정 버튼 -->
+										<c:if test="${logInUser eq comment.memberNm}">
+										    <input class="commentButton cmtEditToggle" type="button" value="수정" onclick="editToggle(${comment.commentSeq})"/>
+										    &nbsp;
+										    <div style="margin-right: 10px;">
+										        <form action="deleteComment.do" method="post">
+										            <input type="hidden" name="logInUser" value="${logInUser}"/>
+										            <input type="hidden" name="boardTypeSeq" value="${boardTypeSeq}"/>
+										            <input type="hidden" name="boardSeq" value="${boardSeq}"/>
+										            <input type="hidden" name="commentSeq" value="${comment.commentSeq}"/>
+										            <a href="javascript:void(0)">
+										                <input class="commentButton" type="submit" value="삭제"/>
+										            </a>
+										        </form>
+										    </div>
+										</c:if>
 									
 										<div class="vote" style="flex: 0 0 auto; text-align: right;">
 										    <a href="#" onClick="javascript:commentIsLike(${boardSeq}, ${boardTypeSeq}, 'Y', ${comment.commentSeq});"
@@ -150,18 +156,18 @@ String ctx = request.getContextPath();
 							</div>
 							<!-- 댓글 수정내용 입력칸 -->
 							<c:if test="${logInUser eq comment.memberNm}">
-								<form class="panel" action="updateComment.do" method="post" style="display:flex; border:1px solid rgba(0, 0, 0, 0.2)">
-									<input type="hidden" name="logInUser" value="${logInUser}"/>
-									<input type="hidden" name="boardTypeSeq" value="${boardTypeSeq}"/>
-									<input type="hidden" name="boardSeq" value="${boardSeq}"/>
-									<input type="hidden" name="commentSeq" value="${comment.commentSeq}"/>
-									<div style="width:90%">
-										<input type="text" name="content" placeholder="수정할 댓글 내용을 입력해주세요."/>
-									</div>
-									<div style="width:10%">
-										<input type="submit" value="수정" style="width:100%"/>
-									</div>
-								</form>
+							    <form class="panel panel-${comment.commentSeq}" action="updateComment.do" method="post" style="display:flex; border:1px solid rgba(0, 0, 0, 0.2)">
+							        <input type="hidden" name="logInUser" value="${logInUser}"/>
+							        <input type="hidden" name="boardTypeSeq" value="${boardTypeSeq}"/>
+							        <input type="hidden" name="boardSeq" value="${boardSeq}"/>
+							        <input type="hidden" name="commentSeq" value="${comment.commentSeq}"/>
+							        <div style="width:90%">
+							            <input type="text" name="content" placeholder="수정할 댓글 내용을 입력해주세요."/>
+							        </div>
+							        <div style="width:10%">
+							            <input type="submit" value="수정" style="width:100%"/>
+							        </div>
+							    </form>
 							</c:if>
 							<!-- 댓글 수정내용 입력칸 끝 -->
 							<!-- end .forum_single_reply -->
@@ -309,18 +315,21 @@ String ctx = request.getContextPath();
 			}
 		}
 		
-		window.onload = function () {
-			document.getElementById('cmtEditToggle').addEventListener('click', function() {
-			    var panel = document.querySelector('.panel');
-			    if (panel.style.maxHeight) {
-			        panel.style.maxHeight = null;
-			        panel.style.opacity = 0;
-			    } else {
-			        panel.style.maxHeight = panel.scrollHeight + 'px';
-			        panel.style.opacity = 1;
-			    }
-			});
+		// 댓글수정 토글방식 변경
+		function editToggle(commentSeq) {
+		    var panel = document.querySelector('.panel-' + commentSeq);
+		    panel.classList.toggle('active');
 		}
+
+		window.onload = function() {
+		    var elements = document.querySelectorAll('.cmtEditToggle');
+		    elements.forEach(function(element) {
+		        element.addEventListener('click', function() {
+		            editToggle(element.getAttribute('data-commentSeq'));
+		        });
+		    });
+		};
+		
     </script>
 <!--================================
             END DASHBOARD AREA

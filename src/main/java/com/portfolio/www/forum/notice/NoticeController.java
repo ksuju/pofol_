@@ -312,6 +312,7 @@ public class NoticeController {
 		mv.addObject("currentPage", page);
 		mv.addObject("hasPrev", pageHandler.isShowPrev());
 		mv.addObject("hasNext", pageHandler.isShowNext());
+		mv.addObject("totalCnt", totalCnt);
 		// 페이징 끝
 
 		// 게시글리스트 출력

@@ -28,7 +28,7 @@ String ctx = request.getContextPath();
 									<tbody>
 										<c:forEach items="${list}" var="i" varStatus="status">
 											<tr>
-												<td>${i.boardSeq}</td>
+												<td>${totalCnt-(currentPage-1)*10-status.index}</td>
 												<td><a
 													href="<c:url value='/forum/notice/readPage.do?boardSeq=${i.boardSeq}&boardTypeSeq=${i.boardTypeSeq}'/>">
 														${i.title} </a> <%-- &nbsp;<c:if test="${commentCounts[i.boardSeq] != 0}"><a>(${commentCounts[i.boardSeq]})</a></c:if> --%>
