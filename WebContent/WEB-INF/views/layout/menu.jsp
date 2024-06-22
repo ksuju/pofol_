@@ -6,7 +6,7 @@
     <!-- start menu-area -->
     <div class="menu-area">
         <!-- start .top-menu-area -->
-        <div class="top-menu-area">
+        <div class="top-menu-area" style="background-color:white;">
             <!-- start .container -->
             <div class="container">
                 <!-- start .row -->
@@ -15,7 +15,7 @@
                     <div class="col-lg-3 col-md-3 col-6 v_middle">
                         <div class="logo">                        
                             <a href="<c:url value='/index.do'/>">                            	
-                                <img src="<c:url value='/assest/template/images/rundog.png'/>" style="height:80px" alt="logo image" class="img-fluid" />
+                                <img src="<c:url value='/assest/template/images/ksujulogo.png'/>" style="height:80px" alt="logo image" class="img-fluid" />
                             </a>
                         </div>
                     </div>
@@ -142,7 +142,7 @@
                                 <ul class="navbar-nav">
                                     <li class="has_dropdown">
                                         <a href="${pageContext.request.contextPath}/index.html">HOME</a>
-                                        <div class="dropdowns dropdown--menu">
+<!--                                         <div class="dropdowns dropdown--menu">
                                             <ul>
                                                 <li>
                                                     <a href="index.html">Home Multi Vendor</a>
@@ -154,7 +154,7 @@
                                                     <a href="index3.html">Home Three Product</a>
                                                 </li>
                                             </ul>
-                                        </div>
+                                        </div> -->
                                     </li>
 <!--                                     <li class="has_dropdown">
                                         <a href="all-products-list.html">all product</a>
@@ -315,12 +315,6 @@
                                                 <li>
                                                     <a href="#">자유게시판</a>
                                                 </li>
-                                                <li>
-                                                    <a href="#">사진</a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">동영상</a>
-                                                </li>
 <!--                                                 <li>
                                                     <a href="#">추후 개설</a>
                                                 </li> -->
@@ -328,7 +322,7 @@
                                         </div>
                                     </li>
                                     <li>
-                                        <a href="${pageContext.request.contextPath}/contact.do">고객센터</a>
+                                        <a href="${pageContext.request.contextPath}/contact.do">이력서</a>
                                     </li>
                                 </ul>
                             </div>
