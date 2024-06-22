@@ -6,6 +6,11 @@
 <mapper
 	namespace="com.portfolio.www.dao.mybatis.NoticeRepository">
 	
+	<!-- 이력서 가져오기 -->
+	<select id="resume" resultType="ResumeDto">
+		SELECT * FROM resume
+	</select>
+	
 	<!-- 댓글 is_like 'Y' or 'N' 가져오기 -->
 	<select id="commentIsLike">
 	    SELECT is_like, comment_seq 

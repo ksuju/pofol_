@@ -18,7 +18,6 @@ public class EmailProp {
 
     @Value("${email.joinUri}")
     private String joinUri;
-
     
 	public String getUsername() {
 		return username;

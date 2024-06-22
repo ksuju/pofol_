@@ -12,8 +12,13 @@ import com.portfolio.www.dto.BoardLikeDto;
 import com.portfolio.www.dto.CommentLikeDto;
 import com.portfolio.www.dto.EmailAuthDto;
 import com.portfolio.www.dto.MemberAuthDto;
+import com.portfolio.www.dto.ResumeDto;
 
 public interface NoticeRepository {
+	
+	
+	// 이력서 가져오기
+	public ResumeDto resume();
 	
 	// 댓글 좋아요 Y or N 셀렉트
 	public List<HashMap<String, Object>> commentIsLike(@Param("memberSeq")int memberSeq,
