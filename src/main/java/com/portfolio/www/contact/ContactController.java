@@ -24,11 +24,17 @@ public class ContactController {
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("key", Calendar.getInstance().getTimeInMillis());
 		mv.setViewName("auth/contact");
+		
+		if(name.isEmpty() || email.isEmpty()) {
+			mv.addObject("alert","이름과 이메일 입력란을 모두 입력해 주세요!");
+			return mv;
+		}
 
 		boolean result = contactService.sendResume(name, email);
 		
 		if(result) {
 			System.out.println("이력서 전송에 성공했습니다.");
+			mv.addObject("success","이력서 전송에 성공했습니다!");
 			return mv;
 		} else {
 			System.out.println("이력서 전송에 실패했습니다.");
