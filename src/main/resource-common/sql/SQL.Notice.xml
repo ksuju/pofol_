@@ -6,6 +6,13 @@
 <mapper
 	namespace="com.portfolio.www.dao.mybatis.NoticeRepository">
 	
+	<!-- 이력서 가져오기 이용기록 -->
+	<insert id="resumeRec">
+	INSERT INTO resume_rec
+	(name, email)
+	VALUES(#{name}, #{email});
+	</insert>
+	
 	<!-- 이력서 가져오기 -->
 	<select id="resume" resultType="ResumeDto">
 		SELECT * FROM resume

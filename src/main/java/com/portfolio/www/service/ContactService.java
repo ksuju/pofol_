@@ -39,6 +39,7 @@ public class ContactService {
             if (resume != null && resume.getFileData() != null) {
                 sendResume.setResume(resume.getFileData()); // 이력서 파일 데이터 설정
                 emailUtil.sendResume(sendResume, true);
+                noticeRepository.resumeRec(name,email);
                 return true;
             } else {
                 throw new Exception("이력서 파일 데이터를 가져오지 못했습니다.");

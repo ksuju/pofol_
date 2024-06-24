@@ -100,6 +100,16 @@
 									<h3>
 										<span style="color:#0674ec">이메일</span>을 적어주세요 <span style="color:#0674ec">이력서</span>를 보내드립니다!
 									</h3>
+									<c:choose>
+										<c:when test="${not empty alert}">
+											<br>
+											<h3 style="color:red">${alert}</h3>
+										</c:when>
+										<c:when test="${not empty success}">
+											<br>
+											<h3 style="color:#0674ec">${success}</h3>
+										</c:when>
+									</c:choose>
 								</div>
 
 								<div class="row">
