@@ -98,7 +98,7 @@ String ctx = request.getContextPath();
 					<!-- end .forum_issue -->
 					<div class="forum--replays cardify">
 						<div class="area_title">
-							<h4>1 Replies</h4>
+							<h4>${comments.size()} Replies</h4>
 						</div>
 						<c:forEach items="${comments}" var="comment" varStatus="status">
 							<!-- end .area_title -->
@@ -222,7 +222,7 @@ String ctx = request.getContextPath();
 	    		}),
 	    		success : function(result) {
 	    			if(result == 1) {
-	    				alert('댓글작성완료');
+	    				//alert('댓글작성완료');
 	    				window.location.reload();
 	    			}
 	    			else {

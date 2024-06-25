@@ -50,15 +50,15 @@
 							</div>
 
 							<button id="loginButton" class="btn btn--md btn--round"
-								type="submit">Login Now</button>
+								type="submit">로그인</button>
 
 							<div class="login_assist">
 								<p class="recover">
-									Lost your <a href="pass-recovery.html">username</a> or <a
-										href="resetPw.do">password</a>?
+									<a href="pass-recovery.html">아이디 찾기</a> or <a
+										href="resetPw.do">비밀번호 찾기</a>
 								</p>
 								<p class="signup">
-									Don't have an <a href="<c:url value='/auth/joinPage.do'/>">account</a>?
+									<a href="<c:url value='/auth/joinPage.do'/>">회원가입</a>
 								</p>
 							</div>
 						</div>

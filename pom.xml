@@ -273,7 +273,7 @@
 			    <version>2.2</version>
 			    <configuration>
 					    <update>true</update>
-			        <url>http://localhost:8080/manager/text</url>
+			        <url>http://ec2-54-180-230-97.ap-northeast-2.compute.amazonaws.com:8080/manager/text</url>
 			        <server>TomcatServer</server>
 			        <path>/${project.build.finalName}</path>
 			        <username>admin</username>
