@@ -41,19 +41,18 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-12">
-					<div class="row">
+					<!-- <div class="row"> -->
 						<!-- start col-md-12 -->
-						<div class="col-md-12">
-							<div class="section-title">
-								<h1>
+						<!-- <div class="col-md-12">
+							<div class="section-title"> -->
+								<!-- <h1> -->
 									<!-- <span class="highlighted">이메일</span>을 적어주세요 <span class="highlighted">이력서</span>를 보내드려요! -->
-									안녕하세요 짧은 소개
-								</h1>
-								<p>안녕하세요 ~~~~~~.</p>
-							</div>
-						</div>
+								<!-- </h1> -->
+								<!-- <p>안녕하세요 ~~~~~~.</p> -->
+						<!-- 	</div>
+						</div> -->
 						<!-- end /.col-md-12 -->
-					</div>
+					<!-- </div> -->
 					<!-- end /.row -->
 
 					<div class="row">

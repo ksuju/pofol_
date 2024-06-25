@@ -28,10 +28,10 @@
                             <div class="author__notification_area">
                                 <ul>
                                     <li class="has_dropdown">
-                                        <div class="icon_wrap">
+                      <!--                   <div class="icon_wrap">
                                             <span class="lnr lnr-cart"></span>
                                             <span class="notification_count purch">2</span>
-                                        </div>
+                                        </div> -->
 
                                         <div class="dropdowns dropdown--cart">
                                             <div class="cart_area">
