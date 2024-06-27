@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +35,19 @@ public class NoticeService {
 
 	@Autowired
 	FileUtil fileUtil;
+	
+    public Map<Integer, String> getIsLikeMap(Integer memberSeq, List<Integer> boardSeqs, int boardTypeSeq) {
+        List<Map<String, Object>> isLikeList = noticeRepository.selectIsLikeList(memberSeq, boardSeqs, boardTypeSeq);
+
+        // Map 변환
+        Map<Integer, String> isLikeMap = isLikeList.stream()
+                .collect(Collectors.toMap(
+                        map -> (Integer) map.get("boardSeq"),
+                        map -> (String) map.get("isLike")
+                ));
+
+        return isLikeMap;
+    }
 	
 	// 댓글 좋아요 Y or N 셀렉트
 	public List<HashMap<String, Object>> commentIsLike(int memberSeq, int boardSeq, int boardTypeSeq) {
@@ -288,8 +303,47 @@ public class NoticeService {
 
 	// 게시판 내 게시글 불러오기
 	public List<BoardDto> getList(HashMap<String, Integer> params) {
+	    List<BoardDto> getList = noticeRepository.getList(params);
+	    int boardTypeSeq = params.get("bdTypeSeq");
+	    int loginMemberSeq = params.get("loginMemberSeq");
+	    
+	    // 모든 boardSeq 값을 추출
+	    List<Integer> boardSeqs = getList.stream()
+	                                     .map(BoardDto::getBoardSeq)
+	                                     .collect(Collectors.toList());
 
-		return noticeRepository.getList(params);
+	    // 파일 개수와 댓글 개수를 한 번에 가져옴
+	    List<Map<String, Object>> fileCounts = noticeRepository.bringFileCnt(boardSeqs, boardTypeSeq);
+	    List<Map<String, Object>> commentCounts = noticeRepository.bringCmtCnt(boardSeqs, boardTypeSeq);
+
+	    // 파일 개수를 Map으로 변환 (Long 타입을 Integer 타입으로 변환)
+	    Map<Integer, Integer> fileCountMap = fileCounts.stream()
+	        .collect(Collectors.toMap(
+	            map -> (Integer) map.get("boardSeq"),
+	            map -> ((Long) map.get("fileCount")).intValue()
+	        ));
+
+	    // 댓글 개수를 Map으로 변환 (Long 타입을 Integer 타입으로 변환)
+	    Map<Integer, Integer> commentCountMap = commentCounts.stream()
+	        .collect(Collectors.toMap(
+	            map -> (Integer) map.get("boardSeq"),
+	            map -> ((Long) map.get("commentCount")).intValue()
+	        ));
+	    
+	    Map<Integer, String> isLike = getIsLikeMap(loginMemberSeq, boardSeqs, boardTypeSeq);
+	    
+	    // 각 BoardDto에 파일 개수와 댓글 개수를 설정
+	    for (BoardDto boardDto : getList) {
+	        int boardSeq = boardDto.getBoardSeq();
+	        boardDto.setFileCount(fileCountMap.getOrDefault(boardSeq, 0));
+	        boardDto.setCommentCount(commentCountMap.getOrDefault(boardSeq, 0));
+	        
+	        if(isLike.containsKey(boardSeq)) {
+	        	boardDto.setIsLike(isLike.get(boardSeq));
+	        }
+	    }
+	    
+	    return getList;
 	}
 
 	// 게시판 내 총 게시글 수

@@ -38,9 +38,6 @@ public class LoginService {
 		// on 또는 null
 		String checkBox = params.get("checkBox");
 		
-		System.out.println("alalalaalalalal==============>"+checkBox);
-		
-		
 		try {
 			noticeRepository.getMemberSeq(memberId);
 			// 체크박스가 "on"일때 입력받은 아이디 쿠키로 저장

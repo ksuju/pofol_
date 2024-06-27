@@ -16,7 +16,7 @@ String ctx = request.getContextPath();
     <meta name="description" content="MartPlace - Complete Online Multipurpose Marketplace HTML Template">
     <meta name="keywords" content="marketplace, easy digital download, digital product, digital, html5">
 
-    <title>강성준준</title>
+    <title>ksuju's portfolio</title>
 
     <!-- inject:css -->
     <link rel="stylesheet" href="<%=ctx%>/assest/template/css/animate.css">

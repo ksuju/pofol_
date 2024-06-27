@@ -4,6 +4,13 @@
 <%
 String ctx = request.getContextPath();
 %>
+<style>
+	.commentIcon{
+	width:20px;
+	height:20px;
+	}
+
+</style>
 <section class="section--padding2">
 	<div class="container">
 		<div class="row">
@@ -31,7 +38,20 @@ String ctx = request.getContextPath();
 												<td>${totalCnt-(currentPage-1)*10-status.index}</td>
 												<td><a
 													href="<c:url value='/forum/notice/readPage.do?boardSeq=${i.boardSeq}&boardTypeSeq=${i.boardTypeSeq}'/>">
-														${i.title} </a> <%-- &nbsp;<c:if test="${commentCounts[i.boardSeq] != 0}"><a>(${commentCounts[i.boardSeq]})</a></c:if> --%>
+														${i.title} </a>
+													&nbsp;
+													<c:if test="${i.fileCount != 0}"><img class="commentIcon" src="<c:url value='/assest/template/images/fileImg.png'/>"/><a>(${i.fileCount})</a></c:if> 
+													&nbsp;
+													<c:if test="${i.commentCount != 0}"><img class="commentIcon" src="<c:url value='/assest/template/images/cmtImg.png'/>"/><a>(${i.commentCount})</a></c:if>
+													&nbsp;
+													<c:choose>
+														<c:when test="${i.isLike == 'Y'}">
+															<img class="commentIcon" src="<c:url value='/assest/template/images/tup.png'/>"/>
+														</c:when>
+														<c:when test="${i.isLike == 'N'}">
+														    <img class="commentIcon" src="<c:url value='/assest/template/images/tdown.png'/>"/>
+														</c:when>
+													</c:choose>
 												</td>
 												<td>${i.regDtm}</td>
 												<td>${i.memberId}</td>
