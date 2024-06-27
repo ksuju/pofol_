@@ -16,15 +16,38 @@ public class BoardDto {
 	private String updateDtm;
 	private int updateMemberSeq;
 	private String boardTypeNm;
-	private int countComment;
 	
 	
-	public int getCountComment() {
-		return countComment;
+    private int fileCount; // 파일 개수 필드 추가
+    private int commentCount; // 댓글 개수 필드 추가
+    
+    private String isLike; // like 여부
+    
+    public String getIsLike() {
+		return isLike;
 	}
-	public void setCountComment(int countComment) {
-		this.countComment = countComment;
+
+	public void setIsLike(String isLike) {
+		this.isLike = isLike;
 	}
+
+	public int getFileCount() {
+        return fileCount;
+    }
+
+    public void setFileCount(int fileCount) {
+        this.fileCount = fileCount;
+    }
+
+    public int getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
+    }
+    
+    
 	public String getMemberId() {
 		return memberId;
 	}

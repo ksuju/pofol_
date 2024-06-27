@@ -6,11 +6,69 @@
 <mapper
 	namespace="com.portfolio.www.dao.mybatis.NoticeRepository">
 	
+	<!-- 여러 개의 boardSeq에 대한 is_like 값 가져오기 -->
+	<select id="selectIsLikeList" parameterType="map" resultType="map">
+	    SELECT board_seq AS boardSeq, is_like AS isLike
+	    FROM board_like_dislike
+	    WHERE member_seq = #{memberSeq}
+	    AND board_seq IN
+	    <foreach item="boardSeq" collection="boardSeqs" open="(" separator="," close=")">
+	        #{boardSeq}
+	    </foreach>
+	    AND board_type_seq = #{boardTypeSeq}
+	</select>
+	
+	<!-- 카테고리별 메뉴 가져오기 -->
+	<select id="menu">
+		SELECT menu_name
+		FROM recommend_menu
+		WHERE menu_category = #{category};
+	</select>
+	
+	<!-- 메뉴 카테고리 가져오기 -->	
+	<select id="menuCategory">
+		SELECT menu_category
+		FROM recommend_menu
+		GROUP BY menu_category;
+	</select>
+	
+	<!-- 모든 메뉴 가져오기 -->
+	<select id="allMenu">
+		SELECT menu_name
+		FROM recommend_menu
+		WHERE NOT menu_name IN ('아무거나');
+	</select>
+	
+	<!-- 첨부파일 개수 가져오기 (여러 boardSeq) -->
+	<select id="bringFileCnt" parameterType="map" resultType="map">
+	    SELECT board_seq AS boardSeq, COUNT(*) AS fileCount
+	    FROM board_attach
+	    WHERE board_seq IN
+	    <foreach item="boardSeq" collection="boardSeqs" open="(" separator="," close=")">
+	        #{boardSeq}
+	    </foreach>
+	    AND board_type_seq = #{boardTypeSeq}
+	    GROUP BY board_seq;
+	</select>
+	
+	<!-- 댓글 개수 가져오기 (여러 boardSeq) -->
+	<select id="bringCmtCnt" parameterType="map" resultType="map">
+	    SELECT board_seq AS boardSeq, COUNT(*) AS commentCount
+	    FROM board_comment
+	    WHERE board_seq IN
+	    <foreach item="boardSeq" collection="boardSeqs" open="(" separator="," close=")">
+	        #{boardSeq}
+	    </foreach>
+	    AND board_type_seq = #{boardTypeSeq}
+	    GROUP BY board_seq;
+	</select>
+	
+	
 	<!-- 이력서 가져오기 이용기록 -->
 	<insert id="resumeRec">
-	INSERT INTO resume_rec
-	(name, email)
-	VALUES(#{name}, #{email});
+		INSERT INTO resume_rec
+		(name, email)
+		VALUES(#{name}, #{email});
 	</insert>
 	
 	<!-- 이력서 가져오기 -->
@@ -117,8 +175,7 @@
 	</select>
 
 	<!-- 게시글에 저정된 첨부파일 정보 모두 가져오기 -->
-	<select id="selectAllFile" parameterType="HashMap"
-		resultType="BoardAttachDto">
+	<select id="selectAllFile" resultType="BoardAttachDto">
 		SELECT * FROM board_attach
 		WHERE board_seq = #{boardSeq}
 		AND
@@ -204,7 +261,26 @@
 		#{boardTypeSeq} AND b.board_seq
 		= #{boardSeq};
 	</delete>
-
+	
+	<!-- 게시글 getSeq 가져오기 -->
+	<select id="getSeq" parameterType="map" resultType="int">
+		SELECT
+			b.board_seq
+		FROM
+			board b
+		JOIN
+			board_type bt ON
+			bt.board_type_seq = b.board_type_seq
+		JOIN
+			member m ON m.member_seq =
+			b.reg_member_seq
+		WHERE
+			b.board_type_seq = #{bdTypeSeq}
+		ORDER BY
+			b.board_seq DESC
+		LIMIT
+			#{start}, #{size};
+	</select>
 
 	<!-- 게시글 리스트 가져오기 -->
 	<select id="getList" parameterType="map" resultType="BoardDto">

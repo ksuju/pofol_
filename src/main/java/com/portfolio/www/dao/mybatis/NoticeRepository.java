@@ -2,6 +2,7 @@ package com.portfolio.www.dao.mybatis;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -16,6 +17,23 @@ import com.portfolio.www.dto.ResumeDto;
 
 public interface NoticeRepository {
 	
+	List<Map<String, Object>> selectIsLikeList(@Param("memberSeq") Integer memberSeq,
+			@Param("boardSeqs") List<Integer> boardSeqs, @Param("boardTypeSeq") int boardTypeSeq);
+	
+	// 특정 카테고리 메뉴 가져오기
+	public List<String> menu(@Param("category")String category);
+	
+	// 모든 메뉴 카테고리 가져오기
+	public List<String> menuCategory();
+	
+	// 모든 카테고리에서 메뉴 가져오기
+	public List<String> allMenu();
+	
+	// 첨부파일 개수 가져오기	
+    List<Map<String, Object>> bringFileCnt(@Param("boardSeqs") List<Integer> boardSeqs, @Param("boardTypeSeq") int boardTypeSeq);
+	// 댓글 개수 가져오기
+    List<Map<String, Object>> bringCmtCnt(@Param("boardSeqs") List<Integer> boardSeqs, @Param("boardTypeSeq") int boardTypeSeq);
+
 	// 이력서 가져오기 이용 기록
 	public int resumeRec(@Param("name")String name,
 			@Param("email")String email);
@@ -98,6 +116,7 @@ public interface NoticeRepository {
 	
 	// 게시판 내에 있는 게시글 모두 가져오기
 	public List<BoardDto> getList(HashMap<String, Integer> params);
+	public List<Integer> getSeq(HashMap<String, Integer> params);
 	
 	// 게시판 내에 있는 전체 게시글의 수
 	public int totalCnt(int boardTypeSeq);
@@ -135,7 +154,6 @@ public interface NoticeRepository {
 	//로그인
 	public String loginCheak(String memberID);
 	
-	
 	//멤버 seq 가져오기
 	public int getMemberSeq(String memberID);
 	
@@ -150,6 +168,7 @@ public interface NoticeRepository {
 	
 	//updateAuth
 	public int updateAuth(EmailAuthDto emailAuthDto);
+	
 	//updateMemAuth
 	public int updateMemAuth(@Param("memberSeq") int memberSeq);
 }

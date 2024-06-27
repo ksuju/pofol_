@@ -315,19 +315,22 @@ public class NoticeController {
 		mv.addObject("totalCnt", totalCnt);
 		// 페이징 끝
 
+		HttpSession session = request.getSession();
+		String loginMember = (String) session.getAttribute("logInUser");
+		
+		int loginMemberSeq = noticeService.getMemberSeq(loginMember);
+		
 		// 게시글리스트 출력
 		HashMap<String, Integer> boardList = new HashMap<String, Integer>();
 		boardList.put("bdTypeSeq", Integer.parseInt(params.get("bdTypeSeq")));
 		boardList.put("start", start);
 		boardList.put("size", size);
+		boardList.put("loginMemberSeq", loginMemberSeq);
 
 		List<BoardDto> list = noticeService.getList(boardList);
-
+		
 		mv.addObject("list", list);
 		// 게시글리스트 출력 끝
-
-		HttpSession session = request.getSession();
-		String loginMember = (String) session.getAttribute("logInUser");
 
 		mv.addObject("loginMember", loginMember);
 
@@ -371,9 +374,6 @@ public class NoticeController {
 		int loginMemberSeq = noticeService.getMemberSeq(logInUser);
 		
 		String isLike = noticeService.selectIsLike(loginMemberSeq,boardSeq,boardTypeSeq);
-		
-		
-		
 		
 		mv.addObject("title", selectBoard.get("title"));
 		mv.addObject("content", selectBoard.get("content"));
