@@ -71,9 +71,6 @@ public class LoginService {
 		long expireDtm = noticeRepository.getExpireDtm(params.get("email"));
 		long now = System.currentTimeMillis();
 
-		System.out.println("expireDtm============================>" + expireDtm);
-		System.out.println("now============================>" + now);
-
 		if (expireDtm > now) {
 			params.put("passwd", encPasswd);
 			// BCrypt를 사용한 비밀번호 암호화 끝
@@ -126,7 +123,11 @@ public class LoginService {
 			//String html = emailprop.getPwChangeUri() + params.get("authNum") + "&email=" + params.get("email")
 			//		+ "'>비밀번호 변경하기</a>";
 			
-			String html = emailprop.getPwChangeUri() + params.get("authNum") + "&email=" + params.get("email") + "'>비밀번호 변경하기</a>";
+			String timestamp = String.valueOf(System.currentTimeMillis());
+			
+			String uri = emailprop.getPwChangeUri() + params.get("authNum") + "&email=" + params.get("email") + "&t=" + timestamp + "'>비밀번호 변경하기</a>";
+			
+			String html = "<html><body><p>비밀번호 변경을 위해 아래 링크를 클릭하세요:</p>" + uri + "</body></html>";
 
 			email.setText(html);
 
