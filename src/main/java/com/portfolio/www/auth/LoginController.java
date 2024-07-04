@@ -6,7 +6,6 @@ import java.util.HashMap;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -50,7 +49,8 @@ public class LoginController {
 
 	// 비밀번호 변경 인증번호 생성 및 인증메일 발송
 	@RequestMapping("/auth/convertPw.do")
-	public ModelAndView convertPw(@RequestParam String email, Model model) {
+	public ModelAndView convertPw(@RequestParam String email, Model model, HttpServletResponse response) {
+		
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("key", Calendar.getInstance().getTimeInMillis());
 		System.out.println("====================convertPw controller 진입====================");
