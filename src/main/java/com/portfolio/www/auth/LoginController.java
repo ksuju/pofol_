@@ -49,38 +49,52 @@ public class LoginController {
 
 	// 비밀번호 변경 인증번호 생성 및 인증메일 발송
 	@RequestMapping("/auth/convertPw.do")
-	public ModelAndView convertPw(@RequestParam String email, Model model, HttpServletResponse response) {
+	public ModelAndView convertPw(@RequestParam String email, @RequestParam String name 
+			,Model model, HttpServletResponse response) {
 		
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("key", Calendar.getInstance().getTimeInMillis());
 		System.out.println("====================convertPw controller 진입====================");
-		// 6자리의 인증번호 생성
-		int authNum = (int) (Math.random() * (999999 - 100000 + 1)) + 100000;
-
-		HashMap<String, String> updateAuthNum = new HashMap<>();
-
-		updateAuthNum.put("authNum", String.valueOf(authNum));
-		updateAuthNum.put("email", email);
-
-		int cnt = loginService.updateAuthNum(updateAuthNum);
-
-		if (cnt == 1) {
-			mv.setViewName("auth/login");
-			// 빨간글씨로 띄울거 알람보냄
-			model.addAttribute("alert", "이메일을 확인하세요.");
-			return mv;
-		} else if (cnt == Integer.parseInt(MessageEnum.VALLID_EMAIL.getCode())) {
+		
+		// db에 저장된 유저아이디와 입력받은 유저아이디 비교
+		if(email.isEmpty() || name.isEmpty()) {
 			mv.setViewName("auth/recoverPassword");
 			// 빨간글씨로 띄울거 알람보냄
-			model.addAttribute("alert", MessageEnum.VALLID_EMAIL.getDescription());
+			model.addAttribute("alert", "아이디와 이메일을 모두 입력해주세요.");
+			return mv;
+		} else if (!loginService.compareID(email, name)) {
+			mv.setViewName("auth/recoverPassword");
+			// 빨간글씨로 띄울거 알람보냄
+			model.addAttribute("alert", "입력하신 이메일 주소와 아이디가 일치하지 않습니다.");
 			return mv;
 		} else {
-			mv.setViewName("auth/recoverPassword");
-			// 빨간글씨로 띄울거 알람보냄
-			model.addAttribute("alert", "이메일 인증 실패");
-			return mv;
-		}
+			// 6자리의 인증번호 생성
+			int authNum = (int) (Math.random() * (999999 - 100000 + 1)) + 100000;
 
+			HashMap<String, String> updateAuthNum = new HashMap<>();
+
+			updateAuthNum.put("authNum", String.valueOf(authNum));
+			updateAuthNum.put("email", email);
+
+			int cnt = loginService.updateAuthNum(updateAuthNum);
+
+			if (cnt == 1) {
+				mv.setViewName("auth/login");
+				// 빨간글씨로 띄울거 알람보냄
+				model.addAttribute("alert", "이메일을 확인하세요.");
+				return mv;
+			} else if (cnt == Integer.parseInt(MessageEnum.VALLID_EMAIL.getCode())) {
+				mv.setViewName("auth/recoverPassword");
+				// 빨간글씨로 띄울거 알람보냄
+				model.addAttribute("alert", MessageEnum.VALLID_EMAIL.getDescription());
+				return mv;
+			} else {
+				mv.setViewName("auth/recoverPassword");
+				// 빨간글씨로 띄울거 알람보냄
+				model.addAttribute("alert", "이메일 인증 실패");
+				return mv;
+			}
+		}
 	}
 
 	// 비밀번호 변경페이지로 이동 & 비밀번호 변경

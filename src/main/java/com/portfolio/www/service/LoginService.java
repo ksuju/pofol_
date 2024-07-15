@@ -31,6 +31,18 @@ public class LoginService {
 	@Autowired
 	private EmailProp emailprop;
 	
+	// 비밀번호 찾기 할 때 입력한 아이디와 이메일로부터 가져온 db에 있는 아이디 비교
+	public boolean compareID(String email, String name) {
+		String dbMemberID = noticeRepository.compareID(email);
+		
+		System.out.println("============== LoginService > compareID ===============");
+		
+		if(!dbMemberID.isEmpty() && dbMemberID.equals(name)) {
+			return true;
+		} 
+		return false;
+	}
+	
 	// 아이디 저장 쿠키 생성
 	public boolean saveIdCookie(HashMap<String, String> params, HttpServletResponse response) {
 		String memberId = params.get("memberID");
