@@ -15,18 +15,22 @@
 							<c:if test="${not empty alert}">
 								<h5 style="color: red; text-align:center;">${alert}</h5>
 							</c:if>
-							<p>계정의 이메일 주소를 입력하세요. 인증 코드가 발송됩니다.</p>
+							<p>인증을 위해 계정의 아이디와 이메일 주소를 입력하세요.</p>
 							<p>인증 코드를 받으면 계정의 새 비밀번호를 설정할 수 있습니다.</p>
 						</div>
 						<!-- end .login_header -->
 
 						<div class="login--form">
 							<div class="form-group">
-								<label for="email_ad">Email Address</label> <input name="email"
+								<label for="name_ad">아이디</label> <input name="name"
+									id="name_ad" type="text" class="text_field"
+									placeholder="Enter your user id">
+							</div>
+							<div class="form-group">
+								<label for="email_ad">이메일 주소</label> <input name="email"
 									id="email_ad" type="text" class="text_field"
 									placeholder="Enter your email address">
 							</div>
-
 							<button class="btn btn--md btn--round register_btn" type="submit">Register
 								Now</button>
 						</div>

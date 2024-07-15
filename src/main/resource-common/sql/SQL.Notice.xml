@@ -6,6 +6,13 @@
 <mapper
 	namespace="com.portfolio.www.dao.mybatis.NoticeRepository">
 	
+	<!-- email로 member_id 가져오기 (비밀번호 변경 시 사용) -->
+	<select id="compareID">
+		SELECT member_id
+		FROM member
+		WHERE email = #{email};
+	</select>
+	
 	<!-- 여러 개의 boardSeq에 대한 is_like 값 가져오기 -->
 	<select id="selectIsLikeList" parameterType="map" resultType="map">
 	    SELECT board_seq AS boardSeq, is_like AS isLike

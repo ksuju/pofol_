@@ -15,7 +15,12 @@ import com.portfolio.www.dto.EmailAuthDto;
 import com.portfolio.www.dto.MemberAuthDto;
 import com.portfolio.www.dto.ResumeDto;
 
+import lombok.experimental.PackagePrivate;
+
 public interface NoticeRepository {
+	
+	// 비밀번호 찾기 할 때 입력한 아이디와 이메일로부터 가져온 db에 있는 아이디 비교
+	public String compareID(@Param("email") String email);
 	
 	List<Map<String, Object>> selectIsLikeList(@Param("memberSeq") Integer memberSeq,
 			@Param("boardSeqs") List<Integer> boardSeqs, @Param("boardTypeSeq") int boardTypeSeq);
