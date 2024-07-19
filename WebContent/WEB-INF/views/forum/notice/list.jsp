@@ -29,6 +29,7 @@ String ctx = request.getContextPath();
 											<th>제목</th>
 											<th>Date</th>
 											<th>작성자</th>
+											<th>좋아요</th>
 										</tr>
 									</thead>
 
@@ -44,17 +45,10 @@ String ctx = request.getContextPath();
 													&nbsp;
 													<c:if test="${i.commentCount != 0}"><img class="commentIcon" src="<c:url value='/assest/template/images/cmtImg.png'/>"/><a>(${i.commentCount})</a></c:if>
 													&nbsp;
-													<c:choose>
-														<c:when test="${i.isLike == 'Y'}">
-															<img class="commentIcon" src="<c:url value='/assest/template/images/tup.png'/>"/>
-														</c:when>
-														<c:when test="${i.isLike == 'N'}">
-														    <img class="commentIcon" src="<c:url value='/assest/template/images/tdown.png'/>"/>
-														</c:when>
-													</c:choose>
 												</td>
 												<td>${i.regDtm}</td>
-												<td>${i.memberId}</td>
+												<td>&nbsp;${i.memberId}</td>
+												<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${i.isLike}</td>
 											</tr>
 										</c:forEach>
 									</tbody>

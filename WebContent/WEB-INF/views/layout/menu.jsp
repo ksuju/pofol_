@@ -151,7 +151,7 @@
                                                     <a href="https://ksuju.tistory.com/" target="_blank">개발 블로그</a>
                                                 </li>
                                                 <li>
-                                                    <a href="etc.do">이것저것</a>
+                                                    <a href="${pageContext.request.contextPath}/etc.do">이것저것</a>
                                                 </li>
                                             </ul>
                                         </div>

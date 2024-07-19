@@ -6,6 +6,66 @@
 <mapper
 	namespace="com.portfolio.www.dao.mybatis.NoticeRepository">
 	
+	
+	
+	
+	<!-- 게시글의 파일 개수, 댓글 개수, 좋아요 여부를 포함한 통합 쿼리 -->
+	<select id="getBoardDetails" parameterType="map" resultType="map">
+	    SELECT 
+	        b.board_seq AS boardSeq,
+	        COALESCE(f.fileCount, 0) AS fileCount,
+	        COALESCE(c.commentCount, 0) AS commentCount,
+	        COALESCE(l.isLikeCount, 0) AS isLike
+	    FROM 
+	        board b
+	    LEFT JOIN (
+	        SELECT board_seq, COUNT(*) AS fileCount
+	        FROM board_attach
+	        WHERE board_seq IN
+	        <foreach item="boardSeq" collection="boardSeqs" open="(" separator="," close=")">
+	            #{boardSeq}
+	        </foreach>
+	        AND board_type_seq = #{boardTypeSeq}
+	        GROUP BY board_seq
+	    ) f ON b.board_seq = f.board_seq
+	    LEFT JOIN (
+	        SELECT board_seq, COUNT(*) AS commentCount
+	        FROM board_comment
+	        WHERE board_seq IN
+	        <foreach item="boardSeq" collection="boardSeqs" open="(" separator="," close=")">
+	            #{boardSeq}
+	        </foreach>
+	        AND board_type_seq = #{boardTypeSeq}
+	        GROUP BY board_seq
+	    ) c ON b.board_seq = c.board_seq
+	    LEFT JOIN (
+	        SELECT board_seq, COUNT(*) AS isLikeCount
+	        FROM board_like_dislike
+	        WHERE is_like = 'Y'
+	        AND board_seq IN
+	        <foreach item="boardSeq" collection="boardSeqs" open="(" separator="," close=")">
+	            #{boardSeq}
+	        </foreach>
+	        AND board_type_seq = #{boardTypeSeq}
+	        GROUP BY board_seq
+	    ) l ON b.board_seq = l.board_seq
+	    WHERE b.board_seq IN
+	    <foreach item="boardSeq" collection="boardSeqs" open="(" separator="," close=")">
+	        #{boardSeq}
+	    </foreach>
+	    AND b.board_type_seq = #{boardTypeSeq};
+	</select>
+
+
+	<!-- 좋아요 수 체크 -->
+	<select id="like">
+		SELECT COUNT(is_like)
+		FROM board_like_dislike
+		WHERE is_like = 'Y'
+		AND board_seq = #{boardSeq}
+		AND board_type_seq = #{bdTypeSeq};
+	</select>
+	
 	<!-- email로 member_id 가져오기 (비밀번호 변경 시 사용) -->
 	<select id="compareID">
 		SELECT member_id

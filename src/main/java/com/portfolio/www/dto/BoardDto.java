@@ -21,13 +21,13 @@ public class BoardDto {
     private int fileCount; // 파일 개수 필드 추가
     private int commentCount; // 댓글 개수 필드 추가
     
-    private String isLike; // like 여부
+    private int isLike; // like 개수
     
-    public String getIsLike() {
+    public int getIsLike() {
 		return isLike;
 	}
 
-	public void setIsLike(String isLike) {
+	public void setIsLike(int isLike) {
 		this.isLike = isLike;
 	}
 
