@@ -40,7 +40,7 @@ public class NoticeController {
 
 	@Autowired
 	NoticeService noticeService;
-
+	
 	// 댓글 좋아요 or 싫어요
 	@RequestMapping("/forum/notice/commentIsLike.do")
 	@ResponseBody
@@ -280,62 +280,89 @@ public class NoticeController {
 		return "redirect:/forum/notice/listPage.do?bdTypeSeq=" + boardTypeSeq;
 	}
 
+	
+	// ----------------------------------------------------------------------------------------------
+	// 게시글 list 불러오기
 	@RequestMapping("/forum/notice/listPage.do")
 	public ModelAndView listPage(@RequestParam HashMap<String, String> params, HttpServletRequest request) {
-		
-		System.out.println("======= NoticeController > listPage =======");
-		
-		ModelAndView mv = new ModelAndView();
-		mv.addObject("key", Calendar.getInstance().getTimeInMillis());
-		mv.setViewName("forum/notice/list");
+	    System.out.println("======= NoticeController > listPage =======");
 
-		// 방어 코딩 처음에 params 없어 에러 나니(기본값 설정)
-		if (!params.containsKey("page")) {
-			params.put("page", "1");
-		}
-		if (!params.containsKey("size")) {
-			params.put("size", "10");
-		}
-		mv.addObject("bdTypeSeq", params.get("bdTypeSeq"));
+	    ModelAndView mv = new ModelAndView();
+	    mv.addObject("key", Calendar.getInstance().getTimeInMillis());
+	    mv.setViewName("forum/notice/list");
 
-		// 시작 인덱스 계산
-		int page = Integer.parseInt(params.get("page"));
-		int size = Integer.parseInt(params.get("size"));
-		int start = (page - 1) * size;
-		int totalCnt = noticeService.totalCnt(Integer.parseInt(params.get("bdTypeSeq")));
+	    setDefaultParams(params);
+	    mv.addObject("bdTypeSeq", params.get("bdTypeSeq"));
 
-		// 페이징
-		PageHandler pageHandler = new PageHandler(page, totalCnt, size);
+	    int page = Integer.parseInt(params.get("page"));
+	    int size = Integer.parseInt(params.get("size"));
+	    int start = (page - 1) * size;
+	    int totalCnt = noticeService.totalCnt(Integer.parseInt(params.get("bdTypeSeq")));
 
-		mv.addObject("startPage", pageHandler.getStartPage());
-		mv.addObject("endPage", pageHandler.getEndPage());
-		mv.addObject("currentPage", page);
-		mv.addObject("hasPrev", pageHandler.isShowPrev());
-		mv.addObject("hasNext", pageHandler.isShowNext());
-		mv.addObject("totalCnt", totalCnt);
-		// 페이징 끝
+	    setPagingAttributes(mv, page, totalCnt, size);
 
-		HttpSession session = request.getSession();
-		String loginMember = (String) session.getAttribute("logInUser");
-		
-		int loginMemberSeq = noticeService.getMemberSeq(loginMember);
-		
-		// 게시글리스트 출력
-		HashMap<String, Integer> boardList = new HashMap<String, Integer>();
-		boardList.put("bdTypeSeq", Integer.parseInt(params.get("bdTypeSeq")));
-		boardList.put("start", start);
-		boardList.put("size", size);
-		boardList.put("loginMemberSeq", loginMemberSeq);
+	    String loginMember = getLoginMember(request);
+	    Integer loginMemberSeq = getMemberSeq(loginMember);
 
-		List<BoardDto> list = noticeService.getList(boardList);
-		
-		mv.addObject("list", list);
-		// 게시글리스트 출력 끝
-
-		mv.addObject("loginMember", loginMember);
-
-		return mv;
+	    List<BoardDto> list = getBoardList(params, start, size, loginMemberSeq);
+	    mv.addObject("list", list);
+	    mv.addObject("loginMember", loginMember);
+	    
+	    return mv;
 	}
+
+	// 기본 페이지와 사이즈 설정
+	private void setDefaultParams(HashMap<String, String> params) {
+	    if (!params.containsKey("page")) {
+	        params.put("page", "1");
+	    }
+	    if (!params.containsKey("size")) {
+	        params.put("size", "10");
+	    }
+	}
+
+	// 페이징 관련
+	private void setPagingAttributes(ModelAndView mv, int page, int totalCnt, int size) {
+	    PageHandler pageHandler = new PageHandler(page, totalCnt, size);
+
+	    mv.addObject("startPage", pageHandler.getStartPage());
+	    mv.addObject("endPage", pageHandler.getEndPage());
+	    mv.addObject("currentPage", page);
+	    mv.addObject("hasPrev", pageHandler.isShowPrev());
+	    mv.addObject("hasNext", pageHandler.isShowNext());
+	    mv.addObject("totalCnt", totalCnt);
+	}
+
+	
+	// 세션에서 로그인한 회원 정보 가져옴
+	private String getLoginMember(HttpServletRequest request) {
+	    HttpSession session = request.getSession();
+	    return (String) session.getAttribute("logInUser");
+	}
+
+	
+	// 회원 번호를 가져오고 null일 경우 기본값으로 설정
+	private Integer getMemberSeq(String loginMember) {
+	    Integer loginMemberSeq = noticeService.getMemberSeq(loginMember);
+	    if (loginMemberSeq == null) {
+	        loginMemberSeq = -999999;
+	    }
+	    return loginMemberSeq;
+	}
+
+	
+	// 게시글 목록 가져오기
+	private List<BoardDto> getBoardList(HashMap<String, String> params, int start, int size, Integer loginMemberSeq) {
+	    HashMap<String, Integer> boardList = new HashMap<>();
+	    boardList.put("bdTypeSeq", Integer.parseInt(params.get("bdTypeSeq")));
+	    boardList.put("start", start);
+	    boardList.put("size", size);
+	    boardList.put("loginMemberSeq", loginMemberSeq);
+
+	    return noticeService.getList(boardList);
+	}
+	
+	// ----------------------------------------------------------------------------------------------
 
 	@RequestMapping("/forum/notice/writePage.do")
 	public ModelAndView writePage(@RequestParam HashMap<String, String> params) {

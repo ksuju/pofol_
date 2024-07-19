@@ -32,7 +32,7 @@
 
 							<div class="form-group">
 								<label for="pass">비밀번호</label> <input value="asd" id="pass" name="passwd"
-									type="text" class="text_field"
+									type="password" class="text_field"
 									placeholder="Enter your password...">
 							</div>
 							<!-- 로그인 실패 시 메시지 표시 -->

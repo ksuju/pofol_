@@ -13,45 +13,31 @@ String ctx = request.getContextPath();
 	    });
 	</script>
 	<style>
-		.feature__img {
-            position: relative;
-            width: 130px;
-            height: 120px;
-            margin: 0 auto; /* 수평 가운데 정렬 */
-		}
-		.todayMenu-background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('<c:url value="/assest/template/images/food.png"/>');
-            background-size: cover;
-            background-position: center;
-            opacity: 0.6;
-		}
-		.todayMenu {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.5;
+		.feature__img img {
+			width: 112px;
+            height: 140px;
 		}
 		
-		.turn {
-			transition: all ease 1s;
-		}
-		.turn:hover {
-			transform: rotate( 720deg );
+		.content_01 {
+		    display: inline-block;
+		    text-align: left !important;
 		}
 		
-		.menuButton {
-			width: 100%;
-			background-color: white;
+		.content_02 {
+		    display: inline-block;
+		    text-align : left !important;
 		}
-
+		.content_02 p {
+			margin-top : 15px;
+		}
+		
+		#asd {
+			flex : 0 0 66.666666% !important;
+			width : 66.666666% !important;
+			max-width: 66.666666% !important;
+		}
 	</style>
+
     <section class="features section--padding">
         <!-- start container -->
         <div class="container">
@@ -60,100 +46,82 @@ String ctx = request.getContextPath();
                 <!-- start search-area -->
                 <div class="col-lg-4 col-md-6">
                     <div class="feature">
-                        <div class="feature__img turn">
-                         	<div class="todayMenu-background"></div>
-                            <img class="todayMenu" src="<c:url value='/assest/template/images/tasty.png'/>" alt="feature" />
+                        <div class="feature__img">
+                            <img src="<c:url value='/assest/template/images/ksuju.jpg'/>" alt="feature" />
                         </div>
                         <div class="feature__title">
-                            <h3>오늘의 추천메뉴</h3>
+                            <h3>프로필 / Profile</h3>
                         </div>
                         <div class="feature__desc">
-                        	<form action="#" onsubmit="recomMenu(event)">
-                        		<select id="selectCat" name="category">
-	                        		<c:forEach var="i" items="${category}">
-	                        			<option>
-	                        				<c:out value="${i}"/>
-										</option>
-	                        		</c:forEach>
-                        		</select>
-                        		<input class="menuButton" value="추천메뉴는?" type="submit"/>
-                        	</form>
-                        	<br>
-                        	<c:if test="${not empty menu}"><h4 id="menu">${menu}</h4></c:if>
+                        	<div class="content_01">
+                        		<p>이름 : 강성준</p>
+                        		<p>생년월일 : 1995-07-22</p>
+                            	<p>전화번호 : 010-4172-8036</p>
+                            	<p>이메일 : kyd547@naver.com</p>
+                        	</div>
                         </div>
                     </div>
                     <!-- end /.feature -->
                 </div>
                 <!-- end /.col-lg-4 col-md-6 -->
+                
                 <!-- start search-area -->
-                <div class="col-lg-4 col-md-6">
+                <div class="col-lg-4 col-md-6" id="asd">
                     <div class="feature">
-                        <div class="feature__img">
-                            <img src="<c:url value='/assest/template/images/feature2.png'/>" alt="feature" />
-                        </div>
                         <div class="feature__title">
-                            <h3>Fully Responsive</h3>
+                            <h3>매일 능동적으로 발전하는 백엔드 개발자가 되겠습니다.</h3>
                         </div>
                         <div class="feature__desc">
-                            <p>Nunc placerat mi id nisi interdum mollis. Praesent pharetra, justo ut scelerisque the mattis,
-                                leo quam aliquet diam congue is laoreet elit metus.</p>
+                        <h3>경력 / 학력</h3>
+                        	<div class="content_02">
+	                        	<br>
+	                        	<h6>태성텍㈜ – 3D 모델링 프로그래밍</h6>
+	                        	<p>
+	                        		- 22년 8월 ~ 23년 12월 (1년 5개월)
+	                        		<br>
+		                        	- 3D모델링 제작 & 수정 (CAD, HYPERMILL)
+		                        	<br>
+		                        	- 3D모델링 교육, 재고관리 및 납기관리
+	                        	</p>
+	                        	<br>
+	                        	<h6>정석코딩 – 백엔드 웹개발자 취업과정 오프라인 교육</h6>
+	                        	<p>
+	                        		- 23년 10월 ~ 24년 3월 (5개월)
+	                        		<br>
+	                        		- Java, 객체지향개념과 설계, TDD, HTML & CSS, DB모델링, git
+	                        		<br>
+	                        		- Spring + MyBatis, SQL기본(MySQL), JavaScript기본, Web기본, 팀 프로젝트(8주)
+	                        	</p>
+	                        	<br>
+	                        	<h6>오프라인 그룹 스터디 – 개인 프로젝트 배포 및 관리</h6>
+	                        	<p>
+	                        		- 회원가입, 이메일인증
+	                        		<br>
+	                        		- 로그인/세션 처리/메세지 처리
+	                        		<br>
+	                        		- 게시판 : 좋아요/싫어요, 첨부파일, 댓글
+	                        		<br>
+	                        		- AWS 구성, 배포, Junit Test, nginx proxy server, maven deploy, Jenkins 배포
+	                        		<br>
+	                        		- MySQL 통계 쿼리
+	                        	</p>
+	                        	<br>
+	                        	<h6>건양대학교 사회복지학 학사</h6>
+	                        	<p>
+	                        		- 20년 2월 졸업
+	                        	</p>
+                        	</div>
                         </div>
                     </div>
                     <!-- end /.feature -->
                 </div>
                 <!-- end /.col-lg-4 col-md-6 -->
 
-                <!-- start search-area -->
-                <div class="col-lg-4 col-md-6">
-                    <div class="feature">
-                        <div class="feature__img">                        
-                            <img src="<c:url value='/assest/template/images/feature3.png'/>" alt="feature" />
-                        </div>
-                        <div class="feature__title">
-                            <h3>Buy & Sell Easily</h3>
-                        </div>
-                        <div class="feature__desc">
-                            <p>Nunc placerat mi id nisi interdum mollis. Praesent pharetra, justo ut scelerisque the mattis,
-                                leo quam aliquet diam congue is laoreet elit metus.</p>
-                        </div>
-                    </div>
-                    <!-- end /.feature -->
-                </div>
-                <!-- end /.col-lg-4 col-md-6 -->
             </div>
             <!-- end /.row -->
         </div>
         <!-- end /.container -->
     </section>
-    <script>
-    	function recomMenu() {
-    		event.preventDefault();
-        	let category = document.querySelector("#selectCat").value;
-        	let url = '<%=ctx%>/recomMenu.do';
-	    	$.ajax({
-	    		// 타입 (get, post, put 등등)    
-	    		type : 'GET',           
-	    		// 요청할 서버url
-	    		url : url,
-	    		// Http header
-	    		headers : {
-	    			"Content-Type" : "application/json; charset=UTF-8"
-	    		},
-	    		dataType : 'text',
-	    		data : {category:category},
-	    		// 결과 성공 콜백함수 
-	    		success : function(result) {
-	    			console.log(result)
-	    			let menu = document.querySelector("#menu");
-	    			menu.innerHTML = result;
-	    		},
-	    		// 결과 에러 콜백함수
-	    		error : function(request, status, error) {
-	    			console.log(error)
-	    		}
-	    	});
-    	}
-    </script>
     <!--================================
 	    END FEATURE AREA
 	=================================-->

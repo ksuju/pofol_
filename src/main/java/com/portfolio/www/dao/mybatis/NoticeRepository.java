@@ -19,6 +19,14 @@ import lombok.experimental.PackagePrivate;
 
 public interface NoticeRepository {
 	
+    // 게시글의 파일 개수, 댓글 개수, 좋아요 여부를 포함한 통합 쿼리
+    List<Map<String, Object>> getBoardDetails(@Param("boardSeqs") List<Integer> boardSeqs,
+                                              @Param("boardTypeSeq") int boardTypeSeq);
+	
+	// 좋아요 수
+	public Integer like(@Param("boardSeq") Integer boardSeq,
+			@Param("bdTypeSeq") Integer bdTypeSeq);
+	
 	// 비밀번호 찾기 할 때 입력한 아이디와 이메일로부터 가져온 db에 있는 아이디 비교
 	public String compareID(@Param("email") String email);
 	
@@ -160,7 +168,7 @@ public interface NoticeRepository {
 	public String loginCheak(String memberID);
 	
 	//멤버 seq 가져오기
-	public int getMemberSeq(String memberID);
+	public Integer getMemberSeq(String memberID);
 	
 	//멤버지우기
 	public int deleteMember(int memberSeq);

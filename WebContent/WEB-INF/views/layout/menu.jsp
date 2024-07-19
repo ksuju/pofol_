@@ -141,20 +141,20 @@
                             <div class="collapse navbar-collapse" id="navbarNav">
                                 <ul class="navbar-nav">
                                     <li class="has_dropdown">
-                                        <a href="${pageContext.request.contextPath}/index.html">HOME</a>
-<!--                                         <div class="dropdowns dropdown--menu">
+                                        <a href="${pageContext.request.contextPath}/index.html">홈</a>
+                                         <div class="dropdowns dropdown--menu">
                                             <ul>
                                                 <li>
-                                                    <a href="index.html">Home Multi Vendor</a>
+                                                    <a href="https://github.com/ksuju/pofol_" target="_blank">포트폴리오 깃허브</a>
                                                 </li>
                                                 <li>
-                                                    <a href="index-single.html">Home Two Single User</a>
+                                                    <a href="https://ksuju.tistory.com/" target="_blank">개발 블로그</a>
                                                 </li>
                                                 <li>
-                                                    <a href="index3.html">Home Three Product</a>
+                                                    <a href="${pageContext.request.contextPath}/etc.do">이것저것</a>
                                                 </li>
                                             </ul>
-                                        </div> -->
+                                        </div>
                                     </li>
 <!--                                     <li class="has_dropdown">
                                         <a href="all-products-list.html">all product</a>
