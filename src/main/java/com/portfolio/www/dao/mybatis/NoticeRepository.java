@@ -160,7 +160,7 @@ public interface NoticeRepository {
 	public String loginCheak(String memberID);
 	
 	//멤버 seq 가져오기
-	public int getMemberSeq(String memberID);
+	public Integer getMemberSeq(String memberID);
 	
 	//멤버지우기
 	public int deleteMember(int memberSeq);
