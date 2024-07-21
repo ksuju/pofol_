@@ -19,8 +19,11 @@ import lombok.experimental.PackagePrivate;
 
 public interface NoticeRepository {
 	
+	// 인기글 상위 5개 출력
+	public List<Map<String, Integer>> getLikeTopFive(@Param("boardTypeSeq") int boardTypeSeq);
+	
     // 게시글의 파일 개수, 댓글 개수, 좋아요 여부를 포함한 통합 쿼리
-    List<Map<String, Object>> getBoardDetails(@Param("boardSeqs") List<Integer> boardSeqs,
+    public List<Map<String, Object>> getBoardDetails(@Param("boardSeqs") List<Integer> boardSeqs,
                                               @Param("boardTypeSeq") int boardTypeSeq);
 	
 	// 좋아요 수

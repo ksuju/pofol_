@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -308,6 +309,11 @@ public class NoticeController {
 	    mv.addObject("list", list);
 	    mv.addObject("loginMember", loginMember);
 	    
+	    // 좋아요 top 5 게시글 가져오기
+	    List<Map<String, Integer>> topFive = noticeService.getLikeTopFive(Integer.parseInt(params.get("bdTypeSeq")));
+	    
+	    mv.addObject("topFive", topFive);
+	    
 	    return mv;
 	}
 
@@ -361,6 +367,7 @@ public class NoticeController {
 
 	    return noticeService.getList(boardList);
 	}
+	
 	
 	// ----------------------------------------------------------------------------------------------
 

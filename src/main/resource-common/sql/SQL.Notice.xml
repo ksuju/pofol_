@@ -6,7 +6,26 @@
 <mapper
 	namespace="com.portfolio.www.dao.mybatis.NoticeRepository">
 	
-	
+	<!-- 인기글 상위 5개 출력 -->
+	<select id="getLikeTopFive" resultType="map">
+		SELECT
+			b.board_seq, b.board_type_seq, b.title , COUNT(*) AS like_count
+		FROM
+			board b
+		JOIN
+			board_like_dislike bld
+		ON
+			b.board_seq = bld.board_seq
+		WHERE
+			bld.is_like = 'Y'
+		AND
+			b.board_type_seq = #{boardTypeSeq}
+		GROUP BY
+			b.title
+		ORDER BY
+			like_count DESC
+		LIMIT 5;
+	</select>
 	
 	
 	<!-- 게시글의 파일 개수, 댓글 개수, 좋아요 여부를 포함한 통합 쿼리 -->
