@@ -372,4 +372,9 @@ public class NoticeService {
 	public int totalCnt(int bdTypeSeq) {
 		return noticeRepository.totalCnt(bdTypeSeq);
 	}
+	
+	// 게시판 내 인기글 top5 가져오기
+	public List<Map<String, Integer>> getLikeTopFive(int boardTypeSeq) {
+		return noticeRepository.getLikeTopFive(boardTypeSeq);
+	}
 }

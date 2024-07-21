@@ -5,17 +5,59 @@
 String ctx = request.getContextPath();
 %>
 <style>
-	.commentIcon{
-	width:20px;
-	height:20px;
+	.commentIcon {
+		width:20px;
+		height:20px;
 	}
-
+	
+	.topFive {
+		display:flex;
+		flex-direction: column;
+		width:44%;
+		border-right: 1px solid rgba(0, 0, 0, .1);
+	}
+	
+	.topFive_title {
+		width:inherit;
+		margin-bottom: 10px;
+	}
+	
+	.topFive_title img {
+		position:relative;
+		bottom:2px;
+		margin-right: 5px;
+	}
+	
+	.topFive_list img {
+		position:relative;
+		bottom:2px;
+		margin-right: 5px;
+	}
+	
 </style>
 <section class="section--padding2">
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12">
-				<div class="">
+				<div>
+				<section class="topFive">
+					<div class="topFive_title">
+						<img class="commentIcon" src="<c:url value='/assest/template/images/crown.png'/>"/>인기글
+					</div>
+					<ul>
+						<c:forEach items="${topFive}" var="i" varStatus="status">
+							<li class="topFive_list">&middot;&nbsp;
+								<a href="<c:url value='/forum/notice/readPage.do?boardSeq=${i.board_seq}&boardTypeSeq=${i.board_type_seq}'/>">
+									${i.title}
+								</a>
+								<a class="topFive_like">
+									<img class="commentIcon" src="<c:url value='/assest/template/images/tbupup.png'/>"/>${i.like_count}
+								</a>
+							</li>
+						</c:forEach>
+					</ul>
+				</section>
+					
 					<div class="modules__content">
 						<div class="withdraw_module withdraw_history">
 							<div class="withdraw_table_header">
