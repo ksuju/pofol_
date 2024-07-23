@@ -77,7 +77,7 @@ String ctx = request.getContextPath();
 	                        	<br>
 	                        	<h6>태성텍㈜ – 3D 모델링 프로그래밍</h6>
 	                        	<p>
-	                        		- 22년 8월 ~ 23년 12월 (1년 5개월)
+	                        		- 21년 8월 ~ 22년 12월 (1년 5개월)
 	                        		<br>
 		                        	- 3D모델링 제작 & 수정 (CAD, HYPERMILL)
 		                        	<br>
