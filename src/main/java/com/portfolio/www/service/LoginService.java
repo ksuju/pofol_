@@ -1,5 +1,7 @@
 package com.portfolio.www.service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
 import javax.servlet.http.Cookie;
@@ -30,6 +32,7 @@ public class LoginService {
 
 	@Autowired
 	private EmailProp emailprop;
+	
 	
 	// 비밀번호 찾기 할 때 입력한 아이디와 이메일로부터 가져온 db에 있는 아이디 비교
 	public boolean compareID(String email, String name) {
@@ -72,6 +75,7 @@ public class LoginService {
 		}
 		
 	}
+	
 	// 비밀번호 변경
 	public int changePasswd(HashMap<String, String> params) {
 		// BCrypt를 사용한 비밀번호 암호화
@@ -135,13 +139,16 @@ public class LoginService {
 			//String html = emailprop.getPwChangeUri() + params.get("authNum") + "&email=" + params.get("email")
 			//		+ "'>비밀번호 변경하기</a>";
 			
-			String timestamp = String.valueOf(System.currentTimeMillis());
+			//String timestamp = String.valueOf(System.currentTimeMillis());
 			
-			String uri = emailprop.getPwChangeUri() + params.get("authNum") + "&email=" + params.get("email") + "&t=" + timestamp + "'>비밀번호 변경하기</a>";
+			//String uri = emailprop.getPwChangeUri() + params.get("authNum") + "&email=" + params.get("email") + "&t=" + timestamp + "'>비밀번호 변경하기</a>";
 			
-			String html = "<html><body><p>비밀번호 변경을 위해 아래 링크를 클릭하세요:</p>" + uri + "</body></html>";
+			String auth = "<p>" + params.get("authNum") + "</p>";
+					
+			//String html = "<html><body><p>비밀번호 변경을 위해 아래 링크를 클릭하세요:</p>" + uri + "</body></html>";
 
-			email.setText(html);
+			//email.setText(html);
+			email.setText(auth);
 
 			emailutil.sendMail(email, true);
 			return cnt;
@@ -151,10 +158,11 @@ public class LoginService {
 
 	public int loginCheak(String memberID, String passwd, HttpServletRequest request) {
 		String dbPasswd = noticeRepository.loginCheak(memberID);
-		String getAuthYN = noticeRepository.getAuthYN(memberID);
+		//String getAuthYN = noticeRepository.getAuthYN(memberID);
 		System.out.println("================ LoginService > loginCheak 진입 ================");
 		
-		if (dbPasswd != null && ("Y").equals(getAuthYN)) {	
+		//if (dbPasswd != null && ("Y").equals(getAuthYN)) {	
+		if (dbPasswd != null) {	
 			BCrypt.Result result = BCrypt.verifyer().verify(passwd.toCharArray(), dbPasswd);
 
 			if(result.validFormat && result.verified) {
@@ -162,15 +170,28 @@ public class LoginService {
 				// 로그인 성공 처리
 				HttpSession session = request.getSession();
 				session.setAttribute("logInUser", memberID);
+				
+				// 현재 시스템 시간 가져오기
+				LocalDate now = LocalDate.now();
+				
+		        // DateTimeFormatter를 사용하여 LocalDate를 String으로 포맷
+		        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // 원하는 형식을 지정
+		        String formattedDate = now.format(formatter);
+				
+				// 로그인 성공 시 로그인 기록 남기기
+				noticeRepository.saveLoginLog(memberID,formattedDate);
+				
 				return Integer.parseInt(MessageEnum.SUCCESS.getCode());
 			}
 		} else if (dbPasswd == null) {
 			System.out.println("================== 가입되지 않은 아이디 ==================");
 			return -1;
-		} else if(!("Y").equals(getAuthYN)) {
-			System.out.println("================== 인증되지 않은 아이디 ==================");
-			return Integer.parseInt(MessageEnum.NOT_EMAIL_AUTH.getCode());
 		}
+		/*
+		 * else if(!("Y").equals(getAuthYN)) {
+		 * System.out.println("================== 인증되지 않은 아이디 ==================");
+		 * return Integer.parseInt(MessageEnum.NOT_EMAIL_AUTH.getCode()); }
+		 */
 		return Integer.parseInt(MessageEnum.FAILED.getCode());
 	}
 }

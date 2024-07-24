@@ -290,7 +290,6 @@ public class NoticeController {
 
 	    ModelAndView mv = new ModelAndView();
 	    mv.addObject("key", Calendar.getInstance().getTimeInMillis());
-	    mv.setViewName("forum/notice/list");
 
 	    setDefaultParams(params);
 	    mv.addObject("bdTypeSeq", params.get("bdTypeSeq"));
@@ -305,6 +304,19 @@ public class NoticeController {
 	    String loginMember = getLoginMember(request);
 	    Integer loginMemberSeq = getMemberSeq(loginMember);
 
+	    // 아이디 인증여부 확인
+	    String authYN = noticeService.getAuthYN(loginMember);
+		if(authYN.equals("N")) {
+			params.put("logInUser", loginMember);
+			noticeService.updateAuthNum(params);
+			String getEmail = noticeService.getEmail(loginMember);
+			mv.setViewName("auth/authNum");
+			mv.addObject("alert", "이메일 인증이 필요합니다 가입 시 입력하신 이메일을 확인해주세요.");
+			mv.addObject("idAuth", "idAuth");
+			mv.addObject("email", getEmail);
+			return mv;
+		}
+	    
 	    List<BoardDto> list = getBoardList(params, start, size, loginMemberSeq);
 	    mv.addObject("list", list);
 	    mv.addObject("loginMember", loginMember);
@@ -312,6 +324,7 @@ public class NoticeController {
 	    // 좋아요 top 5 게시글 가져오기
 	    List<Map<String, Integer>> topFive = noticeService.getLikeTopFive(Integer.parseInt(params.get("bdTypeSeq")));
 	    
+	    mv.setViewName("forum/notice/list");
 	    mv.addObject("topFive", topFive);
 	    
 	    return mv;
@@ -369,18 +382,22 @@ public class NoticeController {
 	}
 	
 	
+	
 	// ----------------------------------------------------------------------------------------------
 
 	@RequestMapping("/forum/notice/writePage.do")
-	public ModelAndView writePage(@RequestParam HashMap<String, String> params) {
+	public ModelAndView writePage(@RequestParam HashMap<String, String> params,
+			ServletRequest request,
+			Model model) {
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("key", Calendar.getInstance().getTimeInMillis());
-		mv.setViewName("forum/notice/write");
 
 		int boardTypeSeq = Integer.parseInt(params.get("boardTypeSeq"));
+		
+		mv.setViewName("forum/notice/write");
 		mv.addObject("boardTypeSeq", boardTypeSeq);
-
 		return mv;
+		
 	}
 
 	@RequestMapping("/forum/notice/readPage.do")

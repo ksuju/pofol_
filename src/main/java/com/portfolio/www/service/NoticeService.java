@@ -25,6 +25,9 @@ import com.portfolio.www.dto.BoardCommentDto;
 import com.portfolio.www.dto.BoardDto;
 import com.portfolio.www.dto.BoardLikeDto;
 import com.portfolio.www.dto.CommentLikeDto;
+import com.portfolio.www.dto.EmailDto;
+import com.portfolio.www.message.MessageEnum;
+import com.portfolio.www.util.EmailUtil;
 import com.portfolio.www.util.FileUtil;
 
 @Service
@@ -36,7 +39,57 @@ public class NoticeService {
 	@Autowired
 	FileUtil fileUtil;
 	
+	@Autowired
+	private EmailUtil emailutil;
 	
+	// 아이디로 email 가져오기
+	public String getEmail(String memberID) {
+		return noticeRepository.getEmail(memberID);
+	}
+	
+	// 아이디 인증번호 생성 및 인증메일 발송
+	public int updateAuthNum(HashMap<String, String> params) {
+		
+		String memberID = params.get("logInUser");
+		String dbEmail = noticeRepository.getEmail(memberID);
+		params.put("email", dbEmail);
+		
+		// 6자리의 인증번호 생성
+		int authNum = (int) (Math.random() * (999999 - 100000 + 1)) + 100000;
+		
+		String putAuthNum = authNum+"";
+		
+		params.put("authNum", putAuthNum);
+		
+		int cnt = noticeRepository.updateAuthNum(params);
+		int emailExist = noticeRepository.emailCount(params.get("email"));
+		
+		if (emailExist == 0) {
+			return Integer.parseInt(MessageEnum.VALLID_EMAIL.getCode());
+		}
+		
+		if (cnt == 1) {
+			// 인증 메일 발송
+			EmailDto email = new EmailDto();
+			email.setReceiver(params.get("email"));
+			email.setSubject("아이디 인증 메일입니다.");
+			
+			String auth = "<p>" + params.get("authNum") + "</p>";
+					
+			email.setText(auth);
+
+			emailutil.sendMail(email, true);
+			return cnt;
+		}
+		return cnt;
+	}
+	
+	// 아이디 인증여부 가져오기
+		public String getAuthYN(String memberID) {
+			return noticeRepository.getAuthYN(memberID);
+		}
+		
+		
 	// 좋아요 수 가져오기
 	public List<Integer> like(List<BoardDto> list, HashMap<String, String> params) {
 	    Integer bdTypeSeq = Integer.parseInt(params.get("bdTypeSeq"));
