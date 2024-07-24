@@ -34,8 +34,6 @@ public class JoinService {
 	@Autowired
 	private EmailProp emailprop;
 	
-	
-	
 
 	// auth_yn 변경하기 트랜잭션으로 member_auth 테이블과 member 테이블에 있는 auth_yn 컬럼을 동시에 바꿈
 	@Transactional
@@ -172,31 +170,26 @@ public class JoinService {
 
 		try {
 			int cnt = noticeRepository.joinMember(params);
-
-			if (cnt == 1) {
-				int memberSeq = noticeRepository.getMemberSeq(params.get("memberID"));
-				// 인증 메일구조 만들기
-				MemberAuthDto authDto = new MemberAuthDto();
-				authDto.setMemberSeq(memberSeq);
-				// UUID
-				authDto.setAuthUri(UUID.randomUUID().toString().replaceAll("-", ""));
-
-				Calendar cal = Calendar.getInstance();
-				cal.add(Calendar.MINUTE, 30); // 30분만 유효
-				authDto.setExpireDtm(cal.getTimeInMillis());
-
-				noticeRepository.addAuthInfo(authDto);
-
-				// 인증 메일 발송
-				EmailDto email = new EmailDto();
-				email.setReceiver(params.get("email"));
-				email.setSubject("인증하세요.");
-				// host + contextRoot + URI
-				String html = emailprop.getJoinUri() + authDto.getAuthUri() + "'>회원가입 인증하기</a>";
-				email.setText(html);
-
-				emailutil.sendMail(email, true);
-			}
+			
+			// 회원가입시 인증메일 발송 **사용막음
+			/*
+			 * if (cnt == 1) { int memberSeq =
+			 * noticeRepository.getMemberSeq(params.get("memberID")); // 인증 메일구조 만들기
+			 * MemberAuthDto authDto = new MemberAuthDto(); authDto.setMemberSeq(memberSeq);
+			 * // UUID authDto.setAuthUri(UUID.randomUUID().toString().replaceAll("-", ""));
+			 * 
+			 * Calendar cal = Calendar.getInstance(); cal.add(Calendar.MINUTE, 30); // 30분만
+			 * 유효 authDto.setExpireDtm(cal.getTimeInMillis());
+			 * 
+			 * noticeRepository.addAuthInfo(authDto);
+			 * 
+			 * // 인증 메일 발송 EmailDto email = new EmailDto();
+			 * email.setReceiver(params.get("email")); email.setSubject("인증하세요."); // host +
+			 * contextRoot + URI String html = emailprop.getJoinUri() + authDto.getAuthUri()
+			 * + "'>회원가입 인증하기</a>"; email.setText(html);
+			 * 
+			 * emailutil.sendMail(email, true); }
+			 */
 			return cnt;
 		} catch (DuplicateKeyException sqlEx) {
 			System.out.println("이미 가입된 이메일 입니다.");

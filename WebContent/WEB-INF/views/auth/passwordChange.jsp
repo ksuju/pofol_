@@ -72,7 +72,6 @@
 						</h4>
 					</div>
 				</div>
-				<span class="copyright">ⓒ Realbyte Inc</span>
 			</div>
 		</section>
 	</div>

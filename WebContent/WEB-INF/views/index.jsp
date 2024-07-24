@@ -11,6 +11,13 @@ String ctx = request.getContextPath();
 	    $('#trumbowyg-demo').trumbowyg({
 	        lang: 'kr'
 	    });
+	    
+	    $(document).ready(function() {
+	        // ${alert}가 존재하면 alert를 띄운다
+	        var alertMessage = "${alert}";
+	        if (alertMessage && alertMessage.trim().length > 0) {
+	            alert(alertMessage);
+	        }
 	</script>
 	<style>
 		.feature__img img {

@@ -40,6 +40,7 @@ public class EmailUtil {
 
 		} catch (Exception e) {
 			System.out.println(e);
+			System.out.println("sendMail >>>> Exception 발생");
 			return "Error";
 		}
 		return "Sucess";

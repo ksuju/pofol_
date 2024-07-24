@@ -19,6 +19,12 @@ import lombok.experimental.PackagePrivate;
 
 public interface NoticeRepository {
 	
+	// memberID로 email 가져오기
+	public String getEmail(@Param("memberID") String memberID);
+	
+	// 로그인 기록 남기기
+	public boolean saveLoginLog(@Param("userID") String userID, @Param("loginDate") String loginDate);
+	
 	// 인기글 상위 5개 출력
 	public List<Map<String, Integer>> getLikeTopFive(@Param("boardTypeSeq") int boardTypeSeq);
 	
@@ -184,6 +190,12 @@ public interface NoticeRepository {
 	
 	//updateAuth
 	public int updateAuth(EmailAuthDto emailAuthDto);
+	
+	//updateAuth
+	public int updateAuthaa(@Param("memberSeq") Integer memberSeq);
+	
+	//updateMAuth
+	public boolean updateMAuth(@Param("memberID") String memberID);
 	
 	//updateMemAuth
 	public int updateMemAuth(@Param("memberSeq") int memberSeq);
