@@ -16,9 +16,9 @@
       2-1. 이메일인증을 통한 비밀번호 재설정
       2-2. 이메일을 통해 db에 저장된 아이디 불러옴 > 사용자가 입력한 아이디와 일치여부 확인 후 성공해야 다음 단계 진행
       2-3. 이메일로 받은 링크를 클릭 시 인증확인 후 비밀번호 재설정 페이지로 이동
-<img src="https://github.com/user-attachments/assets/ce6fc6bf-0b2a-4570-897c-d7c25470e71a" width="400" height="270"/>
-<img src="https://github.com/user-attachments/assets/fe1c5d9a-0d5e-4c74-8336-c0aa1e6859ae" width="400" height="270"/>
-<img src="https://github.com/user-attachments/assets/6af29c94-3c1c-4a02-8a53-2cf5eb45448f" width="400" height="270"/>
+<img src="https://github.com/user-attachments/assets/ce6fc6bf-0b2a-4570-897c-d7c25470e71a" width="330" height="230"/>
+<img src="https://github.com/user-attachments/assets/fe1c5d9a-0d5e-4c74-8336-c0aa1e6859ae" width="330" height="230"/>
+<img src="https://github.com/user-attachments/assets/6af29c94-3c1c-4a02-8a53-2cf5eb45448f" width="330" height="230"/>
 
 ### 3. 게시판
       3-1. 게시글 작성, 삭제, 수정 기능
@@ -27,13 +27,25 @@
       3-4. 특정 게시글이 가지고 있는 댓글, 첨부파일의 수, 좋아요&싫어요 여부를 게시판에서 표시
       3-5. 페이징 > 한 페이지에 10개의 게시물 출력
       3-6. 해당 게시판의 인기글 순위(좋아요순) top 5 출력
+<img src="https://github.com/user-attachments/assets/04c1c5fc-4625-43ab-a372-c6aaa814813e" width="400" height="270"/>
+<img src="https://github.com/user-attachments/assets/cca4a627-228a-43f8-9cd5-935251b69a8c" width="600" height="270"/>
 
 ### 4. 댓글
       4-1. 댓글 작성, 삭제, 수정 기능
       4-2. 댓글에 대한 좋아요&싫어요 기능
+댓글작성<br/><br/>
+<img src="https://github.com/user-attachments/assets/c1533354-1304-461e-b7d4-71010dbc4cff" width="500" height="270"/>
+<img src="https://github.com/user-attachments/assets/5e1e4dd2-d840-453b-a4b8-bb45ad95a75a" width="500" height="270"/>
+댓글수정<br/><br/>
+<img src="https://github.com/user-attachments/assets/99680a68-7a45-4c31-9d83-fe5e1dcf0ad0" width="500" height="270"/>
+<img src="https://github.com/user-attachments/assets/b0ab52c5-e19c-43b8-82bd-886a5f89bc74" width="500" height="270"/>
 
 ### 5. 이력서 전송
       5-1. 이름(회사명), 이메일 주소를 입력 시 이력서 pdf 파일을 전송해 주는 기능
+
+<img src="https://github.com/user-attachments/assets/8ce9f134-b14d-434b-ae34-38631eb25931" width="500" height="230"/>
+<img src="https://github.com/user-attachments/assets/4efa5cff-4298-4b97-a893-868d8599d1e7" width="500" height="230"/>
+<img src="https://github.com/user-attachments/assets/f45e8cef-14f0-4a2c-9fdf-81c737557889" width="500" height="230"/>
 
 ### 6. 오늘의 식사메뉴 추천
       6-1. 인덱스 페이지에 구현
