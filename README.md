@@ -3,6 +3,14 @@
 ## 👋 소개
 회원가입, 게시판 등 기본적인 기능을 구현해보고 배포 경험을 쌓기 위한 웹 페이지 입니다.
 
+## 🤯 기술 스택
+- 백엔드 : JAVA, Spring
+- 프론트엔드 : HTML, CSS, JavaScript, JSP, Tiles
+- 데이터베이스 : MySQL, MyBatis
+- 클라우드 : AWS(EC2, RDS)
+- 서버 : Nginx
+- etc : Github, SourceTree, FileZilla, MobaXterm
+
 ## 👀 구현 기능
 ### 1. 회원가입
       1-1. 이메일, 아이디 중복확인
