@@ -27,7 +27,7 @@
       3-4. 특정 게시글이 가지고 있는 댓글, 첨부파일의 수, 좋아요&싫어요 여부를 게시판에서 표시
       3-5. 페이징 > 한 페이지에 10개의 게시물 출력
       3-6. 해당 게시판의 인기글 순위(좋아요순) top 5 출력
-<img src="https://github.com/user-attachments/assets/04c1c5fc-4625-43ab-a372-c6aaa814813e" width="400" height="270"/>
+<img src="https://github.com/user-attachments/assets/04c1c5fc-4625-43ab-a372-c6aaa814813e" width="300" height="270"/>
 <img src="https://github.com/user-attachments/assets/cca4a627-228a-43f8-9cd5-935251b69a8c" width="600" height="270"/>
 
 ### 4. 댓글
