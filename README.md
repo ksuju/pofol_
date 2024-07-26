@@ -1,4 +1,4 @@
-![이미 가입된 이메일 주소](https://github.com/user-attachments/assets/6adc1e16-c99b-4e28-ba6c-ba5ba0bf36fb)# ksuju 포트폴리오  https://bit.ly/4bVJyZA
+# ksuju 포트폴리오  https://bit.ly/4bVJyZA
 ## 업데이트중 -ing...
 ## 👋 소개
 회원가입, 게시판 등 기본적인 기능을 구현해보고 배포 경험을 쌓기 위한 웹 페이지 입니다.
@@ -8,17 +8,18 @@
       1-1. 이메일, 아이디 중복확인
       1-2. 아이디, 비밀번호 유효성 검사
       1-3. 가입한 아이디는 이메일인증 후 사용가능
-![이미 가입된 이메일 주소](https://github.com/user-attachments/assets/38d9b9af-cbbf-4665-ac12-1e5075516092)
-![회원가입](https://github.com/user-attachments/assets/d5c52327-c852-4c9e-8c72-262e35b8b064)
-![회원가입제약](https://github.com/user-attachments/assets/29859b60-a1d4-4a4f-8938-917121f8b477)
-
-
+<img src="https://github.com/user-attachments/assets/38d9b9af-cbbf-4665-ac12-1e5075516092" width="270" height="400"/>
+<img src="https://github.com/user-attachments/assets/d5c52327-c852-4c9e-8c72-262e35b8b064" width="270" height="400"/>
+<img src="https://github.com/user-attachments/assets/29859b60-a1d4-4a4f-8938-917121f8b477" width="270" height="400"/>
       
 ### 2. 비밀번호 재설정
       2-1. 이메일인증을 통한 비밀번호 재설정
       2-2. 이메일을 통해 db에 저장된 아이디 불러옴 > 사용자가 입력한 아이디와 일치여부 확인 후 성공해야 다음 단계 진행
       2-3. 이메일로 받은 링크를 클릭 시 인증확인 후 비밀번호 재설정 페이지로 이동
-      
+<img src="https://github.com/user-attachments/assets/ce6fc6bf-0b2a-4570-897c-d7c25470e71a" width="400" height="270"/>
+<img src="https://github.com/user-attachments/assets/fe1c5d9a-0d5e-4c74-8336-c0aa1e6859ae" width="400" height="270"/>
+<img src="https://github.com/user-attachments/assets/6af29c94-3c1c-4a02-8a53-2cf5eb45448f" width="400" height="270"/>
+
 ### 3. 게시판
       3-1. 게시글 작성, 삭제, 수정 기능
       3-2. 첨부파일 등록 가능 (최대 3개)
