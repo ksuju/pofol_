@@ -35,7 +35,7 @@
       4-2. 댓글에 대한 좋아요&싫어요 기능
 댓글작성<br/><br/>
 <img src="https://github.com/user-attachments/assets/c1533354-1304-461e-b7d4-71010dbc4cff" width="400" height="230"/>
-<img src="https://github.com/user-attachments/assets/5e1e4dd2-d840-453b-a4b8-bb45ad95a75a" width="400" height="230"/>
+<img src="https://github.com/user-attachments/assets/5e1e4dd2-d840-453b-a4b8-bb45ad95a75a" width="400" height="230"/><br/>
 댓글수정<br/><br/>
 <img src="https://github.com/user-attachments/assets/99680a68-7a45-4c31-9d83-fe5e1dcf0ad0" width="400" height="230"/>
 <img src="https://github.com/user-attachments/assets/b0ab52c5-e19c-43b8-82bd-886a5f89bc74" width="400" height="230"/>
