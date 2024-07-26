@@ -171,6 +171,19 @@ public class JoinService {
 		try {
 			int cnt = noticeRepository.joinMember(params);
 			
+			// member_auth 추가
+			 int memberSeq = noticeRepository.getMemberSeq(params.get("memberID")); // 인증메일구조 만들기
+			 MemberAuthDto authDto = new MemberAuthDto();
+			 authDto.setMemberSeq(memberSeq);
+			 // UUID
+			 authDto.setAuthUri(UUID.randomUUID().toString().replaceAll("-", ""));
+			 
+			 Calendar cal = Calendar.getInstance(); cal.add(Calendar.MINUTE, 30); // 30분만 유효
+			 authDto.setExpireDtm(cal.getTimeInMillis());
+			 
+			 noticeRepository.addAuthInfo(authDto);
+			 
+			
 			// 회원가입시 인증메일 발송 **사용막음
 			/*
 			 * if (cnt == 1) { int memberSeq =

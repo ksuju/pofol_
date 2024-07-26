@@ -61,6 +61,8 @@ public class NoticeService {
 		
 		params.put("authNum", putAuthNum);
 		
+		System.out.println("alkdnsalkdnasd====>"+params);
+		
 		int cnt = noticeRepository.updateAuthNum(params);
 		int emailExist = noticeRepository.emailCount(params.get("email"));
 		
