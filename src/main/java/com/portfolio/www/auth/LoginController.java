@@ -23,6 +23,16 @@ public class LoginController {
 
 	@Autowired
 	LoginService loginService;
+	
+	// 아이디찾기 페이지로 이동 & 아이디 변경
+	@RequestMapping("/auth/findID.do")
+	public ModelAndView findID() {
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("key", Calendar.getInstance().getTimeInMillis());
+		mv.setViewName("auth/findID");
+		
+		return mv;
+	}
 
 	// 비밀번호 변경페이지로 이동 & 비밀번호 변경
 	@RequestMapping("/auth/resetPw.do")

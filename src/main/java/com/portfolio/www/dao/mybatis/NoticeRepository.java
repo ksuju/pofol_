@@ -19,6 +19,9 @@ import lombok.experimental.PackagePrivate;
 
 public interface NoticeRepository {
 	
+	// 아이디 찾기
+	public String findID(@Param("name") String name, @Param("email") String email);
+	
 	// memberID로 email 가져오기
 	public String getEmail(@Param("memberID") String memberID);
 	

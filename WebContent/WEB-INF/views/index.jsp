@@ -28,6 +28,7 @@ String ctx = request.getContextPath();
 		.content_01 {
 		    display: inline-block;
 		    text-align: left !important;
+		    width: 70%;
 		}
 		
 		.content_02 {
@@ -38,7 +39,7 @@ String ctx = request.getContextPath();
 			margin-top : 15px;
 		}
 		
-		#asd {
+		#introduction {
 			flex : 0 0 66.666666% !important;
 			width : 66.666666% !important;
 			max-width: 66.666666% !important;
@@ -69,11 +70,27 @@ String ctx = request.getContextPath();
                         </div>
                     </div>
                     <!-- end /.feature -->
+                    
+					<div class="feature">
+						<div class="feature__title">
+	                    	<h3>기술 / Skill</h3>
+	                    </div>
+	                    <div class="feature__desc">
+                        	<div class="content_01">
+                        		<p>백엔드 : JAVA, Spring</p>
+                        		<p>프론트엔드 : HTML, CSS, JavaScript, JSP, Tiles</p>
+                            	<p>데이터베이스 : MySQL, MyBatis</p>
+                            	<p>클라우드 : AWS(EC2, RDS)</p>
+                            	<p>서버 : Nginx</p>
+                            	<p>etc : Github, SourceTree, FileZilla, MobaXterm</p>
+                        	</div>
+                        </div>
+	                </div>
                 </div>
                 <!-- end /.col-lg-4 col-md-6 -->
                 
                 <!-- start search-area -->
-                <div class="col-lg-4 col-md-6" id="asd">
+                <div class="col-lg-4 col-md-6" id="introduction">
                     <div class="feature">
                         <div class="feature__title">
                             <h3>매일 능동적으로 발전하는 백엔드 개발자가 되겠습니다.</h3>

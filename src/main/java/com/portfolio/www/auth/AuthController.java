@@ -26,7 +26,39 @@ public class AuthController {
 	@Autowired
 	AuthService authService;
 	
-	// 아이디
+	// 아이디찾기
+	@RequestMapping("/auth/sendID.do")
+	public ModelAndView sendID(@RequestParam String name,
+			@RequestParam String email) {
+		
+		System.out.println("sendID=================================> "+name+"     >  email  >>> "+email);
+		
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("key", Calendar.getInstance().getTimeInMillis());
+		
+		
+		try {
+			String userID = authService.findID(name, email);
+			
+			if(userID.equals("이름X") && userID.equals("이메일X")) {
+				mv.setViewName("/auth/login");
+				mv.addObject("alert", "이름 또는 이메일 주소를 다시 입력해주세요.");
+				return mv;
+			}
+			
+			mv.addObject("findID", userID);
+			mv.setViewName("/auth/findYourID");
+			return mv;
+		} catch (NullPointerException e) {
+			// TODO: handle exception
+			mv.setViewName("/auth/login");
+			mv.addObject("alert", "아이디 찾기 error! 이름 또는 이메일 주소를 다시 입력해주세요.");
+			return mv;
+		}
+		
+	}
+	
+	// 아이디인증
 	@RequestMapping("/auth/idAuth.do")
 	public ModelAndView idAuth(@RequestParam String authNum,
 			@RequestParam String email,

@@ -14,7 +14,18 @@ public class AuthService {
 	@Autowired
 	private NoticeRepository noticeRepository;
 	
-	
+	// 아이디찾기
+	public String findID(String name,
+			String email) {
+		
+		if(name.isEmpty()) {
+			return "이름X";
+		}
+		if(email.isEmpty()) {
+			return "이메일X";
+		}
+		return noticeRepository.findID(name, email);
+	}
 	
 	// auth Y > N 변환
 	public boolean cvtAuthYN(String email, HttpServletRequest request) {
