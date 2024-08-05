@@ -6,6 +6,13 @@
 <mapper
 	namespace="com.portfolio.www.dao.mybatis.NoticeRepository">
 	
+	<!-- id찾기 -->
+	<select id="findID">
+		SELECT member_id
+		FROM member
+		WHERE member_nm = #{name} AND email = #{email};
+	</select>
+	
 	<!-- memberID로 email 가져오기 -->
 	<select id="getEmail">
 		SELECT email

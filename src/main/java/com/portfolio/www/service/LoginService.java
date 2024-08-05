@@ -121,7 +121,7 @@ public class LoginService {
 		return 0;
 	}
 
-	// 비밀번호 변경 인증번호 생성 및 메일 발송
+	// 인증번호 생성 및 메일 발송
 	public int updateAuthNum(HashMap<String, String> params) {
 		int cnt = noticeRepository.updateAuthNum(params);
 		int emailExist = noticeRepository.emailCount(params.get("email"));
@@ -134,7 +134,7 @@ public class LoginService {
 			// 인증 메일 발송
 			EmailDto email = new EmailDto();
 			email.setReceiver(params.get("email"));
-			email.setSubject("비밀번호 변경 인증 메일입니다.");
+			email.setSubject("인증 메일입니다 인증번호를 확인해주세요.");
 			// host + contextRoot + URI
 			//String html = emailprop.getPwChangeUri() + params.get("authNum") + "&email=" + params.get("email")
 			//		+ "'>비밀번호 변경하기</a>";

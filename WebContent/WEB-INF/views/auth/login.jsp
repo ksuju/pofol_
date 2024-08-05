@@ -54,7 +54,7 @@
 
 							<div class="login_assist">
 								<p class="recover">
-									<a href="pass-recovery.html">아이디 찾기</a> or <a
+									<a href="findID.do">아이디 찾기</a> or <a
 										href="resetPw.do">비밀번호 찾기</a>
 								</p>
 								<p class="signup">
