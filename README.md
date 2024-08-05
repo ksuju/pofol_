@@ -52,13 +52,24 @@
 ### 5. 이력서 전송
       5-1. 이름(회사명), 이메일 주소를 입력 시 이력서 pdf 파일을 전송해 주는 기능
 
-<img src="https://github.com/user-attachments/assets/8ce9f134-b14d-434b-ae34-38631eb25931" width="400" height="230"/>
-<img src="https://github.com/user-attachments/assets/4efa5cff-4298-4b97-a893-868d8599d1e7" width="400" height="230"/>
-<img src="https://github.com/user-attachments/assets/f45e8cef-14f0-4a2c-9fdf-81c737557889" width="400" height="230"/>
+<img src="https://github.com/user-attachments/assets/8ce9f134-b14d-434b-ae34-38631eb25931" width="300" height="230"/>
+<img src="https://github.com/user-attachments/assets/4efa5cff-4298-4b97-a893-868d8599d1e7" width="300" height="230"/>
+<img src="https://github.com/user-attachments/assets/f45e8cef-14f0-4a2c-9fdf-81c737557889" width="300" height="230"/>
 
 ### 6. 오늘의 식사메뉴 추천
       6-1. 인덱스 페이지에 구현
       6-2. 메뉴 카테고리를 선택한 후 버튼을 클릭하면 추천 메뉴가 나옴 (기본은 '상관없음' 카테고리)
+
+### 7. 아이디 찾기
+	7-1. 이름, 이메일 주소 입력
+ 	7-2. DB에서 입력한 정보에 해당하는 유저아이디 조회 후 출력
+  	7-3. NullPointerException 발생 시 에러메시지 출력
+   
+<img src="https://github.com/user-attachments/assets/dc082ab1-094e-4f8f-8f4d-8b578c18ef1e" width="400" height="230"/>
+<img src="https://github.com/user-attachments/assets/120bb5cc-8ed5-41b8-a059-6ff45ca6094e" width="400" height="230"/>
+<img src="https://github.com/user-attachments/assets/4b223b70-17bd-4dcc-8636-4ec766d621e3" width="400" height="230"/>
+
+
 ## 🧚‍♂ 수정사항
 
 #### 2024-07-19
