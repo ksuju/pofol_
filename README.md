@@ -52,9 +52,9 @@
 ### 5. 이력서 전송
       5-1. 이름(회사명), 이메일 주소를 입력 시 이력서 pdf 파일을 전송해 주는 기능
 
-<img src="https://github.com/user-attachments/assets/8ce9f134-b14d-434b-ae34-38631eb25931" width="300" height="230"/>
-<img src="https://github.com/user-attachments/assets/4efa5cff-4298-4b97-a893-868d8599d1e7" width="300" height="230"/>
-<img src="https://github.com/user-attachments/assets/f45e8cef-14f0-4a2c-9fdf-81c737557889" width="300" height="230"/>
+<img src="https://github.com/user-attachments/assets/8ce9f134-b14d-434b-ae34-38631eb25931" width="400" height="230"/>
+<img src="https://github.com/user-attachments/assets/4efa5cff-4298-4b97-a893-868d8599d1e7" width="400" height="230"/>
+<img src="https://github.com/user-attachments/assets/f45e8cef-14f0-4a2c-9fdf-81c737557889" width="400" height="230"/>
 
 ### 6. 오늘의 식사메뉴 추천
       6-1. 인덱스 페이지에 구현
