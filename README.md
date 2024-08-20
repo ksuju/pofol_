@@ -127,8 +127,8 @@ Index 페이지 수정
 
 #### 2024-08-20
 게시판 클릭시 발생하던 NullPointerException 처리
-1. 아이디 인증여부 확인에 들어가는 조건이 authYN.equals("N") 였음
-	1-1. 이 코드에서는 authYN이 NULL이면 equals메서드를 호출할 때 NullPointerException 발생함
-   	1-2. WHY??? authYN 변수가 NULL인 상태에서 equals("N")을 호출하려고 하기 때문!
+1. 아이디 인증여부 확인에 들어가는 조건이 authYN.equals("N") 였음</br>
+	1-1. 이 코드에서는 authYN이 NULL이면 equals메서드를 호출할 때 NullPointerException 발생함</br>
+   	1-2. WHY??? authYN 변수가 NULL인 상태에서 equals("N")을 호출하려고 하기 때문!</br>
    	1-3. "N".equals(authYN) 으로 변경 > 'authYN'이 NULL일 경우에도 안전하게 eqauls 호출 가능
 
