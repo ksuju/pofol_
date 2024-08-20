@@ -306,7 +306,7 @@ public class NoticeController {
 
 	    // 아이디 인증여부 확인
 	    String authYN = noticeService.getAuthYN(loginMember);
-		if(authYN.equals("N")) {
+		if("N".equals(authYN)) {
 			params.put("logInUser", loginMember);
 			noticeService.updateAuthNum(params);
 			String getEmail = noticeService.getEmail(loginMember);
