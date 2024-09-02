@@ -1,5 +1,10 @@
 # ksuju 포트폴리오  https://bit.ly/4bVJyZA
 ## 업데이트중 -ing...
+#### 리팩토링 예정
+1. ERD 설계도부터 만들기
+2. 보다 객체지향적으로 인터페이스 분리하기 (ISP)
+3. DI 필드주입 > 생성자를 통한 주입으로 변경
+4. 테스트 코드 만들기
 ## 👋 소개
 회원가입, 게시판 등 기본적인 기능을 구현해보고 배포 경험을 쌓기 위한 웹 페이지 입니다.
 
@@ -131,4 +136,5 @@ Index 페이지 수정
 	1-1. 이 코드에서는 authYN이 NULL이면 equals메서드를 호출할 때 NullPointerException 발생함</br>
    	1-2. WHY??? authYN 변수가 NULL인 상태에서 equals("N")을 호출하려고 하기 때문!</br>
    	1-3. "N".equals(authYN) 으로 변경 > 'authYN'이 NULL일 경우에도 안전하게 eqauls 호출 가능
+
 
