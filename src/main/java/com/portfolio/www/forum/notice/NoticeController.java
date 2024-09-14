@@ -303,9 +303,10 @@ public class NoticeController {
 
 	    String loginMember = getLoginMember(request);
 	    Integer loginMemberSeq = getMemberSeq(loginMember);
-
+	    
 	    // 아이디 인증여부 확인
 	    String authYN = noticeService.getAuthYN(loginMember);
+	    
 		if("N".equals(authYN)) {
 			params.put("logInUser", loginMember);
 			noticeService.updateAuthNum(params);
@@ -314,6 +315,10 @@ public class NoticeController {
 			mv.addObject("alert", "이메일 인증이 필요합니다 가입 시 입력하신 이메일을 확인해주세요.");
 			mv.addObject("idAuth", "idAuth");
 			mv.addObject("email", getEmail);
+			return mv;
+		} else if ("guest".equals(authYN)) {
+			mv.setViewName("auth/login");
+			mv.addObject("alert", "로그인이 필요합니다.");
 			return mv;
 		}
 	    
@@ -356,7 +361,19 @@ public class NoticeController {
 	// 세션에서 로그인한 회원 정보 가져옴
 	private String getLoginMember(HttpServletRequest request) {
 	    HttpSession session = request.getSession();
-	    return (String) session.getAttribute("logInUser");
+	    
+	    // 비로그인 상태일때 리턴할 문자열
+	    String result = "guest";
+	    
+	    // 세션에 logInUser가 있는지 null 체크
+	    String logInUser = (String) session.getAttribute("logInUser");
+	    
+	    // 세션에 logInUser이 없으면 guest, 있으면 아이디
+	    if(logInUser == null || logInUser.isEmpty()) {
+	    	return result;
+	    } else {
+	    	return logInUser;
+	    }
 	}
 
 	

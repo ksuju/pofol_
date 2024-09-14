@@ -551,6 +551,7 @@
 	<delete id="deleteMember">
 		DELETE FROM member WHERE member_seq = #{memberSeq};
 	</delete>
+	
 	<!-- 회원가입 -->
 	<insert id="joinMember" parameterType="hashmap">
 		INSERT INTO forum.`member`

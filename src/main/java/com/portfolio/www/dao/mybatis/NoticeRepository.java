@@ -15,8 +15,6 @@ import com.portfolio.www.dto.EmailAuthDto;
 import com.portfolio.www.dto.MemberAuthDto;
 import com.portfolio.www.dto.ResumeDto;
 
-import lombok.experimental.PackagePrivate;
-
 public interface NoticeRepository {
 	
 	// 아이디 찾기

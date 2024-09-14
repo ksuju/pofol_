@@ -88,7 +88,12 @@ public class NoticeService {
 	
 	// 아이디 인증여부 가져오기
 		public String getAuthYN(String memberID) {
-			return noticeRepository.getAuthYN(memberID);
+			
+			if(memberID.equals("guest")) {
+				return "guest";
+			} else {
+				return noticeRepository.getAuthYN(memberID);
+			}
 		}
 		
 		
