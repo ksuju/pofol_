@@ -141,4 +141,7 @@ Index 페이지 수정
    	1-2. WHY??? authYN 변수가 NULL인 상태에서 equals("N")을 호출하려고 하기 때문!</br>
    	1-3. "N".equals(authYN) 으로 변경 > 'authYN'이 NULL일 경우에도 안전하게 eqauls 호출 가능
 
+#### 2024-09-14
+브라우저 캐시가 없는 비로그인(guest) 상태에서 게시판 진입에러<br/>
+변경사항 블로그 URL : https://ksuju.tistory.com/54
 
