@@ -79,7 +79,7 @@
 <img src="https://github.com/user-attachments/assets/4b223b70-17bd-4dcc-8636-4ec766d621e3" width="400" height="230"/>
 
 
-## 🧚‍♂ 수정사항
+## 🧚‍♂ 수정사항 및 트러블슈팅
 
 #### 2024-07-19
 기존 :
