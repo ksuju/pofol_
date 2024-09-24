@@ -69,7 +69,7 @@
 
 	<!-- 이메일 전송하기 위한 bean설정 -->
 	<bean id="mailSender"
-		class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		class="org.springframework.mail.javamail.JavaMailSenderImpl">	
 		<property name="host" value="smtp.naver.com" />
 		<property name="port" value="587" />
 		<property name="username" value="${email.username}" />
@@ -81,8 +81,18 @@
 		</property>
 	</bean>
 
+	<!-- 이건 기존 setter주입
 	<bean id="emailUtil" class="com.portfolio.www.util.EmailUtil">
 		<property name="mailSender" ref="mailSender"></property>
+	</bean>
+	 -->
+	
+	<!-- 
+		이건 생성자 주입
+	 -->
+	<bean id="emailUtil" class="com.portfolio.www.util.EmailUtil">
+    	<constructor-arg ref="emailProp"/>   <!-- EmailProp 생성자 주입 -->
+    	<constructor-arg ref="mailSender"/>  <!-- JavaMailSender 생성자 주입 -->
 	</bean>
 
 	<bean id="encryptorConfig"

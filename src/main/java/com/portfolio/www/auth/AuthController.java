@@ -20,11 +20,15 @@ import com.portfolio.www.service.LoginService;
 @Controller
 public class AuthController {
 	
-	@Autowired
-	LoginService loginService;
+	private final LoginService loginService;
+
+	private final AuthService authService;
 	
 	@Autowired
-	AuthService authService;
+	public AuthController(LoginService loginService, AuthService authService) {
+		this.loginService = loginService;
+		this.authService = authService;
+	}
 	
 	// 아이디찾기
 	@RequestMapping("/auth/sendID.do")

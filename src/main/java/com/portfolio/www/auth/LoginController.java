@@ -21,9 +21,13 @@ import com.portfolio.www.service.LoginService;
 @Controller
 public class LoginController {
 
-	@Autowired
-	LoginService loginService;
+	private final LoginService loginService;
 	
+	@Autowired
+	public LoginController(LoginService loginService) {
+		this.loginService = loginService;
+	}
+
 	// 아이디찾기 페이지로 이동 & 아이디 변경
 	@RequestMapping("/auth/findID.do")
 	public ModelAndView findID() {

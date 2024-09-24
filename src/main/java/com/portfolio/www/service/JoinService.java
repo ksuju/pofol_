@@ -14,26 +14,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.portfolio.www.dao.mybatis.NoticeRepository;
 import com.portfolio.www.dto.EmailAuthDto;
-import com.portfolio.www.dto.EmailDto;
 import com.portfolio.www.dto.MemberAuthDto;
 import com.portfolio.www.message.MessageEnum;
-import com.portfolio.www.util.EmailProp;
-import com.portfolio.www.util.EmailUtil;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 
 @Service("joinService")
 public class JoinService {
 
-	@Autowired
-	private NoticeRepository noticeRepository;
+	private final NoticeRepository noticeRepository;
 
 	@Autowired
-	private EmailUtil emailutil;
-
-	@Autowired
-	private EmailProp emailprop;
-	
+	public JoinService(NoticeRepository noticeRepository) {
+		this.noticeRepository = noticeRepository;
+	}
 
 	// auth_yn 변경하기 트랜잭션으로 member_auth 테이블과 member 테이블에 있는 auth_yn 컬럼을 동시에 바꿈
 	@Transactional

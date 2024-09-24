@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import com.portfolio.www.dao.mybatis.NoticeRepository;
 import com.portfolio.www.dto.EmailDto;
 import com.portfolio.www.message.MessageEnum;
-import com.portfolio.www.util.EmailProp;
 import com.portfolio.www.util.EmailUtil;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
@@ -24,16 +23,16 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 @Service
 public class LoginService {
 
-	@Autowired
-	private NoticeRepository noticeRepository;
+	private final NoticeRepository noticeRepository;
 
+	private final EmailUtil emailutil;
+	
 	@Autowired
-	private EmailUtil emailutil;
+	public LoginService(NoticeRepository noticeRepository, EmailUtil emailutil) {
+		this.noticeRepository = noticeRepository;
+		this.emailutil = emailutil;
+	}
 
-	@Autowired
-	private EmailProp emailprop;
-	
-	
 	// 비밀번호 찾기 할 때 입력한 아이디와 이메일로부터 가져온 db에 있는 아이디 비교
 	public boolean compareID(String email, String name) {
 		String dbMemberID = noticeRepository.compareID(email);
