@@ -11,9 +11,13 @@ import com.portfolio.www.dao.mybatis.NoticeRepository;
 @Service("indexService")
 public class IndexService {
 	
-	@Autowired
-	NoticeRepository noticeRepository;
+	private final NoticeRepository noticeRepository;
 	
+	@Autowired
+	public IndexService(NoticeRepository noticeRepository) {
+		this.noticeRepository = noticeRepository;
+	}
+
 	// 특정 카테고리 메뉴 가져오기
 	public String getMenu(String category) {
 		

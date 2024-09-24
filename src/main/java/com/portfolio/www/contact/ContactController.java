@@ -14,9 +14,13 @@ import com.portfolio.www.service.ContactService;
 @Controller
 public class ContactController {
 	
+	private final ContactService contactService;
+
 	@Autowired
-	ContactService contactService;
-	
+	public ContactController(ContactService contactService) {
+		this.contactService = contactService;
+	}
+
 	@RequestMapping("resume.do")
 	public ModelAndView sendResume(@RequestParam String name,
 			@RequestParam String email) {

@@ -7,20 +7,26 @@ import javax.mail.util.ByteArrayDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Component;
 
 import com.portfolio.www.dto.EmailDto;
 
 public class EmailUtil {
-	// property 설정으로 받아보기
-	private JavaMailSender mailSender;
-
+	
+	private final JavaMailSender mailSender;
+	private final EmailProp emailProp;
+	
 	@Autowired
-	private EmailProp emailProp;
-
-	public void setMailSender(JavaMailSender mailSender) {
+	public EmailUtil(EmailProp emailProp, JavaMailSender mailSender) {
+		this.emailProp = emailProp;
 		this.mailSender = mailSender;
 	}
 
+	/* 생성자 주입했으므로 setter 필요 X > context-beans.xml 수정했음
+	 * public void setMailSender(JavaMailSender mailSender) { this.mailSender =
+	 * mailSender; }
+	 */
+	
 	public String sendMail(EmailDto email) {
 		return sendMail(email, false);
 	}

@@ -19,8 +19,12 @@ import com.portfolio.www.service.JoinService;
 @Controller
 public class JoinController {
 
+	private final JoinService joinService;
+	
 	@Autowired
-	JoinService joinService;
+	public JoinController(JoinService joinService) {
+		this.joinService = joinService;
+	}
 
 	// 이메일 중복확인 버튼 > 이메일 중복, 유효성 검사
 	@ResponseBody

@@ -33,15 +33,19 @@ import com.portfolio.www.util.FileUtil;
 @Service
 public class NoticeService {
 
-	@Autowired
-	private NoticeRepository noticeRepository;
+	private final NoticeRepository noticeRepository;
 
-	@Autowired
-	FileUtil fileUtil;
+	private final FileUtil fileUtil;
+	
+	private final EmailUtil emailutil;
 	
 	@Autowired
-	private EmailUtil emailutil;
-	
+	public NoticeService(NoticeRepository noticeRepository, FileUtil fileUtil, EmailUtil emailutil) {
+		this.noticeRepository = noticeRepository;
+		this.fileUtil = fileUtil;
+		this.emailutil = emailutil;
+	}
+
 	// 아이디로 email 가져오기
 	public String getEmail(String memberID) {
 		return noticeRepository.getEmail(memberID);

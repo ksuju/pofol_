@@ -35,13 +35,17 @@ import com.portfolio.www.service.ZipService;
 
 @Controller
 public class NoticeController {
-
-	@Autowired
-	ZipService zipService;
-
-	@Autowired
-	NoticeService noticeService;
 	
+	private final ZipService zipService;
+
+	private final NoticeService noticeService;
+	
+	@Autowired
+	public NoticeController(ZipService zipService, NoticeService noticeService) {
+		this.zipService = zipService;
+		this.noticeService = noticeService;
+	}
+
 	// 댓글 좋아요 or 싫어요
 	@RequestMapping("/forum/notice/commentIsLike.do")
 	@ResponseBody

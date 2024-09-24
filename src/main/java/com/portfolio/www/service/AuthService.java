@@ -11,9 +11,13 @@ import com.portfolio.www.dao.mybatis.NoticeRepository;
 @Service
 public class AuthService {
 	
-	@Autowired
-	private NoticeRepository noticeRepository;
+	private final NoticeRepository noticeRepository;
 	
+	@Autowired
+	public AuthService(NoticeRepository noticeRepository) {
+		this.noticeRepository = noticeRepository;
+	}
+
 	// 아이디찾기
 	public String findID(String name,
 			String email) {

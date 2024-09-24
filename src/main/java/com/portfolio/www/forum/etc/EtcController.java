@@ -15,9 +15,14 @@ import com.portfolio.www.service.IndexService;
 @Controller
 public class EtcController {
 	
-	@Autowired
-	IndexService indexService;
+	private final IndexService indexService;
 	
+	@Autowired
+	public EtcController(IndexService indexService) {
+		super();
+		this.indexService = indexService;
+	}
+
 	// 인덱스페이지 개별 메뉴 추천
 	@ResponseBody
 	@RequestMapping(value = "/recomMenu.do", produces = "text/plain; charset=UTF-8") // 한글인식 안되는 문제 해결

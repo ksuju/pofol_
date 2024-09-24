@@ -12,15 +12,21 @@ import com.portfolio.www.util.EmailUtil;
 @Service("contactService")
 public class ContactService {
 	
-	@Autowired
-	private NoticeRepository noticeRepository;
+	private final NoticeRepository noticeRepository;
+	
+	private final EmailUtil emailUtil;
+	
+	private final EmailProp emailProp;
+	
 	
 	@Autowired
-	EmailUtil emailUtil;
-	
-	@Autowired
-	EmailProp emailProp;
-	
+	public ContactService(NoticeRepository noticeRepository, EmailUtil emailUtil, EmailProp emailProp) {
+		this.noticeRepository = noticeRepository;
+		this.emailUtil = emailUtil;
+		this.emailProp = emailProp;
+	}
+
+
 	public boolean sendResume(String name, String email) {
 		
 		try {
