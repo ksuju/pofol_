@@ -6,28 +6,7 @@
 <mapper
 	namespace="com.portfolio.www.dao.mybatis.NoticeRepository">
 	
-	<!-- id찾기 -->
-	<select id="findID">
-		SELECT member_id
-		FROM member
-		WHERE member_nm = #{name} AND email = #{email};
-	</select>
-	
-	<!-- memberID로 email 가져오기 -->
-	<select id="getEmail">
-		SELECT email
-		FROM member
-		WHERE member_id = #{memberID};
-	</select>
-	
-	<!-- 로그인 기록 남기기 -->
-	<insert id="saveLoginLog">
-		INSERT INTO login_log
-		(user_id, login_date)
-		VALUES(#{userID}, #{loginDate});
-	</insert>
-	
-	<!-- 인기글 상위 5개 출력 -->
+	<!-- 인기글 상위 5개 출력 (notice)-->
 	<select id="getLikeTopFive" resultType="map">
 		SELECT
 			b.board_seq, b.board_type_seq, b.title , COUNT(*) AS like_count
@@ -48,8 +27,7 @@
 		LIMIT 5;
 	</select>
 	
-	
-	<!-- 게시글의 파일 개수, 댓글 개수, 좋아요 여부를 포함한 통합 쿼리 -->
+	<!-- 게시글의 파일 개수, 댓글 개수, 좋아요 여부를 포함한 통합 쿼리 (notice)-->
 	<select id="getBoardDetails" parameterType="map" resultType="map">
 	    SELECT 
 	        b.board_seq AS boardSeq,
@@ -96,8 +74,7 @@
 	    AND b.board_type_seq = #{boardTypeSeq};
 	</select>
 
-
-	<!-- 좋아요 수 체크 -->
+	<!-- 좋아요 수 체크 (notice)-->
 	<select id="like">
 		SELECT COUNT(is_like)
 		FROM board_like_dislike
@@ -106,14 +83,7 @@
 		AND board_type_seq = #{bdTypeSeq};
 	</select>
 	
-	<!-- email로 member_id 가져오기 (비밀번호 변경 시 사용) -->
-	<select id="compareID">
-		SELECT member_id
-		FROM member
-		WHERE email = #{email};
-	</select>
-	
-	<!-- 여러 개의 boardSeq에 대한 is_like 값 가져오기 -->
+	<!-- 여러 개의 boardSeq에 대한 is_like 값 가져오기 (notice)-->
 	<select id="selectIsLikeList" parameterType="map" resultType="map">
 	    SELECT board_seq AS boardSeq, is_like AS isLike
 	    FROM board_like_dislike
@@ -125,28 +95,7 @@
 	    AND board_type_seq = #{boardTypeSeq}
 	</select>
 	
-	<!-- 카테고리별 메뉴 가져오기 -->
-	<select id="menu">
-		SELECT menu_name
-		FROM recommend_menu
-		WHERE menu_category = #{category};
-	</select>
-	
-	<!-- 메뉴 카테고리 가져오기 -->	
-	<select id="menuCategory">
-		SELECT menu_category
-		FROM recommend_menu
-		GROUP BY menu_category;
-	</select>
-	
-	<!-- 모든 메뉴 가져오기 -->
-	<select id="allMenu">
-		SELECT menu_name
-		FROM recommend_menu
-		WHERE NOT menu_name IN ('아무거나');
-	</select>
-	
-	<!-- 첨부파일 개수 가져오기 (여러 boardSeq) -->
+	<!-- 첨부파일 개수 가져오기 (여러 boardSeq) (notice)-->
 	<select id="bringFileCnt" parameterType="map" resultType="map">
 	    SELECT board_seq AS boardSeq, COUNT(*) AS fileCount
 	    FROM board_attach
@@ -158,7 +107,7 @@
 	    GROUP BY board_seq;
 	</select>
 	
-	<!-- 댓글 개수 가져오기 (여러 boardSeq) -->
+	<!-- 댓글 개수 가져오기 (여러 boardSeq) (notice)-->
 	<select id="bringCmtCnt" parameterType="map" resultType="map">
 	    SELECT board_seq AS boardSeq, COUNT(*) AS commentCount
 	    FROM board_comment
@@ -170,20 +119,7 @@
 	    GROUP BY board_seq;
 	</select>
 	
-	
-	<!-- 이력서 가져오기 이용기록 -->
-	<insert id="resumeRec">
-		INSERT INTO resume_rec
-		(name, email)
-		VALUES(#{name}, #{email});
-	</insert>
-	
-	<!-- 이력서 가져오기 -->
-	<select id="resume" resultType="ResumeDto">
-		SELECT * FROM resume
-	</select>
-	
-	<!-- 댓글 is_like 'Y' or 'N' 가져오기 -->
+	<!-- 댓글 is_like 'Y' or 'N' 가져오기 (notice)-->
 	<select id="commentIsLike">
 	    SELECT is_like, comment_seq 
 	    FROM comment_like_dislike
@@ -192,21 +128,21 @@
 	    AND board_type_seq = #{boardTypeSeq};
 	</select>
 	
-	<!-- 댓글 좋아요 Y or N -->
+	<!-- 댓글 좋아요 Y or N (notice)-->
 	<update id="commentUpDownCvt">
 	    UPDATE comment_like_dislike
 	    SET reg_dtm = DATE_FORMAT(NOW(), '%Y-%m-%d'), is_like = #{cmtIsLike}
 	    WHERE board_seq = #{boardSeq} AND board_type_seq = #{boardTypeSeq} AND member_seq = #{memberSeq} AND comment_seq = #{commentSeq};
 	</update>
 	
-	<!-- 댓글 좋아요 -->
+	<!-- 댓글 좋아요 (notice)-->
 	<insert id="commentUpDown">
 		INSERT INTO comment_like_dislike
 		(board_seq, board_type_seq, reg_dtm, is_like, member_seq, comment_seq)
 		VALUES(#{boardSeq}, #{boardTypeSeq}, DATE_FORMAT(NOW(), '%Y-%m-%d'), #{cmtIsLike}, #{memberSeq}, #{commentSeq});
 	</insert>
 	
-	<!-- is_like 'Y' or 'N' 가져오기 -->
+	<!-- is_like 'Y' or 'N' 가져오기 (notice)-->
 	<select id="selectIsLike">
 		SELECT is_like
 		FROM board_like_dislike
@@ -215,28 +151,28 @@
 		AND board_type_seq = #{boardTypeSeq};
 	</select>
 	
-	<!-- 게시글 좋아요 Y or N -->
+	<!-- 게시글 좋아요 Y or N (notice)-->
 	<update id="thumbUpDownCvt">
 		UPDATE board_like_dislike
 		SET reg_dtm = DATE_FORMAT(NOW(), '%Y-%m-%d'), is_like = #{isLike}
 		WHERE board_seq = #{boardSeq} AND board_type_seq = #{boardTypeSeq} AND member_seq = #{memberSeq};
 	</update>
 	
-	<!-- 게시글 좋아요 -->
+	<!-- 게시글 좋아요 (notice)-->
 	<insert id="thumbUpDown" parameterType="BoardLikeDto">
 		INSERT INTO board_like_dislike
 		(board_seq, board_type_seq, reg_dtm, is_like, member_seq)
 		VALUES(#{boardSeq}, #{boardTypeSeq}, DATE_FORMAT(NOW(), '%Y-%m-%d'), #{isLike}, #{memberSeq});
 	</insert>
 	
-	<!-- 댓글 전부 삭제하기 -->
+	<!-- 댓글 전부 삭제하기 (notice)-->
 	<delete id="deleteAllComment">
 		DELETE FROM board_comment
 		WHERE board_type_seq = #{boardTypeSeq}
 			AND board_seq = #{boardSeq};
 	</delete>
 	
-	<!-- 댓글 삭제하기 -->
+	<!-- 댓글 삭제하기 (notice)-->
 	<delete id="deleteComment">
 		DELETE FROM board_comment
 		WHERE comment_seq = #{commentSeq}
@@ -244,7 +180,7 @@
 			AND board_type_seq = #{boardTypeSeq};
 	</delete>
 	
-	<!-- 댓글 수정하기 -->
+	<!-- 댓글 수정하기 (notice)-->
 	<update id="updateComments">
 		UPDATE board_comment
 		SET content = #{content}, update_dtm = DATE_FORMAT(NOW(), '%Y-%m-%d')
@@ -253,14 +189,14 @@
 			AND board_type_seq = #{boardTypeSeq};
 	</update>
 	
-	<!-- 댓글 가져오기 -->
+	<!-- 댓글 가져오기 (notice)-->
 	<select id="selectComments">
 		SELECT *
 		FROM board_comment
 		WHERE board_seq = #{boardSeq} AND board_type_seq = #{boardTypeSeq};
 	</select>
 	
-	<!-- 댓글 insert -->
+	<!-- 댓글 insert (notice)-->
 	<insert id="insertComment" parameterType="BoardCommentDto">
 	    INSERT INTO forum.board_comment
 	    (lvl, content, board_seq, board_type_seq, member_seq, parent_comment_seq, reg_dtm)
@@ -268,20 +204,19 @@
 	    (#{lvl}, #{content}, #{boardSeq}, #{boardTypeSeq}, #{memberSeq}, #{parentCommentSeq}, DATE_FORMAT(NOW(), '%Y-%m-%d'))
 	</insert>
 	
-	
-	<!-- 수정페이지 파일 개별 삭제 -->
+	<!-- 수정페이지 파일 개별 삭제 (notice)-->
 	<delete id="deleteFile">
 		DELETE FROM board_attach
 		WHERE attach_seq=#{attachSeq} AND board_seq=#{boardSeq} AND board_type_seq=#{boardTypeSeq};
 	</delete>
 
-	<!-- attach_seq로 첨부파일 정보 가져오기 -->
+	<!-- attach_seq로 첨부파일 정보 가져오기 (notice)-->
 	<select id="getAttachInfo" resultType="BoardAttachDto">
 		SELECT * FROM board_attach
 		WHERE attach_seq = #{attachSeq}
 	</select>
 
-	<!-- 게시글에 저정된 첨부파일 정보 모두 가져오기 -->
+	<!-- 게시글에 저정된 첨부파일 정보 모두 가져오기 (notice)-->
 	<select id="selectAllFile" resultType="BoardAttachDto">
 		SELECT * FROM board_attach
 		WHERE board_seq = #{boardSeq}
@@ -289,14 +224,14 @@
 		board_type_seq = #{boardTypeSeq};
 	</select>
 
-	<!-- 게시글에 있는 첨부된 파일 전체삭제 -->
+	<!-- 게시글에 있는 첨부된 파일 전체삭제 (notice)-->
 	<delete id="deleteBoardAttach">
 		DELETE FROM board_attach
 		WHERE board_seq=#{boardSeq}
 		AND board_type_seq=#{boardTypeSeq};
 	</delete>
 
-	<!-- 파일첨부 > boardAttach insert -->
+	<!-- 파일첨부 > boardAttach insert (notice)-->
 	<insert id="insertBoardAttach" parameterType="BoardAttachDto">
 		<selectKey keyProperty="attachSeq" order="AFTER"
 			resultType="java.lang.Integer">
@@ -312,15 +247,7 @@
 		#{chngFileNm}, #{fileSize}, #{fileType}, #{accessUri}, #{regDtm});
 	</insert>
 
-	<!-- reg_member_seq로 member_id 가져오기 -->
-	<select id="selectMemberId" parameterType="int">
-		SELECT member_id
-		FROM
-		member
-		WHERE member_seq = #{regMemberSeq};
-	</select>
-
-	<!-- 게시글 수정 -->
+	<!-- 게시글 수정 (notice)-->
 	<update id="updateBoard" parameterType="HashMap">
 		UPDATE forum.board
 		SET
@@ -330,7 +257,7 @@
 		#{boardSeq} AND board_type_seq = #{boardTypeSeq};
 	</update>
 
-	<!-- 특정 게시글 가져오기 -->
+	<!-- 특정 게시글 가져오기 (notice)-->
 	<select id="selectBoard" resultType="HashMap">
 		SELECT b.title, b.content,
 		reg_dtm, reg_member_seq
@@ -339,7 +266,7 @@
 		b.board_type_seq = #{boardTypeSeq};
 	</select>
 
-	<!-- 게시글 생성 -->
+	<!-- 게시글 생성 (notice)-->
 	<insert id="boardCreate">
 		INSERT INTO forum.board
 		(board_type_seq, title,
@@ -357,7 +284,7 @@
 		</selectKey>
 	</insert>
 
-	<!-- 게시글 삭제 -->
+	<!-- 게시글 삭제 (notice)-->
 	<delete id="boardDelete">
 		DELETE b FROM
 		board b
@@ -369,7 +296,7 @@
 		= #{boardSeq};
 	</delete>
 	
-	<!-- 게시글 getSeq 가져오기 -->
+	<!-- 게시글 getSeq 가져오기 (notice)-->
 	<select id="getSeq" parameterType="map" resultType="int">
 		SELECT
 			b.board_seq
@@ -389,7 +316,7 @@
 			#{start}, #{size};
 	</select>
 
-	<!-- 게시글 리스트 가져오기 -->
+	<!-- 게시글 리스트 가져오기 (notice)-->
 	<select id="getList" parameterType="map" resultType="BoardDto">
 		SELECT
 			b.board_seq,
@@ -420,7 +347,7 @@
 			#{start}, #{size};
 	</select>
 
-	<!-- 게시글 총 개수 가져오기 -->
+	<!-- 게시글 총 개수 가져오기 (notice)-->
 	<select id="totalCnt">
 		select count(*)
 		from board
@@ -428,153 +355,9 @@
 		#{bdTypeSeq};
 	</select>
 
-
-	<!-- 계정인증여부 가져오는 쿼리 -->
-	<select id="getAuthYN">
-		SELECT m.auth_yn
-		FROM member m
-		where m.member_id =
-		#{memberID} ;
-	</select>
-
-	<!-- 만료시간 가져오는 쿼리 -->
-	<select id="getExpireDtm">
-		SELECT ma.expire_dtm FROM member_auth ma
-		JOIN member m
-		ON ma.member_seq = m.member_seq
-		WHERE m.email = #{email} ;
-	</select>
-
-	<!-- 비밀번호 변경 쿼리 -->
-	<update id="changePasswd">
-		UPDATE member
-		SET passwd = #{passwd}
-		WHERE email =
-		#{email};
-	</update>
-
-	<!-- auth_num 조회 쿼리 -->
-	<select id="authNumSelect">
-		SELECT ma.auth_num FROM member_auth ma
-		JOIN member m
-		ON ma.member_seq = m.member_seq
-		WHERE m.email = #{email};
-	</select>
-
-	<!-- auth_num 삭제 쿼리 -->
-	<update id="updateAuthNumToNull">
-		UPDATE member_auth ma
-		JOIN member m ON ma.member_seq =
-		m.member_seq
-		SET ma.auth_num = NULL
-		WHERE m.email = #{email};
-	</update>
-
-	<!-- auth_num 업데이트 쿼리 -->
-	<update id="updateAuthNum">
-		UPDATE member_auth ma
-		JOIN member m ON ma.member_seq =
-		m.member_seq
-		SET ma.auth_num = #{authNum}, ma.expire_dtm =
-		DATE_ADD(NOW(), INTERVAL 30
-		MINUTE)
-		WHERE m.email = #{email};
-	</update>
-	
-	<!-- 인증상태 N > Y로 변경 -->
-	<update id="updateMAuth">
-		UPDATE member
-		SET auth_yn = 'Y'
-		WHERE member_id =
-		#{memberID};
-	</update>
-
-	<!-- 인증상태 N > Y로 변경 -->
-	<update id="updateMemAuth">
-		UPDATE member
-		SET auth_yn = 'Y'
-		WHERE member_seq =
-		#{memberSeq};
-	</update>
-
-	<!-- 인증상태 N > Y로 변경 -->
-	<update id="updateAuth">
-		UPDATE member_auth
-		SET auth_yn = 'Y'
-		WHERE member_seq =
-		#{memberSeq} AND auth_uri = #{authUri};
-	</update>
-	
-	<!-- 인증상태 N > Y로 변경 -->
-	<update id="updateAuthaa">
-		UPDATE member_auth
-		SET auth_yn = 'Y'
-		WHERE member_seq =
-		#{memberSeq};
-	</update>
-
-	<!-- auth_uri 가져오기 > 현재시간에서 30분 전까지만 가져옴 -->
-	<select id="authURI">
-		SELECT auth_uri, member_seq
-		FROM member_auth ma
-		WHERE
-		reg_dtm >= DATE_SUB(NOW(), INTERVAL 30 MINUTE);
-	</select>
-
-
-	<!-- 멤버 authinfo 추가 -->
-	<insert id="addAuthInfo" parameterType="memberAuthDto">
-		INSERT INTO
-		forum.member_auth
-		(member_seq, auth_num, auth_uri, reg_dtm, expire_dtm,
-		auth_yn)
-		VALUES (#{memberSeq}, '', #{authUri}, DATE_FORMAT(NOW(),
-		'%Y%m%d%H%i%s'),
-		#{expireDtm}, 'N')
-	</insert>
-
-	<!-- 로그인 -->
-	<select id="loginCheak">
-		SELECT passwd FROM member WHERE member_id =
-		#{memberID};
-	</select>
-
-	<!-- memberSeq 가져오기 -->
-	<select id="getMemberSeq" parameterType="string"
-		resultType="int">
-		SELECT member_seq
-		FROM member
-		WHERE member_id = #{memberID};
-	</select>
-
-	<!-- 아이디삭제(테스트용임 간단히) -->
-	<delete id="deleteMember">
-		DELETE FROM member WHERE member_seq = #{memberSeq};
-	</delete>
-	
-	<!-- 회원가입 -->
-	<insert id="joinMember" parameterType="hashmap">
-		INSERT INTO forum.`member`
-		(member_id, passwd, member_nm, email, auth_yn,
-		pwd_chng_dtm, join_dtm)
-		VALUES(#{memberID}, #{passwd}, #{memberNM}, #{email}, 'N', '', now());
-	</insert>
-
-	<!-- 아이디 중복검사 -->
-	<select id="memberSelectAll">
-		SELECT member_id FROM `member` m
-	</select>
-
-	<!-- email 중복검사 -->
-	<select id="emailSelectAll">
+	<!-- email 중복검사 (emailCount로 대체됨 > JoinRepository)-->
+<!-- 	<select id="emailSelectAll">
 		SELECT email FROM `member` m
-	</select>
-
-	<!-- email 셀렉트 -->
-	<select id="emailCount">
-		SELECT count(*)
-		FROM `member` m
-		WHERE email = #{email};
-	</select>
+	</select> -->
 
 </mapper>

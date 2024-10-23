@@ -13,6 +13,9 @@ import org.apache.ibatis.binding.BindingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.portfolio.www.dao.mybatis.AuthRepository;
+import com.portfolio.www.dao.mybatis.JoinRepository;
+import com.portfolio.www.dao.mybatis.LoginRepository;
 import com.portfolio.www.dao.mybatis.NoticeRepository;
 import com.portfolio.www.dto.EmailDto;
 import com.portfolio.www.message.MessageEnum;
@@ -24,18 +27,31 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 public class LoginService {
 
 	private final NoticeRepository noticeRepository;
+	
+	private final JoinRepository joinRepository;
+	
+	private final AuthRepository authRepository;
+	
+	private final LoginRepository loginRepository;
 
 	private final EmailUtil emailutil;
 	
 	@Autowired
-	public LoginService(NoticeRepository noticeRepository, EmailUtil emailutil) {
+	public LoginService(NoticeRepository noticeRepository,
+			EmailUtil emailutil,
+			JoinRepository joinRepository,
+			LoginRepository loginRepository,
+			AuthRepository authRepository) {
 		this.noticeRepository = noticeRepository;
 		this.emailutil = emailutil;
+		this.joinRepository = joinRepository;
+		this.authRepository = authRepository;
+		this.loginRepository = loginRepository;
 	}
 
 	// 비밀번호 찾기 할 때 입력한 아이디와 이메일로부터 가져온 db에 있는 아이디 비교
 	public boolean compareID(String email, String name) {
-		String dbMemberID = noticeRepository.compareID(email);
+		String dbMemberID = authRepository.compareID(email);
 		
 		System.out.println("============== LoginService > compareID ===============");
 		
@@ -53,7 +69,7 @@ public class LoginService {
 		String checkBox = params.get("checkBox");
 		
 		try {
-			noticeRepository.getMemberSeq(memberId);
+			joinRepository.getMemberSeq(memberId);
 			// 체크박스가 "on"일때 입력받은 아이디 쿠키로 저장
 			if("on".equals(checkBox)) {
 				Cookie saveId = new Cookie("saveId",memberId);
@@ -83,26 +99,26 @@ public class LoginService {
 		// System.out.println("encPasswd >>>>>>>>> " + encPasswd);
 		// System.out.println("result.verified >>>>>>> " + result.verified);
 
-		long expireDtm = noticeRepository.getExpireDtm(params.get("email"));
+		long expireDtm = authRepository.getExpireDtm(params.get("email"));
 		long now = System.currentTimeMillis();
 
 		if (expireDtm > now) {
 			params.put("passwd", encPasswd);
 			// BCrypt를 사용한 비밀번호 암호화 끝
 			// 인증번호 null로 바꾸기
-			noticeRepository.updateAuthNumToNull(params.get("email"));
+			authRepository.updateAuthNumToNull(params.get("email"));
 
-			return noticeRepository.changePasswd(params);
+			return loginRepository.changePasswd(params);
 		} else {
 			// 인증번호 null로 바꾸기
-			noticeRepository.updateAuthNumToNull(params.get("email"));
+			authRepository.updateAuthNumToNull(params.get("email"));
 			return Integer.parseInt(MessageEnum.EXPIRE_AUTH_DTM.getCode());
 		}
 	}
 
 	// 비밀번호 변경을 위한 메일 인증 완료
 	public int emailAuthPw(HashMap<String, String> params) {
-		int dbAuthNum = noticeRepository.authNumSelect(params.get("email"));
+		int dbAuthNum = authRepository.authNumSelect(params.get("email"));
 		String authNumString = params.get("authNum");
 		int authNum = 0;
 
@@ -122,8 +138,8 @@ public class LoginService {
 
 	// 인증번호 생성 및 메일 발송
 	public int updateAuthNum(HashMap<String, String> params) {
-		int cnt = noticeRepository.updateAuthNum(params);
-		int emailExist = noticeRepository.emailCount(params.get("email"));
+		int cnt = authRepository.updateAuthNum(params);
+		int emailExist = joinRepository.emailCount(params.get("email"));
 		
 		if (emailExist == 0) {
 			return Integer.parseInt(MessageEnum.VALLID_EMAIL.getCode());
@@ -156,7 +172,7 @@ public class LoginService {
 	}
 
 	public int loginCheak(String memberID, String passwd, HttpServletRequest request) {
-		String dbPasswd = noticeRepository.loginCheak(memberID);
+		String dbPasswd = loginRepository.loginCheak(memberID);
 		//String getAuthYN = noticeRepository.getAuthYN(memberID);
 		System.out.println("================ LoginService > loginCheak 진입 ================");
 		
@@ -178,7 +194,7 @@ public class LoginService {
 		        String formattedDate = now.format(formatter);
 				
 				// 로그인 성공 시 로그인 기록 남기기
-				noticeRepository.saveLoginLog(memberID,formattedDate);
+		        loginRepository.saveLoginLog(memberID,formattedDate);
 				
 				return Integer.parseInt(MessageEnum.SUCCESS.getCode());
 			}
