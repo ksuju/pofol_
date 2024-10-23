@@ -19,6 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.portfolio.www.dao.mybatis.AuthRepository;
+import com.portfolio.www.dao.mybatis.JoinRepository;
+import com.portfolio.www.dao.mybatis.MemberRepository;
 import com.portfolio.www.dao.mybatis.NoticeRepository;
 import com.portfolio.www.dto.BoardAttachDto;
 import com.portfolio.www.dto.BoardCommentDto;
@@ -34,28 +37,42 @@ import com.portfolio.www.util.FileUtil;
 public class NoticeService {
 
 	private final NoticeRepository noticeRepository;
+	
+	private final JoinRepository joinRepository;
+	
+	private final AuthRepository authRepository;
+	
+	private final MemberRepository memberRepository;
 
 	private final FileUtil fileUtil;
 	
 	private final EmailUtil emailutil;
 	
 	@Autowired
-	public NoticeService(NoticeRepository noticeRepository, FileUtil fileUtil, EmailUtil emailutil) {
+	public NoticeService(NoticeRepository noticeRepository,
+			JoinRepository joinRepository,
+			AuthRepository authRepository,
+			MemberRepository memberRepository,
+			FileUtil fileUtil,
+			EmailUtil emailutil) {
 		this.noticeRepository = noticeRepository;
+		this.joinRepository = joinRepository;
+		this.authRepository = authRepository;
+		this.memberRepository = memberRepository;
 		this.fileUtil = fileUtil;
 		this.emailutil = emailutil;
 	}
 
 	// 아이디로 email 가져오기
 	public String getEmail(String memberID) {
-		return noticeRepository.getEmail(memberID);
+		return memberRepository.getEmail(memberID);
 	}
 	
 	// 아이디 인증번호 생성 및 인증메일 발송
 	public int updateAuthNum(HashMap<String, String> params) {
 		
 		String memberID = params.get("logInUser");
-		String dbEmail = noticeRepository.getEmail(memberID);
+		String dbEmail = memberRepository.getEmail(memberID);
 		params.put("email", dbEmail);
 		
 		// 6자리의 인증번호 생성
@@ -67,8 +84,8 @@ public class NoticeService {
 		
 		System.out.println("alkdnsalkdnasd====>"+params);
 		
-		int cnt = noticeRepository.updateAuthNum(params);
-		int emailExist = noticeRepository.emailCount(params.get("email"));
+		int cnt = authRepository.updateAuthNum(params);
+		int emailExist = joinRepository.emailCount(params.get("email"));
 		
 		if (emailExist == 0) {
 			return Integer.parseInt(MessageEnum.VALLID_EMAIL.getCode());
@@ -96,7 +113,7 @@ public class NoticeService {
 			if(memberID.equals("guest")) {
 				return "guest";
 			} else {
-				return noticeRepository.getAuthYN(memberID);
+				return memberRepository.getAuthYN(memberID);
 			}
 		}
 		
@@ -160,7 +177,7 @@ public class NoticeService {
 	
 	// member_seq 가져오기
 	public Integer getMemberSeq(String memberId) {
-		return noticeRepository.getMemberSeq(memberId);
+		return joinRepository.getMemberSeq(memberId);
 	}
 	
 	// 댓글 삭제하기
@@ -182,8 +199,8 @@ public class NoticeService {
 		
 		String memberId = (String) session.getAttribute("logInUser");
 		
-		if(noticeRepository.getMemberSeq(memberId) > 0) {
-			dto.setMemberSeq(noticeRepository.getMemberSeq(memberId));
+		if(joinRepository.getMemberSeq(memberId) > 0) {
+			dto.setMemberSeq(joinRepository.getMemberSeq(memberId));
 		} else {
 			return -1;
 		}
@@ -234,7 +251,7 @@ public class NoticeService {
 
 		String logInUser = (String) session.getAttribute("logInUser");
 
-		int memberSeq = noticeRepository.getMemberSeq(memberId);
+		int memberSeq = joinRepository.getMemberSeq(memberId);
 
 		params.put("memberSeq", memberSeq);
 
@@ -275,7 +292,7 @@ public class NoticeService {
 
 		Integer regMemberSeq = (Integer) boardInfo.get("reg_member_seq");
 
-		String memberId = noticeRepository.selectMemberId(regMemberSeq).get("member_id");
+		String memberId = memberRepository.selectMemberId(regMemberSeq).get("member_id");
 
 		// 저장된 파일 리스트 가져오기
 		List<BoardAttachDto> fileList = noticeRepository.selectAllFile(boardTypeSeq, boardSeq);
@@ -296,7 +313,7 @@ public class NoticeService {
         
         for (BoardCommentDto comment : comments) {
         	int memberSeq = comment.getMemberSeq();
-            HashMap<String, String> memberInfo = noticeRepository.selectMemberId(memberSeq);
+            HashMap<String, String> memberInfo = memberRepository.selectMemberId(memberSeq);
             
             String getMemberId = memberInfo.get("member_id");
             comment.setMemberNm(getMemberId);
@@ -336,7 +353,7 @@ public class NoticeService {
 		if (logInUser.isEmpty()) {
 			return false;
 		} else {
-			int memberSeq = noticeRepository.getMemberSeq(logInUser);
+			int memberSeq = joinRepository.getMemberSeq(logInUser);
 
 			params.put("memberSeq", memberSeq);
 			params.put("now", now);

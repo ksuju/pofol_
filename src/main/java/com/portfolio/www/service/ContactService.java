@@ -3,27 +3,22 @@ package com.portfolio.www.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.portfolio.www.dao.mybatis.NoticeRepository;
+import com.portfolio.www.dao.mybatis.ResumeRepository;
 import com.portfolio.www.dto.EmailDto;
 import com.portfolio.www.dto.ResumeDto;
-import com.portfolio.www.util.EmailProp;
 import com.portfolio.www.util.EmailUtil;
 
 @Service("contactService")
 public class ContactService {
 	
-	private final NoticeRepository noticeRepository;
+	private final ResumeRepository resumeRepository;
 	
 	private final EmailUtil emailUtil;
 	
-	private final EmailProp emailProp;
-	
-	
 	@Autowired
-	public ContactService(NoticeRepository noticeRepository, EmailUtil emailUtil, EmailProp emailProp) {
-		this.noticeRepository = noticeRepository;
+	public ContactService(ResumeRepository resumeRepository, EmailUtil emailUtil) {
+		this.resumeRepository = resumeRepository;
 		this.emailUtil = emailUtil;
-		this.emailProp = emailProp;
 	}
 
 
@@ -38,14 +33,13 @@ public class ContactService {
 			String text = "매사 항상 성실하게, 모르는 것은 배우고자 하는 자세로 기꺼이 임하겠습니다!";
 			sendResume.setText(text);
 			
-			
 			// 이력서 가져오기
-			ResumeDto resume = noticeRepository.resume();
+			ResumeDto resume = resumeRepository.resume();
 			
             if (resume != null && resume.getFileData() != null) {
                 sendResume.setResume(resume.getFileData()); // 이력서 파일 데이터 설정
                 emailUtil.sendResume(sendResume, true);
-                noticeRepository.resumeRec(name,email);
+                resumeRepository.resumeRec(name,email);
                 return true;
             } else {
                 throw new Exception("이력서 파일 데이터를 가져오지 못했습니다.");

@@ -12,7 +12,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.portfolio.www.dao.mybatis.NoticeRepository;
+import com.portfolio.www.dao.mybatis.JoinRepository;
 import com.portfolio.www.dto.EmailAuthDto;
 import com.portfolio.www.dto.MemberAuthDto;
 import com.portfolio.www.message.MessageEnum;
@@ -22,11 +22,11 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 @Service("joinService")
 public class JoinService {
 
-	private final NoticeRepository noticeRepository;
+	private final JoinRepository joinRepository;
 
 	@Autowired
-	public JoinService(NoticeRepository noticeRepository) {
-		this.noticeRepository = noticeRepository;
+	public JoinService(JoinRepository joinRepository) {
+		this.joinRepository = joinRepository;
 	}
 
 	// auth_yn 변경하기 트랜잭션으로 member_auth 테이블과 member 테이블에 있는 auth_yn 컬럼을 동시에 바꿈
@@ -34,9 +34,9 @@ public class JoinService {
 	public boolean updateAuthAndMemAuth(EmailAuthDto emailAuthDto) {
 
 		// auth_yn 변경하기 (member_auth 테이블)
-		int updateAuth = noticeRepository.updateAuth(emailAuthDto);
+		int updateAuth = joinRepository.updateAuth(emailAuthDto);
 		// auth_yn 변경하기 (member 테이블)
-		int updateMemAuth = noticeRepository.updateMemAuth(emailAuthDto.getMemberSeq());
+		int updateMemAuth = joinRepository.updateMemAuth(emailAuthDto.getMemberSeq());
 
 		if (updateMemAuth == 1 && updateAuth == 1) {
 			return true;
@@ -76,7 +76,7 @@ public class JoinService {
 
 	// 이메일 인증하기
 	public EmailAuthDto authURI(String authURI) {
-		List<HashMap<String, Object>> dbAuthURI = noticeRepository.authURI();
+		List<HashMap<String, Object>> dbAuthURI = joinRepository.authURI();
 
 		for (HashMap<String, Object> auth : dbAuthURI) {
 			String authUri = (String) auth.get("auth_uri");
@@ -94,17 +94,17 @@ public class JoinService {
 
 	// 멤버지우기
 	public int deleteMember(int memberSeq) {
-		return noticeRepository.deleteMember(memberSeq);
+		return joinRepository.deleteMember(memberSeq);
 	}
 
 	// 멤버시퀀스가져오기
 	public int getMemberSeq(String memberID) {
-		return noticeRepository.getMemberSeq(memberID);
+		return joinRepository.getMemberSeq(memberID);
 	}
 
 	public int idCheck(String idCheck) {
 		System.out.println("========================service > idCheck========================");
-		List<String> memberList = noticeRepository.memberSelectAll();
+		List<String> memberList = joinRepository.memberSelectAll();
 		if (isValidUsername(idCheck)) {
 			if (memberList.contains(idCheck)) {
 				System.out.println("========================service > idCheck > 아이디중복========================");
@@ -163,10 +163,10 @@ public class JoinService {
 		// BCrypt를 사용한 비밀번호 암호화 끝
 
 		try {
-			int cnt = noticeRepository.joinMember(params);
+			int cnt = joinRepository.joinMember(params);
 			
 			// member_auth 추가
-			 int memberSeq = noticeRepository.getMemberSeq(params.get("memberID")); // 인증메일구조 만들기
+			 int memberSeq = joinRepository.getMemberSeq(params.get("memberID")); // 인증메일구조 만들기
 			 MemberAuthDto authDto = new MemberAuthDto();
 			 authDto.setMemberSeq(memberSeq);
 			 // UUID
@@ -175,7 +175,7 @@ public class JoinService {
 			 Calendar cal = Calendar.getInstance(); cal.add(Calendar.MINUTE, 30); // 30분만 유효
 			 authDto.setExpireDtm(cal.getTimeInMillis());
 			 
-			 noticeRepository.addAuthInfo(authDto);
+			 joinRepository.addAuthInfo(authDto);
 			 
 			 return cnt;
 		} catch (DuplicateKeyException sqlEx) {
@@ -188,7 +188,7 @@ public class JoinService {
 	// 이메일 중복확인 버튼 > 이메일 중복, 유효성 검사
 	public int emailCount(String email) {
 		
-		if (noticeRepository.emailCount(email) == 1) {
+		if (joinRepository.emailCount(email) == 1) {
 			return Integer.parseInt(MessageEnum.DUPL_EMAIL.getCode());
 		}
 		if (!isValidEmail(email)) {
