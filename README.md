@@ -134,9 +134,12 @@ Index 페이지 수정
    	1-3. "N".equals(authYN) 으로 변경 > 'authYN'이 NULL일 경우에도 안전하게 eqauls 호출 가능</br>
 
 
-#### 리팩토링 예정
+#### 리팩토링
 1. ERD 설계도 만들기
-2. 프로젝트 구조 정리하기
+2. 프로젝트 구조 정리하기 (완료)
+   - 용도에 맞는 repository 생성 (LoginRepository, AuthRepository 등)
+   - 용도에 맞는 SQL 관리용 xml 생성 (SQL.Auth.xml, SQL.Login.xml 등)
+     
 3. DI 리팩토링 (필드주입 > 생성자주입) (완료)
 4. 테스트 코드 만들기</br>
 
@@ -151,3 +154,9 @@ Index 페이지 수정
 
 #### 2024-09-24
 DI 리팩토링 (필드주입 > 생성자주입) (완료)
+
+
+#### 2024-10-23
+프로젝트 구조 리팩토링 (완료)
+   - 용도에 맞는 repository 생성 (LoginRepository, AuthRepository 등)
+   - 용도에 맞는 SQL 관리용 xml 생성 (SQL.Auth.xml, SQL.Login.xml 등)
