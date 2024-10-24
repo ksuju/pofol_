@@ -20,17 +20,29 @@ public class FileUtil {
 	
     //@Value("#conis('file.save.path'")
     // SAVE_PATH 캡슐화할것
-	private String SAVE_PATH = "C:/dev/tmp/"+nowTime;
+	private String SAVE_PATH = "/home/ec2-user/files/"+nowTime;
 	
 	public File saveFile(MultipartFile mf) {
 		System.out.println("==================== FileUtil>saveFile 진입 ====================");
+		
 		File destFile = new File(SAVE_PATH);
+		
 		try {
-			if( !destFile.exists() ) {
+			// 업로드된 파일이 없거나 비어 있는 경우 예외를 던져서 빈 파일이 저장되지 않도록 방지
+		    if(mf == null || mf.isEmpty()) {
+		        System.out.println("업로드된 파일이 없거나 비어 있습니다.");
+		        throw new IOException();
+		    }
+		    
+		    // 파일이 저장될 디렉토리가 없으면 생성
+			if(!destFile.exists()) {
 				destFile.mkdirs();
 			}
+			
 			destFile = new File(SAVE_PATH, UUID.randomUUID().toString().replaceAll("-", ""));
+			
 			mf.transferTo(destFile);
+			
 		} catch (IllegalStateException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
