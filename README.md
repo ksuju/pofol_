@@ -10,7 +10,6 @@
 - 데이터베이스 : MySQL, MyBatis
 - 클라우드 : AWS(EC2, RDS)
 - 서버 : Nginx
-- etc : Github, SourceTree, FileZilla, MobaXterm
 
 ## 👀 구현 기능
 ### 1. 회원가입
