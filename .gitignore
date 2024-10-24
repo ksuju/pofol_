@@ -1,11 +1,6 @@
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,maven,intellij,eclipse,windows,macos
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,maven,intellij,eclipse,windows,macos
 
-
-### folder ###
-src/main/resource-common/
-src/main/resource-dev/
-
 ### Eclipse ###
 .metadata
 bin/
