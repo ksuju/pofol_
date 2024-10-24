@@ -159,3 +159,10 @@ DI 리팩토링 (필드주입 > 생성자주입) (완료)
 프로젝트 구조 리팩토링 (완료)
    - 용도에 맞는 repository 생성 (LoginRepository, AuthRepository 등)
    - 용도에 맞는 SQL 관리용 xml 생성 (SQL.Auth.xml, SQL.Login.xml 등)
+
+
+#### 2024-10-24
+배포 환경에서 사용할 파일 저장 경로 설정 (완료)
+- EC2 서버로 파일 저장 경로를 설정한다.
+- JAVA 코드에서 기존 Windows 경로를 Linux 경로로 변경.
+- EC2 인스턴스에서 해당 디렉토리에 쓰기 권한이 없을 경우 권한을 부여한다.
