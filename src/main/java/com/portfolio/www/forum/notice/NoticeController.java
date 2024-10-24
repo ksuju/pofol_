@@ -81,7 +81,6 @@ public class NoticeController {
 		} catch (DuplicateKeyException de) {
 			return noticeService.commentUpDownCvt(commentLikeDto);
 		}
-		
 	}
 	
 	// 게시글 좋아요 or 싫어요
