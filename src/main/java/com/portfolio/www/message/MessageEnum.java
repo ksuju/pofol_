@@ -16,7 +16,12 @@ public enum MessageEnum {
 	DUPL_EMAIL("3000","이미 가입된 이메일 주소입니다."),
 	EXPIRE_AUTH_DTM("99999","인증기간이 만료되었습니다."),
 	NOT_EMAIL_AUTH("1102","이메일 인증이 완료되지 않은 아이디입니다."),
-	VALLID_EMAIL("1102","유효하지 않은 이메일입니다.");
+	VALLID_EMAIL("1102","유효하지 않은 이메일입니다."),
+	SUCCESS_BOARD("4000","게시글을 작성하였습니다."),
+	FAILD_BOARD("4001","게시글 작성에 실패했습니다."),
+	FAILD_BOARD_LOGIN("4002","로그인이 필요한 작업입니다."),
+	FAILD_BOARD_SIZE("4100","파일의 크기는 1MB를 넘을 수 없습니다.")
+	;
 
     MessageEnum(String code, String description){
         this.code = code;

@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.portfolio.www.dto.BoardAttachDto;
 import com.portfolio.www.dto.BoardCommentDto;
@@ -29,6 +31,7 @@ import com.portfolio.www.dto.BoardDto;
 import com.portfolio.www.dto.BoardLikeDto;
 import com.portfolio.www.dto.CommentLikeDto;
 import com.portfolio.www.forum.notice.dto.PageHandler;
+import com.portfolio.www.message.MessageEnum;
 import com.portfolio.www.service.NoticeService;
 import com.portfolio.www.service.ZipService;
 
@@ -210,7 +213,7 @@ public class NoticeController {
 	// 게시글 수정
 	@RequestMapping("/forum/notice/updateBoard.do")
 	public String updateBoard(@RequestParam HashMap<String, Object> params, ServletRequest request,
-			@RequestParam(value = "attFile", required = false) MultipartFile[] attFiles) {
+			@RequestParam(value = "attFile", required = false) MultipartFile[] attFiles) throws FileUploadException {
 
 		System.out.println("======= NoticeController > updateBoard =======");
 
@@ -254,22 +257,24 @@ public class NoticeController {
 	// 게시글 작성
 	@RequestMapping("/forum/notice/createBoard.do")
 	public String createBoard(@RequestParam HashMap<String, Object> params, ServletRequest request,
-			@RequestParam(value = "attFile", required = false) MultipartFile[] attFiles) {
+			@RequestParam(value = "attFile", required = false) MultipartFile[] attFiles,
+			RedirectAttributes redirectAttributes) throws FileUploadException {
 
 		System.out.println("======= NoticeController > cteateBoard =======");
 
 		String boardTypeSeq = (String) params.get("boardTypeSeq");
 
-		String errorMsg = "로그인이 필요한 서비스입니다.";
-
-		boolean createResult = noticeService.boardCreate(params, request, attFiles);
-
-		if (createResult == false) {
-			return "redirect:/forum/notice/listPage.do?bdTypeSeq=" + boardTypeSeq + "&errorMsg=" + errorMsg;
-		} else {
-			return "redirect:/forum/notice/listPage.do?bdTypeSeq=" + boardTypeSeq;
-		}
-
+		String createResult = noticeService.boardCreate(params, request, attFiles);
+		
+	    if (createResult.equals("4001")) {
+	        redirectAttributes.addAttribute("errorMsg", MessageEnum.FAILD_BOARD.getDescription());
+	    } else if(createResult.equals("4002")) {
+	        redirectAttributes.addAttribute("errorMsg", MessageEnum.FAILD_BOARD_LOGIN.getDescription());
+	    } else if(createResult.equals("4100")){
+	        redirectAttributes.addFlashAttribute("errorMsg", MessageEnum.FAILD_BOARD_SIZE.getDescription());
+	        return "redirect:/forum/notice/writePage.do?boardTypeSeq=" + boardTypeSeq;
+	    }
+	    return "redirect:/forum/notice/listPage.do?bdTypeSeq=" + boardTypeSeq;
 	}
 
 	// 게시글 삭제 > 댓글이 있을 경우 댓글도 다 같이 삭제해줘야 함 noticeService에서 처리할 것
