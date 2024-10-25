@@ -24,6 +24,9 @@
 						<input type="hidden" name="boardTypeSeq" value="${boardTypeSeq}" />
 						<input type="hidden" name="boardTypeSeq" value="${memberId}" />
 						<div class="form-group">
+							<c:if test="${not empty errorMsg}">
+								<h5 style="color: red;">${errorMsg}</h5>
+							</c:if>
 							<label>제목</label> <input type="text" name="title"
 								placeholder="Enter title here" required>
 						</div>

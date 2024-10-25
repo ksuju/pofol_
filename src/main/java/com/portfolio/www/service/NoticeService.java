@@ -13,6 +13,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -229,7 +230,7 @@ public class NoticeService {
 	}
 
 	// 게시글 수정
-	public int updateBoard(HashMap<String, Object> params, ServletRequest request, MultipartFile[] attFiles) {
+	public int updateBoard(HashMap<String, Object> params, ServletRequest request, MultipartFile[] attFiles) throws FileUploadException {
 
 		System.out.println("======= NoticeService > updateBoard =======");
 		File destFile = null;
@@ -337,7 +338,7 @@ public class NoticeService {
 
 	// 게시글 작성
 	@Transactional
-	public boolean boardCreate(HashMap<String, Object> params, ServletRequest request, MultipartFile[] attFiles) {
+	public String boardCreate(HashMap<String, Object> params, ServletRequest request, MultipartFile[] attFiles) throws FileUploadException {
 		System.out.println("=========================== service > boardCreate ===========================");
 
 		File destFile = null;
@@ -351,7 +352,7 @@ public class NoticeService {
 		String logInUser = (String) session.getAttribute("logInUser");
 
 		if (logInUser.isEmpty()) {
-			return false;
+			return MessageEnum.FAILD_BOARD_LOGIN.getCode();
 		} else {
 			int memberSeq = joinRepository.getMemberSeq(logInUser);
 
@@ -365,27 +366,30 @@ public class NoticeService {
 
 			for (MultipartFile mf : attFiles) {
 				// 물리적 파일 저장
-				destFile = fileUtil.saveFile(mf);
-
-
-				
-//				String unqFileNm = UUID.randomUUID().toString().replaceAll("-", "");
-				BoardAttachDto boardAttachDto = new BoardAttachDto();
-				boardAttachDto.setOrgFileNm(mf.getOriginalFilename());
-				boardAttachDto.setBoardTypeSeq(boardTypeSeq);
-				boardAttachDto.setBoardSeq(boardSeq);
-				boardAttachDto.setChngFileNm(destFile.getName());
-				boardAttachDto.setFileType(mf.getContentType());
-				boardAttachDto.setFileSize(mf.getSize());
-				boardAttachDto.setSavePath(destFile.getPath());
-				
-				if(mf.getOriginalFilename().isEmpty()) {
-					continue;
-				} else {
-					noticeRepository.insertBoardAttach(boardAttachDto);
+				try {
+					destFile = fileUtil.saveFile(mf);
+					
+//					String unqFileNm = UUID.randomUUID().toString().replaceAll("-", "");
+					BoardAttachDto boardAttachDto = new BoardAttachDto();
+					boardAttachDto.setOrgFileNm(mf.getOriginalFilename());
+					boardAttachDto.setBoardTypeSeq(boardTypeSeq);
+					boardAttachDto.setBoardSeq(boardSeq);
+					boardAttachDto.setChngFileNm(destFile.getName());
+					boardAttachDto.setFileType(mf.getContentType());
+					boardAttachDto.setFileSize(mf.getSize());
+					boardAttachDto.setSavePath(destFile.getPath());
+					
+					if(mf.getOriginalFilename().isEmpty()) {
+						continue;
+					} else {
+						noticeRepository.insertBoardAttach(boardAttachDto);
+					}
+				} catch (FileUploadException e) {
+					return MessageEnum.FAILD_BOARD_SIZE.getCode();
 				}
+
 			}
-			return true;
+			return MessageEnum.SUCCESS_BOARD.getCode();
 		}
 	}
 
