@@ -29,6 +29,14 @@ public class ContactController {
 		mv.addObject("key", Calendar.getInstance().getTimeInMillis());
 		mv.setViewName("auth/contact");
 		
+		// 이메일 유효성 검사
+		boolean checkEmailValid = isValidEmail(email);
+		// 이메일 유효성 검사
+		if(!checkEmailValid) {
+			mv.addObject("alert","올바른 이메일 주소를 입력해 주세요!");
+			return mv;
+		}
+		
 		if(name.isEmpty() || email.isEmpty()) {
 			mv.addObject("alert","이름과 이메일 입력란을 모두 입력해 주세요!");
 			return mv;
@@ -45,4 +53,10 @@ public class ContactController {
 			return mv;
 		}
 	}
+	
+    private boolean isValidEmail(String email) {
+        // 이메일 유효성 검사 정규표현식
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        return email.matches(emailRegex);
+    }
 }

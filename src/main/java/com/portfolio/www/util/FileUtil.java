@@ -19,7 +19,6 @@ public class FileUtil {
     String nowTime = sdf.format(now);
 	
     //@Value("#conis('file.save.path'")
-    // SAVE_PATH 캡슐화할것
 	private String SAVE_PATH = "/home/ec2-user/files/"+nowTime;
 	
 	public File saveFile(MultipartFile mf) {
