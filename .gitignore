@@ -2,6 +2,9 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,maven,intellij,eclipse,windows,macos
 
 
+### resumeUploader ###
+**/ResumeUploader.java
+
 ### folder ###
 src/main/resource-common/
 src/main/resource-dev/
