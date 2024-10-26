@@ -14,6 +14,9 @@ import org.springframework.web.multipart.MultipartFile;
 @Component
 public class FileUtil {
 	
+	// 업로드 용량 제한
+	private static final long MAX_FILE_SIZE_BYTES = 1024 * 1024; // 1MB
+	
 	// 날짜출력형식 지정
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 	// 지정한 형식을 바탕으로 날짜 출력
@@ -32,11 +35,10 @@ public class FileUtil {
 			// 업로드하는 파일 크기
 			long getByte = mf.getSize();
 			
-			if(getByte>1048575) {
+			if(getByte > MAX_FILE_SIZE_BYTES) {
 				System.out.println("파일의 크기는 1MB를 넘을 수 없습니다.");
-		        throw new MaxUploadSizeExceededException(1048576);
+		        throw new MaxUploadSizeExceededException(MAX_FILE_SIZE_BYTES);
 			}
-			
 			
 			// 업로드된 파일이 없거나 비어 있는 경우 예외를 던져서 빈 파일이 저장되지 않도록 방지
 		    if(mf == null || mf.isEmpty()) {

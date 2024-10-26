@@ -266,15 +266,15 @@ public class NoticeController {
 
 		String createResult = noticeService.boardCreate(params, request, attFiles);
 		
-	    if (createResult.equals("4001")) {
-	        redirectAttributes.addAttribute("errorMsg", MessageEnum.FAILD_BOARD.getDescription());
-	    } else if(createResult.equals("4002")) {
-	        redirectAttributes.addAttribute("errorMsg", MessageEnum.FAILD_BOARD_LOGIN.getDescription());
-	    } else if(createResult.equals("4100")){
-	        redirectAttributes.addFlashAttribute("errorMsg", MessageEnum.FAILD_BOARD_SIZE.getDescription());
-	        return "redirect:/forum/notice/writePage.do?boardTypeSeq=" + boardTypeSeq;
-	    }
-	    return "redirect:/forum/notice/listPage.do?bdTypeSeq=" + boardTypeSeq;
+		if(createResult.equals(MessageEnum.FAILD_BOARD.getCode())) {
+		    redirectAttributes.addAttribute("errorMsg", MessageEnum.FAILD_BOARD.getDescription());
+		} else if(createResult.equals(MessageEnum.FAILD_BOARD_LOGIN.getCode())) {
+		    redirectAttributes.addAttribute("errorMsg", MessageEnum.FAILD_BOARD_LOGIN.getDescription());
+		} else if(createResult.equals(MessageEnum.FAILD_BOARD_SIZE.getCode())) {
+		    redirectAttributes.addFlashAttribute("errorMsg", MessageEnum.FAILD_BOARD_SIZE.getDescription());
+		    return "redirect:/forum/notice/writePage.do?boardTypeSeq=" + boardTypeSeq;
+		}
+		return "redirect:/forum/notice/listPage.do?bdTypeSeq=" + boardTypeSeq;
 	}
 
 	// 게시글 삭제 > 댓글이 있을 경우 댓글도 다 같이 삭제해줘야 함 noticeService에서 처리할 것
