@@ -400,7 +400,6 @@ public class NoticeService {
 		noticeRepository.deleteAllComment(boardTypeSeq, boardSeq); // 댓글 삭제
 		return noticeRepository.boardDelete(memberId, boardTypeSeq, boardSeq); // 게시글 삭제
 	}
-
 	
 	// ---------------------------------------------------------------------------------------
 	// 게시판 내 게시글 불러오기
