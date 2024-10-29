@@ -1,13 +1,25 @@
 package com.portfolio.www.service;
 
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import com.portfolio.www.dao.mybatis.EtcRepository;
-import com.portfolio.www.dao.mybatis.NoticeRepository;
 
 @Service("indexService")
 public class IndexService {
@@ -18,6 +30,59 @@ public class IndexService {
 	public IndexService(EtcRepository etcRepository) {
 		this.etcRepository = etcRepository;
 	}
+	
+	// 내 블로그 RSS 가져오기 및 파싱, 서버에서 RSS가져온 뒤 파싱해서 View에 뿌려줌
+	public List<Map<String,String>> blogRssAndParsing(String urlString) throws Exception {
+		
+		System.out.println("========================= blogRssAndParsing 진입 =========================");
+		
+        List<Map<String, String>> items = new ArrayList<>();
+        
+        try {
+            URL url = new URL(urlString);
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(url.openStream());
+
+            NodeList itemNodes = doc.getElementsByTagName("item");
+            
+            // 데이터 파싱
+            for (int i = 0; i < itemNodes.getLength(); i++) {
+                Element item = (Element) itemNodes.item(i);
+                Map<String, String> itemMap = new HashMap<>();
+                
+                //pubDate 날짜형식 보기 편하게 변환
+                SimpleDateFormat oldFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
+                SimpleDateFormat newFormat = new SimpleDateFormat("yy.MM.dd. HH:mm");
+                Date parsedDate = oldFormat.parse(getElementContent(item, "pubDate"));
+                String date = newFormat.format(parsedDate);
+                
+                //description 텍스트만 추출
+                String rawDescription = getElementContent(item, "description");
+                String description = rawDescription.replaceAll("<[^>]*>", "");
+                itemMap.put("description", description);
+                //itemMap.put("description", getElementContent(item, "description"));
+
+                itemMap.put("title", getElementContent(item, "title"));
+                itemMap.put("link", getElementContent(item, "link"));
+                itemMap.put("category", getElementContent(item, "category"));
+                itemMap.put("pubDate", date);
+                items.add(itemMap);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return items;
+	}
+	
+    private static String getElementContent(Element parent, String tagName) {
+        NodeList nodeList = parent.getElementsByTagName(tagName);
+        if (nodeList.getLength() > 0) {
+            return nodeList.item(0).getTextContent();
+        }
+        return "";
+    }
 
 	// 특정 카테고리 식사메뉴 가져오기
 	public String getMenu(String category) {

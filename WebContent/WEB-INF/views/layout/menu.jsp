@@ -310,10 +310,7 @@
                                         <div class="dropdowns dropdown--menu">
                                             <ul>
                                                 <li>
-                                                    <a href="<c:url value='/forum/notice/listPage.do?bdTypeSeq=1'/>">공지사항</a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">자유게시판</a>
+                                                    <a href="<c:url value='/forum/notice/listPage.do?bdTypeSeq=1'/>">자유게시판</a>
                                                 </li>
 <!--                                                 <li>
                                                     <a href="#">추후 개설</a>
