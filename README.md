@@ -69,6 +69,11 @@
 <img src="https://github.com/user-attachments/assets/120bb5cc-8ed5-41b8-a059-6ff45ca6094e" width="400" height="230"/>
 <img src="https://github.com/user-attachments/assets/4b223b70-17bd-4dcc-8636-4ec766d621e3" width="400" height="230"/>
 
+### 8. Ksuju블로그 최신글 가져오기
+	8-1. RSS 피드 수집을 통한 Ksuju블로그 최신글 가져오기
+<img src="https://github.com/user-attachments/assets/9a19e985-0936-4f89-af79-4167ebbeb29a" width="500" height="380"/>
+ 
+
 
 ## 🧚‍♂ 수정사항 및 트러블슈팅
 
@@ -147,7 +152,7 @@ Index 페이지 수정
 
 
 #### 2024-09-14
-브라우저 캐시가 없는 비로그인(guest) 상태에서 게시판 진입에러<br/>
+브라우저 캐시가 없는 비로그인(guest) 상태에서 게시판 진입에러</br>
 변경사항 블로그 URL : https://ksuju.tistory.com/54
 
 
@@ -181,3 +186,14 @@ DI 리팩토링 (필드주입 > 생성자주입) (완료)
 참고사항
 - Nginx 설정 변경
 - nginx.conf에서 업로드 크기 제한을 2MB로 늘려서 배포환경에서 여전히 발생하던 문제를 해결.
+
+
+#### 2024-10-29
+Index 재구성
+1. RSS 피드 수집을 통한 Ksuju블로그 최신글 가져오기
+2. CORS문제 해결</br>
+   2-1. JavaScript를 통해 클라이언트단에서 처리 (X)<br>
+   2-2. 서버에서 CORS 문제 해결하기 : @CrossOrigin 설정 (Contoller) (X)</br>
+   2-3. 서버에서 CORS 문제 해결하기: DocumentBuilder, DocumentBuilderFactory(Service) (O)
+
+
