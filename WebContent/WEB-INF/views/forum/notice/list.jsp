@@ -61,7 +61,7 @@ String ctx = request.getContextPath();
 					<div class="modules__content">
 						<div class="withdraw_module withdraw_history">
 							<div class="withdraw_table_header">
-								<h3>공지사항</h3>
+								<h3>자유게시판</h3>
 							</div>
 							<div class="table-responsive">
 								<table class="table withdraw__table">

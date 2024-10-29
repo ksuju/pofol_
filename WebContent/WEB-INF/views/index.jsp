@@ -1,24 +1,19 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles"%>
 <%
 String ctx = request.getContextPath();
 %>
+<script src="<%=ctx%>/assest/template/js/vendor/jquery/jquery-1.12.3.js"></script>
+<link rel="stylesheet"
+	href="<%=ctx%>/assest/template/css/trumbowyg.min.css">
+<script src="<%=ctx%>/assest/template/js/vendor/trumbowyg.min.js"></script>
+<script src="<%=ctx%>/assest/template/js/vendor/trumbowyg/ko.js"></script>
 	<!--================================
 	    START FEATURE AREA
 	=================================-->
-	<script type="text/javascript">
-	    $('#trumbowyg-demo').trumbowyg({
-	        lang: 'kr'
-	    });
-	    
-	    $(document).ready(function() {
-	        // ${alert}가 존재하면 alert를 띄운다
-	        var alertMessage = "${alert}";
-	        if (alertMessage && alertMessage.trim().length > 0) {
-	            alert(alertMessage);
-	        }
-	</script>
+
 	<style>
 		.feature__img img {
 			width: 112px;
@@ -44,6 +39,72 @@ String ctx = request.getContextPath();
 			width : 66.666666% !important;
 			max-width: 66.666666% !important;
 		}
+		
+		
+		.post-container {
+		    display: grid;
+		    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+		    gap: 20px;
+		    margin: 20px;
+		}
+		
+		.post-card {
+		    background-color: #f9f9f9;
+		    border: 1px solid #ddd;
+		    border-radius: 8px;
+		    padding: 15px;
+		    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		    height: 230px; /* 고정된 높이 설정 */
+		    display: flex;
+		    flex-direction: column;
+		    justify-content: space-between;
+		    transition: transform 0.3s, box-shadow 0.3s;
+		}
+		
+		.post-title {
+		    font-size: 1.1em;
+		    color: #333;
+		    margin: 0 0 10px;
+		    white-space: nowrap; /* 한 줄로 고정 */
+		    overflow: hidden;
+		    text-overflow: ellipsis;
+		}
+		
+		.post-excerpt {
+		    margin: 10px 0;
+		    font-size: 0.95em;
+		    line-height: 1.4em;
+		    max-height: 2.8em; /* 최대 두 줄로 표시 */
+		    overflow: hidden;
+		    text-overflow: ellipsis;
+		    display: -webkit-box; 
+		    -webkit-line-clamp: 2; /* 두 줄로 자르기 */
+		    -webkit-box-orient: vertical;
+		    white-space: normal;
+		}
+		
+		.post-meta {
+		    font-size: 0.9em;
+		    color: #777;
+		    margin-bottom: 10px;
+		}
+		
+		.read-more {
+		    display: inline-block;
+		    padding: 8px 12px;
+		    background-color: #007bff;
+		    color: white;
+		    text-decoration: none;
+		    border-radius: 4px;
+		    align-self: flex-end; /* 링크를 아래쪽에 고정 */
+		    margin : 0 auto;
+		}
+		
+		.read-more:hover {
+		    background-color: #0056b3;
+		    color: white;
+		}
+		
 	</style>
 
     <section class="features section--padding">
@@ -78,11 +139,11 @@ String ctx = request.getContextPath();
 	                    <div class="feature__desc">
                         	<div class="content_01">
                         		<p>백엔드 : JAVA, Spring</p>
-                        		<p>프론트엔드 : HTML, CSS, JavaScript, JSP, Tiles</p>
-                            	<p>데이터베이스 : MySQL, MyBatis</p>
-                            	<p>클라우드 : AWS(EC2, RDS)</p>
-                            	<p>서버 : Nginx</p>
-                            	<p>etc : Github, SourceTree, FileZilla, MobaXterm</p>
+								<p>프론트엔드 : HTML, CSS, JavaScript, JSP</p>
+								<p>데이터베이스 : MySQL, MyBatis</p>
+								<p>클라우드 : AWS(EC2, RDS)</p>
+								<p>서버 : Nginx</p>
+								<p>기타 : Git, GitHub</p>
                         	</div>
                         </div>
 	                </div>
@@ -93,11 +154,29 @@ String ctx = request.getContextPath();
                 <div class="col-lg-4 col-md-6" id="introduction">
                     <div class="feature">
                         <div class="feature__title">
-                            <h3>매일 능동적으로 발전하는 백엔드 개발자가 되겠습니다.</h3>
+                            <h3>Ksuju 최신 포스트</h3>
                         </div>
                         <div class="feature__desc">
-                        <h3>경력 / 학력</h3>
-                        	<div class="content_02">
+                        	<!-- <div class="content_02"> -->
+                        	<div class="post-container">
+                        	    <!-- Ksuju 최신 포스트 -->
+							    <c:forEach items="${rssItems}" var="item" varStatus="status">
+							        <c:if test="${status.index < 6}">
+							            <div class="post-card">
+							                <h3 class="post-title">
+							                	<a href="${item.link}" target="_blank">${item.title}</a>
+							                </h3>
+							                
+							                <p class="post-meta">${item.category} / ${item.pubDate}</p>
+							                
+											<p class="post-excerpt"><c:out value="${item.description}"/></p>
+											
+							                <a href="${item.link}" class="read-more" target="_blank">자세히 보기</a>
+							            </div>
+							        </c:if>
+							    </c:forEach>
+                        	
+                        		<!-- 
 	                        	<br>
 	                        	<h6>태성텍㈜ – 3D 모델링 프로그래밍</h6>
 	                        	<p>
@@ -134,18 +213,34 @@ String ctx = request.getContextPath();
 	                        	<p>
 	                        		- 20년 2월 졸업
 	                        	</p>
+	                        	 -->
                         	</div>
                         </div>
                     </div>
                     <!-- end /.feature -->
                 </div>
                 <!-- end /.col-lg-4 col-md-6 -->
-
             </div>
             <!-- end /.row -->
         </div>
         <!-- end /.container -->
     </section>
+    
+    <script type="text/javascript">
+	    $('#trumbowyg-demo').trumbowyg({
+	        lang: 'kr'
+	    });
+	    
+	    $(document).ready(function() {
+	        // ${alert}가 존재하면 alert를 띄운다
+	        var alertMessage = "${alert}";
+	        if (alertMessage && alertMessage.trim().length > 0) {
+	            alert(alertMessage);
+	        }
+	    });
+	</script>
+	
+	</html>
     <!--================================
 	    END FEATURE AREA
 	=================================-->
