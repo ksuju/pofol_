@@ -22,17 +22,17 @@
 					<form action="createBoard.do" method="post"
 						enctype="multipart/form-data">
 						<input type="hidden" name="boardTypeSeq" value="${boardTypeSeq}" />
-						<input type="hidden" name="boardTypeSeq" value="${memberId}" />
+						<input type="hidden" name="memberId" value="${memberId}" />
 						<div class="form-group">
-							<c:if test="${not empty errorMsg}">
-								<h5 style="color: red;">${errorMsg}</h5>
-							</c:if>
-							<label>제목</label> <input type="text" name="title"
-								placeholder="Enter title here" required>
+						    <c:if test="${not empty errorMsg}">
+						        <h5 style="color: red;">${errorMsg}</h5>
+						    </c:if>
+						    <label>제목</label>
+						    <input type="text" name="title" placeholder="Enter title here" required value="${not empty title ? title : ''}">
 						</div>
 						<div class="form-group">
-							<label>Description</label>
-							<div id="trumbowyg-demo"></div>
+						    <label>Description</label>
+						    <div id="trumbowyg-demo">${not empty content ? content : ''}</div>
 						</div>
 						<div class="form-group">
 							<div class="attachments">

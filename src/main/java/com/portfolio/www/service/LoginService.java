@@ -171,10 +171,10 @@ public class LoginService {
 		return cnt;
 	}
 
-	public int loginCheak(String memberID, String passwd, HttpServletRequest request) {
-		String dbPasswd = loginRepository.loginCheak(memberID);
+	public int loginCheck(String memberID, String passwd, HttpServletRequest request) {
+		String dbPasswd = loginRepository.loginCheck(memberID);
 		//String getAuthYN = noticeRepository.getAuthYN(memberID);
-		System.out.println("================ LoginService > loginCheak 진입 ================");
+		System.out.println("================ LoginService > loginCheck 진입 ================");
 		
 		//if (dbPasswd != null && ("Y").equals(getAuthYN)) {	
 		if (dbPasswd != null) {	

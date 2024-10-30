@@ -31,6 +31,11 @@ public class FileUtil {
 		
 		File destFile = new File(SAVE_PATH);
 		
+	    // 파일이 저장될 디렉토리가 없으면 생성
+		if(!destFile.exists()) {
+			destFile.mkdirs();
+		}
+		
 		try {
 			// 업로드하는 파일 크기
 			long getByte = mf.getSize();
@@ -40,27 +45,21 @@ public class FileUtil {
 		        throw new MaxUploadSizeExceededException(MAX_FILE_SIZE_BYTES);
 			}
 			
-			// 업로드된 파일이 없거나 비어 있는 경우 예외를 던져서 빈 파일이 저장되지 않도록 방지
+			// 업로드된 파일이 없거나 파일 업로드 칸이 비어 있는 경우 빈 파일이 저장되지 않도록 방지
 		    if(mf == null || mf.isEmpty()) {
 		        System.out.println("업로드된 파일이 없거나 비어 있습니다.");
-		        throw new FileUploadException("업로드된 파일이 없거나 비어 있습니다.");
+		        throw new NullPointerException();
 		    }
 		    
-		    // 파일이 저장될 디렉토리가 없으면 생성
-			if(!destFile.exists()) {
-				destFile.mkdirs();
-			}
 			destFile = new File(SAVE_PATH, UUID.randomUUID().toString().replaceAll("-", ""));
 			
 			mf.transferTo(destFile);
 			
-		} catch (IllegalStateException | IOException | MaxUploadSizeExceededException e) {
-	        e.printStackTrace();
-	        throw new FileUploadException("파일 업로드 중 오류가 발생했습니다.", e);			
-		} catch (FileUploadException e) {
-	        e.printStackTrace();
-	        throw new FileUploadException("파일의 크기는 1MB를 넘을 수 없습니다.", e);
-		}
-		return destFile;
+			return destFile;
+			
+        } catch (IllegalStateException | IOException e) {
+            e.printStackTrace();
+            throw new FileUploadException("파일 업로드 중 오류가 발생했습니다.", e);
+        }
 	}
 }

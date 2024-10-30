@@ -1,7 +1,10 @@
 package com.portfolio.www.auth;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -90,24 +93,34 @@ public class LoginController {
 		loginService.saveIdCookie(params, response);
 		
 		// 아이디로 비밀번호 찾기
-		int loginCheak = loginService.loginCheak(memberId, params.get("passwd"), request);
+		int loginCheck = loginService.loginCheck(memberId, params.get("passwd"), request);
 		
-		if (loginCheak == Integer.parseInt(MessageEnum.SUCCESS.getCode())) {
-			// 비밀번호가 일치하는 경우
-			// 로그인 성공 처리
-			return "redirect:/index.do";
-		}
-		/*
-		 * else if (loginCheak ==
-		 * Integer.parseInt(MessageEnum.NOT_EMAIL_AUTH.getCode())) { // 이메일 인증이 완료되지 않은
-		 * 계정인 경우 // 로그인 실패 처리
-		 * System.out.println("로그인실패 > 이메일인증안됨==========================");
-		 * model.addAttribute("errorMessage",
-		 * MessageEnum.NOT_EMAIL_AUTH.getDescription()); // 아이디저장 쿠키가 존재하면 request에
-		 * saveId라는 이름으로 저장됨 existCookie(request); // request에 설정된 속성을 ModelAndView에 추가
-		 * String saveId = (String) request.getAttribute("saveId");
-		 * model.addAttribute("saveId",saveId); return "auth/login"; }
-		 */
+	    // 허용되지 않은 리다이렉트 URL 목록
+	    Set<String> forbiddenRedirects = new HashSet<>(Arrays.asList(
+	        "convertPw.do",
+	        "resetPw.do",
+	        "sendID.do",
+	        "joinPage.do",
+	        "findID.do"
+	    ));
+
+	    if (loginCheck == Integer.parseInt(MessageEnum.SUCCESS.getCode())) {
+
+	        // 비밀번호가 일치하는 경우
+	        String redirectUrl = params.get("redirectUrl"); // redirectUrl을 HashMap에서 가져오기
+
+	        if (redirectUrl != null && !redirectUrl.isEmpty()) {
+	            // 리다이렉트 URL에서 마지막 경로만 비교
+	            String lastPath = redirectUrl.substring(redirectUrl.lastIndexOf("/") + 1);
+	            if (forbiddenRedirects.contains(lastPath)) {
+	                return "redirect:/index.do"; // forbiddenRedirects에 포함된 경우 index로 리다이렉트
+	            }
+	            return "redirect:" + redirectUrl; // 이전 페이지로 리다이렉트
+	        }
+
+	        return "redirect:/index.do"; // 기본 리다이렉트 페이지
+	    }
+		
 		// 비밀번호가 일치하지 않는 경우
 		// 로그인 실패 처리
 		System.out.println("로그인실패==========================");
@@ -129,6 +142,16 @@ public class LoginController {
         // request에 설정된 속성을 ModelAndView에 추가
         String saveId = (String) request.getAttribute("saveId");
         mv.addObject("saveId", saveId);
+        
+        String referer = request.getHeader("Referer"); // 이전 URL 가져오기
+        
+        System.out.println("====== referer ============== referer =================");
+        
+        if (referer == null || referer.isEmpty()) {
+            referer = "/index.do"; // 기본 페이지 설정
+        }
+        
+        mv.addObject("redirectUrl", referer); // 모델에 추가
         
 		mv.setViewName("auth/login");
 		return mv;
