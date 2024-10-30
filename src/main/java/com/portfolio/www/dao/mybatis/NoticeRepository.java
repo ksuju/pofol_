@@ -14,6 +14,9 @@ import com.portfolio.www.dto.CommentLikeDto;
 
 public interface NoticeRepository {
 	
+	// 첨부파일 크기 제한에러 발생시 작성중이던 정보 가져오기 (notice)
+	public HashMap<String, Object> getSave(@Param("memberSeq") int memberSeq, @Param("boardTypeSeq") int boardTypeSeq); 
+	
 	// 인기글 상위 5개 출력 (notice)
 	public List<Map<String, Integer>> getLikeTopFive(@Param("boardTypeSeq") int boardTypeSeq);
 	
@@ -91,7 +94,7 @@ public interface NoticeRepository {
 	public int insertBoardAttach(BoardAttachDto boardAttachDto);
 	
 	// 게시글 수정하기 (notice)
-	public int updateBoard(HashMap<String, Object> params);
+	public int updateBoard(HashMap<String, String> params);
 	
 	// 특정 게시글 가져오기 (notice)
 	public HashMap<String, Object> selectBoard(@Param("boardSeq") int boardSeq,

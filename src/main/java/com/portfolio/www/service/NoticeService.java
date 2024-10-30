@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.portfolio.www.dao.mybatis.AuthRepository;
@@ -44,7 +45,7 @@ public class NoticeService {
 	private final AuthRepository authRepository;
 	
 	private final MemberRepository memberRepository;
-
+	
 	private final FileUtil fileUtil;
 	
 	private final EmailUtil emailutil;
@@ -63,7 +64,12 @@ public class NoticeService {
 		this.fileUtil = fileUtil;
 		this.emailutil = emailutil;
 	}
-
+	
+	// 작성중이던 글 내용 가져오기
+	public HashMap<String, Object> getSave(int memberSeq, int boardTypeSeq) {
+		return noticeRepository.getSave(memberSeq, boardTypeSeq);
+	}
+	
 	// 아이디로 email 가져오기
 	public String getEmail(String memberID) {
 		return memberRepository.getEmail(memberID);
@@ -230,7 +236,7 @@ public class NoticeService {
 	}
 
 	// 게시글 수정
-	public int updateBoard(HashMap<String, Object> params, ServletRequest request, MultipartFile[] attFiles) throws FileUploadException {
+	public int updateBoard(HashMap<String, String> params, ServletRequest request, MultipartFile[] attFiles) throws FileUploadException {
 
 		System.out.println("======= NoticeService > updateBoard =======");
 		File destFile = null;
@@ -252,7 +258,7 @@ public class NoticeService {
 
 		String logInUser = (String) session.getAttribute("logInUser");
 
-		int memberSeq = joinRepository.getMemberSeq(memberId);
+		String memberSeq = String.valueOf(joinRepository.getMemberSeq(memberId));
 
 		params.put("memberSeq", memberSeq);
 
@@ -260,23 +266,30 @@ public class NoticeService {
 			return 0;
 		} else {
 			for (MultipartFile mf : attFiles) {
-				// 물리적 파일 저장
-				destFile = fileUtil.saveFile(mf);
-				
-//				String unqFileNm = UUID.randomUUID().toString().replaceAll("-", "");
-				BoardAttachDto boardAttachDto = new BoardAttachDto();
-				boardAttachDto.setOrgFileNm(mf.getOriginalFilename());
-				boardAttachDto.setBoardTypeSeq(boardTypeSeq);
-				boardAttachDto.setBoardSeq(boardSeq);
-				boardAttachDto.setChngFileNm(destFile.getName());
-				boardAttachDto.setFileType(mf.getContentType());
-				boardAttachDto.setFileSize(mf.getSize());
-				boardAttachDto.setSavePath(destFile.getPath());
-				
-				if(mf.getOriginalFilename().isEmpty()) {
-					continue;
-				} else {
-					noticeRepository.insertBoardAttach(boardAttachDto);
+				try {
+					//물리적 파일 저장
+					destFile = fileUtil.saveFile(mf);
+					
+//					String unqFileNm = UUID.randomUUID().toString().replaceAll("-", "");
+					BoardAttachDto boardAttachDto = new BoardAttachDto();
+					boardAttachDto.setOrgFileNm(mf.getOriginalFilename());
+					boardAttachDto.setBoardTypeSeq(boardTypeSeq);
+					boardAttachDto.setBoardSeq(boardSeq);
+					boardAttachDto.setChngFileNm(destFile.getName());
+					boardAttachDto.setFileType(mf.getContentType());
+					boardAttachDto.setFileSize(mf.getSize());
+					boardAttachDto.setSavePath(destFile.getPath());
+					
+					if(mf.getOriginalFilename().isEmpty()) {
+						continue;
+					} else {
+						noticeRepository.insertBoardAttach(boardAttachDto);
+					}
+				} catch (MaxUploadSizeExceededException e) {
+					return Integer.parseInt(MessageEnum.FAILD_BOARD_SIZE.getCode());
+				}
+				catch (FileUploadException e) {
+					return Integer.parseInt(MessageEnum.FAILD_BOARD.getCode());
 				}
 			}
 			return noticeRepository.updateBoard(params);
@@ -359,13 +372,14 @@ public class NoticeService {
 			params.put("memberSeq", memberSeq);
 			params.put("now", now);
 
+			// 게시글 생성
 			noticeRepository.boardCreate(params);
 
 			int boardTypeSeq = Integer.parseInt((String) params.get("boardTypeSeq"));
 			int boardSeq = (int) params.get("boardSeq");
 
 			for (MultipartFile mf : attFiles) {
-				// 물리적 파일 저장
+				// 물리적 파일 저장 > 생성되어있는 게시글에 추가하는 방식
 				try {
 					destFile = fileUtil.saveFile(mf);
 					
@@ -384,8 +398,14 @@ public class NoticeService {
 					} else {
 						noticeRepository.insertBoardAttach(boardAttachDto);
 					}
-				} catch (FileUploadException e) {
+				} catch (MaxUploadSizeExceededException e) {
+					//noticeRepository.boardDelete(logInUser, boardTypeSeq, boardSeq); // 게시글 삭제
 					return MessageEnum.FAILD_BOARD_SIZE.getCode();
+				} catch (FileUploadException e) {
+					noticeRepository.boardDelete(logInUser, boardTypeSeq, boardSeq); // 게시글 삭제
+					return MessageEnum.FAILD_BOARD.getCode();
+				} catch (NullPointerException e) {
+					return "빈파일";
 				}
 
 			}
@@ -460,5 +480,20 @@ public class NoticeService {
 	// 게시판 내 인기글 top5 가져오기
 	public List<Map<String, Integer>> getLikeTopFive(int boardTypeSeq) {
 		return noticeRepository.getLikeTopFive(boardTypeSeq);
+	}
+	
+	// 파일 업로드 사이즈 에러
+	public String fileUploadSizeError(Integer memberSeq, Integer boardTypeSeq, String memberId) {
+	    // getSave {board_seq, title, content}
+	    HashMap<String, Object> getSave = this.getSave(memberSeq, boardTypeSeq);
+	    Integer boardSeq = (Integer) getSave.get("board_seq");
+	    String title = (String) getSave.get("title");
+	    String content = (String) getSave.get("content");
+	    
+	    // 게시글 삭제
+	    this.boardDelete(memberId, boardTypeSeq, boardSeq);
+	    
+	    // 필요한 정보를 반환 (예: 제목, 내용 등)
+	    return title + "|" + content; // 제목과 내용을 구분자로 연결하여 반환
 	}
 }

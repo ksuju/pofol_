@@ -10,6 +10,7 @@
 		<div class="row">
 			<div class="col-lg-6 offset-lg-3">
 				<form action="<c:url value='/auth/login.do'/>" method="POST">
+				<input type="hidden" name="redirectUrl" value="${redirectUrl}">
 					<div class="cardify login">
 						<div class="login--header">
 							<c:if test="${not empty alert}">

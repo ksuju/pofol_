@@ -212,15 +212,28 @@ public class NoticeController {
 
 	// 게시글 수정
 	@RequestMapping("/forum/notice/updateBoard.do")
-	public String updateBoard(@RequestParam HashMap<String, Object> params, ServletRequest request,
-			@RequestParam(value = "attFile", required = false) MultipartFile[] attFiles) throws FileUploadException {
+	public String updateBoard(@RequestParam HashMap<String, String> params, ServletRequest request,
+			@RequestParam(value = "attFile", required = false) MultipartFile[] attFiles,
+			RedirectAttributes redirectAttributes) throws FileUploadException {
 
 		System.out.println("======= NoticeController > updateBoard =======");
 
-		int boardTypeSeq = Integer.parseInt((String) params.get("boardTypeSeq"));
+		int boardTypeSeq = Integer.parseInt(params.get("boardTypeSeq"));
+		int boardSeq = Integer.parseInt(params.get("boardSeq"));
+		String memberId = params.get("memberId");
 
-		noticeService.updateBoard(params, request, attFiles);
-
+		String updateResult = String.valueOf(noticeService.updateBoard(params, request, attFiles));
+		
+		if(updateResult.equals(MessageEnum.FAILD_BOARD_SIZE.getCode())) {
+		    redirectAttributes.addFlashAttribute("errorMsg", MessageEnum.FAILD_BOARD_SIZE.getDescription());
+		    redirectAttributes.addAttribute("boardTypeSeq", boardTypeSeq);
+		    redirectAttributes.addAttribute("boardSeq", boardSeq);
+		    redirectAttributes.addAttribute("memberId", memberId);
+		    // updatePage로 리다이렉트
+		    return "redirect:/forum/notice/updatePage.do";
+		}
+		
+		// 수정 성공했을 때
 		return "redirect:/forum/notice/listPage.do?bdTypeSeq=" + boardTypeSeq;
 	}
 
@@ -233,8 +246,8 @@ public class NoticeController {
 
 		System.out.println("======= NoticeController > updatePage =======");
 
-		int boardSeq = Integer.parseInt(params.get("boardSeq"));
-		int boardTypeSeq = Integer.parseInt(params.get("boardTypeSeq"));
+		int boardSeq = Integer.parseInt((String)params.get("boardSeq"));
+		int boardTypeSeq = Integer.parseInt((String)params.get("boardTypeSeq"));
 		String memberId = params.get("memberId");
 
 		HashMap<String, Object> getBoard = noticeService.getReadBoard(boardSeq, boardTypeSeq);
@@ -257,31 +270,41 @@ public class NoticeController {
 	// 게시글 작성
 	@RequestMapping("/forum/notice/createBoard.do")
 	public String createBoard(@RequestParam HashMap<String, Object> params, ServletRequest request,
-			@RequestParam(value = "attFile", required = false) MultipartFile[] attFiles,
-			RedirectAttributes redirectAttributes) throws FileUploadException {
+	        @RequestParam(value = "attFile", required = false) MultipartFile[] attFiles,
+	        RedirectAttributes redirectAttributes) throws FileUploadException {
 
-		System.out.println("======= NoticeController > cteateBoard =======");
+	    System.out.println("======= NoticeController > createBoard =======");
 
-		String boardTypeSeq = (String) params.get("boardTypeSeq");
+	    String boardTypeSeq = (String) params.get("boardTypeSeq");
 
-		String createResult = noticeService.boardCreate(params, request, attFiles);
-		
-		if(createResult.equals(MessageEnum.FAILD_BOARD.getCode())) {
-		    redirectAttributes.addAttribute("errorMsg", MessageEnum.FAILD_BOARD.getDescription());
-		} else if(createResult.equals(MessageEnum.FAILD_BOARD_LOGIN.getCode())) {
-		    redirectAttributes.addAttribute("errorMsg", MessageEnum.FAILD_BOARD_LOGIN.getDescription());
-		} else if(createResult.equals(MessageEnum.FAILD_BOARD_SIZE.getCode())) {
-		    redirectAttributes.addFlashAttribute("errorMsg", MessageEnum.FAILD_BOARD_SIZE.getDescription());
-		    return "redirect:/forum/notice/writePage.do?boardTypeSeq=" + boardTypeSeq;
-		}
-		return "redirect:/forum/notice/listPage.do?bdTypeSeq=" + boardTypeSeq;
+	    String createResult = noticeService.boardCreate(params, request, attFiles);
+	    
+	    if (createResult.equals(MessageEnum.FAILD_BOARD.getCode())) {
+	        redirectAttributes.addFlashAttribute("errorMsg", MessageEnum.FAILD_BOARD.getDescription());
+	    } else if (createResult.equals(MessageEnum.FAILD_BOARD_LOGIN.getCode())) {
+	        redirectAttributes.addFlashAttribute("errorMsg", MessageEnum.FAILD_BOARD_LOGIN.getDescription());
+	    } else if (createResult.equals(MessageEnum.FAILD_BOARD_SIZE.getCode())) {
+	        Integer memberSeq = noticeService.getMemberSeq(String.valueOf(params.get("memberId")));
+	        
+	        // 에러 처리 로직을 Service 메서드로 위임
+	        // 문자열 구분자로 title과 content 전달받음, map을 활용하는게 더 나은듯? 경험삼아 해봄
+	        String[] titleAndContent = noticeService.fileUploadSizeError(memberSeq, Integer.parseInt(boardTypeSeq), String.valueOf(params.get("memberId"))).split("\\|");
+	        String title = titleAndContent[0];
+	        String content = titleAndContent[1];
+	        
+	        redirectAttributes.addFlashAttribute("errorMsg", MessageEnum.FAILD_BOARD_SIZE.getDescription());
+	        redirectAttributes.addAttribute("title", title);
+	        redirectAttributes.addAttribute("content", content);
+	        
+	        return "redirect:/forum/notice/writePage.do?boardTypeSeq=" + boardTypeSeq;
+	    }
+	    return "redirect:/forum/notice/listPage.do?bdTypeSeq=" + boardTypeSeq;
 	}
 
 	// 게시글 삭제 > 댓글이 있을 경우 댓글도 다 같이 삭제해줘야 함 noticeService에서 처리할 것
 	@RequestMapping("/forum/notice/deleteBoard.do")
 	public String deleteBoard(@RequestParam String memberId, @RequestParam int boardTypeSeq,
 			@RequestParam int boardSeq) {
-
 		
 		noticeService.boardDelete(memberId, boardTypeSeq, boardSeq);
 
@@ -413,13 +436,25 @@ public class NoticeController {
 	public ModelAndView writePage(@RequestParam HashMap<String, String> params,
 			ServletRequest request,
 			Model model) {
+		
+		System.out.println("========================= writePage.do =========================");
+		
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("key", Calendar.getInstance().getTimeInMillis());
 
 		int boardTypeSeq = Integer.parseInt(params.get("boardTypeSeq"));
 		
+		// 현재 로그인한 사용자의 id 가져오기
+		HttpServletRequest req = (HttpServletRequest) request;
+		HttpSession session = req.getSession();
+		String logInUser = (String) session.getAttribute("logInUser");
+		
 		mv.setViewName("forum/notice/write");
 		mv.addObject("boardTypeSeq", boardTypeSeq);
+		mv.addObject("memberId", logInUser);
+		
+		mv.addObject("title", params.get("title"));
+		mv.addObject("content", params.get("content"));
 		return mv;
 		
 	}

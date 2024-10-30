@@ -50,7 +50,8 @@ public class LoginFilter extends HttpFilter implements Filter {
 	private final String[] LOGIN_REQUIRED_URI = {
 			"/pf/forum/notice/listPage.do",
 			"/pf/forum/notice/writePage.do",
-			"/pf/forum/notice/readPage.do"
+			"/pf/forum/notice/readPage.do",
+			"/pf/forum/notice/updatePage.do"
 	};
 
 	/**

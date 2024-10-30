@@ -5,7 +5,7 @@ import java.util.HashMap;
 import org.apache.ibatis.annotations.Param;
 
 public interface MemberRepository {
-
+	
 	// reg_member_seq로 member_id 가져오기 (member)
 	public HashMap<String, String> selectMemberId(int regMemberSeq);
 	

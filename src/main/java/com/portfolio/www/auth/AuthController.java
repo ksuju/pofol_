@@ -35,7 +35,7 @@ public class AuthController {
 	public ModelAndView sendID(@RequestParam String name,
 			@RequestParam String email) {
 		
-		System.out.println("sendID=================================> "+name+"     >  email  >>> "+email);
+		System.out.println("sendID=================================");
 		
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("key", Calendar.getInstance().getTimeInMillis());
@@ -45,7 +45,7 @@ public class AuthController {
 			String userID = authService.findID(name, email);
 			
 			if(userID.equals("이름X") && userID.equals("이메일X")) {
-				mv.setViewName("/auth/login");
+				mv.setViewName("/auth/findID");
 				mv.addObject("alert", "이름 또는 이메일 주소를 다시 입력해주세요.");
 				return mv;
 			}
@@ -55,8 +55,8 @@ public class AuthController {
 			return mv;
 		} catch (NullPointerException e) {
 			// TODO: handle exception
-			mv.setViewName("/auth/login");
-			mv.addObject("alert", "아이디 찾기 error! 이름 또는 이메일 주소를 다시 입력해주세요.");
+			mv.setViewName("/auth/findID");
+			mv.addObject("alert", "이름 또는 이메일 주소를 다시 입력해주세요.");
 			return mv;
 		}
 		
