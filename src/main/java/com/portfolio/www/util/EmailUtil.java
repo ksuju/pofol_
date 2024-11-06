@@ -4,24 +4,19 @@ import javax.activation.DataSource;
 import javax.mail.internet.MimeMessage;
 import javax.mail.util.ByteArrayDataSource;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Component;
 
 import com.portfolio.www.dto.EmailDto;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class EmailUtil {
 	
 	private final JavaMailSender mailSender;
 	private final EmailProp emailProp;
 	
-	@Autowired
-	public EmailUtil(EmailProp emailProp, JavaMailSender mailSender) {
-		this.emailProp = emailProp;
-		this.mailSender = mailSender;
-	}
-
 	/* 생성자 주입했으므로 setter 필요 X > context-beans.xml 수정했음
 	 * public void setMailSender(JavaMailSender mailSender) { this.mailSender =
 	 * mailSender; }

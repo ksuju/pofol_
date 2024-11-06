@@ -7,7 +7,6 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,16 +17,13 @@ import com.portfolio.www.dto.MemberAuthDto;
 import com.portfolio.www.message.MessageEnum;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import lombok.RequiredArgsConstructor;
 
 @Service("joinService")
+@RequiredArgsConstructor
 public class JoinService {
 
 	private final JoinRepository joinRepository;
-
-	@Autowired
-	public JoinService(JoinRepository joinRepository) {
-		this.joinRepository = joinRepository;
-	}
 
 	// auth_yn 변경하기 트랜잭션으로 member_auth 테이블과 member 테이블에 있는 auth_yn 컬럼을 동시에 바꿈
 	@Transactional

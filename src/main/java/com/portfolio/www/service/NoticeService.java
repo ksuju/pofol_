@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.fileupload.FileUploadException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,7 +34,10 @@ import com.portfolio.www.message.MessageEnum;
 import com.portfolio.www.util.EmailUtil;
 import com.portfolio.www.util.FileUtil;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class NoticeService {
 
 	private final NoticeRepository noticeRepository;
@@ -49,21 +51,6 @@ public class NoticeService {
 	private final FileUtil fileUtil;
 	
 	private final EmailUtil emailutil;
-	
-	@Autowired
-	public NoticeService(NoticeRepository noticeRepository,
-			JoinRepository joinRepository,
-			AuthRepository authRepository,
-			MemberRepository memberRepository,
-			FileUtil fileUtil,
-			EmailUtil emailutil) {
-		this.noticeRepository = noticeRepository;
-		this.joinRepository = joinRepository;
-		this.authRepository = authRepository;
-		this.memberRepository = memberRepository;
-		this.fileUtil = fileUtil;
-		this.emailutil = emailutil;
-	}
 	
 	// 작성중이던 글 내용 가져오기
 	public HashMap<String, Object> getSave(int memberSeq, int boardTypeSeq) {

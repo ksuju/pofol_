@@ -13,23 +13,19 @@ import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import com.portfolio.www.dao.mybatis.EtcRepository;
+import lombok.RequiredArgsConstructor;
 
 @Service("indexService")
+@RequiredArgsConstructor
 public class IndexService {
 	
 	private final EtcRepository etcRepository;
-	
-	@Autowired
-	public IndexService(EtcRepository etcRepository) {
-		this.etcRepository = etcRepository;
-	}
 	
 	// 내 블로그 RSS 가져오기 및 파싱, 서버에서 RSS가져온 뒤 파싱해서 View에 뿌려줌
 	public List<Map<String,String>> blogRssAndParsing(String urlString) throws Exception {

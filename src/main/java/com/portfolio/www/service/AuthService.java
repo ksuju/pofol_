@@ -3,26 +3,21 @@ package com.portfolio.www.service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.portfolio.www.dao.mybatis.AuthRepository;
 import com.portfolio.www.dao.mybatis.JoinRepository;
-import com.portfolio.www.dao.mybatis.NoticeRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 	
 	private final AuthRepository authRepository;
 	
 	private final JoinRepository joinRepository;
 	
-	@Autowired
-	public AuthService(AuthRepository authRepository, JoinRepository joinRepository) {
-		this.authRepository = authRepository;
-		this.joinRepository = joinRepository;
-	}
-
 	// 아이디찾기
 	public String findID(String name,
 			String email) {

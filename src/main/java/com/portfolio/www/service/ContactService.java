@@ -1,6 +1,5 @@
 package com.portfolio.www.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.portfolio.www.dao.mybatis.ResumeRepository;
@@ -8,20 +7,16 @@ import com.portfolio.www.dto.EmailDto;
 import com.portfolio.www.dto.ResumeDto;
 import com.portfolio.www.util.EmailUtil;
 
+import lombok.RequiredArgsConstructor;
+
 @Service("contactService")
+@RequiredArgsConstructor
 public class ContactService {
 	
 	private final ResumeRepository resumeRepository;
 	
 	private final EmailUtil emailUtil;
 	
-	@Autowired
-	public ContactService(ResumeRepository resumeRepository, EmailUtil emailUtil) {
-		this.resumeRepository = resumeRepository;
-		this.emailUtil = emailUtil;
-	}
-
-
 	public boolean sendResume(String name, String email) {
 		
 		try {

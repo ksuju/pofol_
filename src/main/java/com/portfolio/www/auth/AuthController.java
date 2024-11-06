@@ -6,7 +6,6 @@ import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,18 +16,15 @@ import com.portfolio.www.message.MessageEnum;
 import com.portfolio.www.service.AuthService;
 import com.portfolio.www.service.LoginService;
 
+import lombok.RequiredArgsConstructor;
+
 @Controller
+@RequiredArgsConstructor
 public class AuthController {
 	
 	private final LoginService loginService;
 
 	private final AuthService authService;
-	
-	@Autowired
-	public AuthController(LoginService loginService, AuthService authService) {
-		this.loginService = loginService;
-		this.authService = authService;
-	}
 	
 	// 아이디찾기
 	@RequestMapping("/auth/sendID.do")
