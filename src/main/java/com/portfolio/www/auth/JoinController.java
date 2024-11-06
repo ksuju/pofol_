@@ -3,10 +3,7 @@ package com.portfolio.www.auth;
 import java.util.Calendar;
 import java.util.HashMap;
 
-import org.apache.commons.collections.MapUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -16,16 +13,14 @@ import com.portfolio.www.dto.EmailAuthDto;
 import com.portfolio.www.message.MessageEnum;
 import com.portfolio.www.service.JoinService;
 
+import lombok.RequiredArgsConstructor;
+
 @Controller
+@RequiredArgsConstructor
 public class JoinController {
 
 	private final JoinService joinService;
 	
-	@Autowired
-	public JoinController(JoinService joinService) {
-		this.joinService = joinService;
-	}
-
 	// 이메일 중복확인 버튼 > 이메일 중복, 유효성 검사
 	@ResponseBody
 	@RequestMapping("/auth/emailCheck.do")

@@ -3,7 +3,6 @@ package com.portfolio.www.forum.etc;
 import java.util.Calendar;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,17 +11,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.portfolio.www.service.IndexService;
 
+import lombok.RequiredArgsConstructor;
+
 @Controller
+@RequiredArgsConstructor
 public class EtcController {
 	
 	private final IndexService indexService;
 	
-	@Autowired
-	public EtcController(IndexService indexService) {
-		super();
-		this.indexService = indexService;
-	}
-
 	// 인덱스페이지 개별 메뉴 추천
 	@ResponseBody
 	@RequestMapping(value = "/recomMenu.do", produces = "text/plain; charset=UTF-8") // 한글인식 안되는 문제 해결

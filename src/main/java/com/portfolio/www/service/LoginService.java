@@ -10,24 +10,22 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.ibatis.binding.BindingException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.portfolio.www.dao.mybatis.AuthRepository;
 import com.portfolio.www.dao.mybatis.JoinRepository;
 import com.portfolio.www.dao.mybatis.LoginRepository;
-import com.portfolio.www.dao.mybatis.NoticeRepository;
 import com.portfolio.www.dto.EmailDto;
 import com.portfolio.www.message.MessageEnum;
 import com.portfolio.www.util.EmailUtil;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class LoginService {
 
-	private final NoticeRepository noticeRepository;
-	
 	private final JoinRepository joinRepository;
 	
 	private final AuthRepository authRepository;
@@ -36,19 +34,6 @@ public class LoginService {
 
 	private final EmailUtil emailutil;
 	
-	@Autowired
-	public LoginService(NoticeRepository noticeRepository,
-			EmailUtil emailutil,
-			JoinRepository joinRepository,
-			LoginRepository loginRepository,
-			AuthRepository authRepository) {
-		this.noticeRepository = noticeRepository;
-		this.emailutil = emailutil;
-		this.joinRepository = joinRepository;
-		this.authRepository = authRepository;
-		this.loginRepository = loginRepository;
-	}
-
 	// 비밀번호 찾기 할 때 입력한 아이디와 이메일로부터 가져온 db에 있는 아이디 비교
 	public boolean compareID(String email, String name) {
 		String dbMemberID = authRepository.compareID(email);

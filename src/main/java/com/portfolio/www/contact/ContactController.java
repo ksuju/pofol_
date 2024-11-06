@@ -2,7 +2,6 @@ package com.portfolio.www.contact;
 
 import java.util.Calendar;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -10,16 +9,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.portfolio.www.service.ContactService;
 
+import lombok.RequiredArgsConstructor;
+
 
 @Controller
+@RequiredArgsConstructor
 public class ContactController {
 	
 	private final ContactService contactService;
-
-	@Autowired
-	public ContactController(ContactService contactService) {
-		this.contactService = contactService;
-	}
 
 	@RequestMapping("resume.do")
 	public ModelAndView sendResume(@RequestParam String name,

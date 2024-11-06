@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,15 +11,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.portfolio.www.service.IndexService;
 
+import lombok.RequiredArgsConstructor;
+
 @Controller
+@RequiredArgsConstructor
 public class IndexController {
 	
 	private final IndexService indexService;
-	
-	@Autowired
-	public IndexController(IndexService indexService) {
-		this.indexService = indexService;
-	}
 	
 	// 인덱스페이지
 	@RequestMapping("/index.do")
