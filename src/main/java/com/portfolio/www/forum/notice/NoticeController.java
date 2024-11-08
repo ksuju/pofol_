@@ -24,10 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.portfolio.www.dao.mybatis.AuthRepository;
-import com.portfolio.www.dao.mybatis.JoinRepository;
-import com.portfolio.www.dao.mybatis.MemberRepository;
-import com.portfolio.www.dao.mybatis.NoticeRepository;
 import com.portfolio.www.dto.BoardAttachDto;
 import com.portfolio.www.dto.BoardCommentDto;
 import com.portfolio.www.dto.BoardDto;
@@ -35,10 +31,9 @@ import com.portfolio.www.dto.BoardLikeDto;
 import com.portfolio.www.dto.CommentLikeDto;
 import com.portfolio.www.forum.notice.dto.PageHandler;
 import com.portfolio.www.message.MessageEnum;
-import com.portfolio.www.service.NoticeService;
+import com.portfolio.www.service.BoardService;
+import com.portfolio.www.service.CommentService;
 import com.portfolio.www.service.ZipService;
-import com.portfolio.www.util.EmailUtil;
-import com.portfolio.www.util.FileUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -48,45 +43,9 @@ public class NoticeController {
 	
 	private final ZipService zipService;
 
-	private final NoticeService noticeService;
+	private final BoardService boardService;
 	
-	// 댓글 좋아요 or 싫어요
-	@RequestMapping("/forum/notice/commentIsLike.do")
-	@ResponseBody
-	public int commentIsLike(@RequestParam("boardSeq") int boardSeq,
-			@RequestParam("boardTypeSeq") int boardTypeSeq,
-			@RequestParam("cmtIsLike") String cmtIsLike,
-			@RequestParam("commentSeq") int commentSeq,
-			HttpServletRequest request) {
-		System.out.println("======================= NoticeController > commentIsLike =======================");
-		
-		HttpSession session = request.getSession();
-		String logInUser = (String)session.getAttribute("logInUser");
-		
-		int memberSeq = -1;
-		
-		try {
-			memberSeq = noticeService.getMemberSeq(logInUser);
-		} catch (NullPointerException nep) {
-			System.out.println("사용자 없음");
-			// exception 던지거나 로그인 페이지로
-		}
-		CommentLikeDto commentLikeDto = new CommentLikeDto();
-		
-		commentLikeDto.setBoardTypeSeq(boardTypeSeq);
-		commentLikeDto.setBoardSeq(boardSeq);
-		commentLikeDto.setMemberSeq(memberSeq);
-		commentLikeDto.setIsLike(cmtIsLike);
-		commentLikeDto.setCommentSeq(commentSeq);
-
-		// 좋아요 & 싫어요 정보 없는 댓글은 새로 db에 추가해주고
-		// db에 데이터가 있으면(DuplicateKeyException) update 해준다
-		try {
-			return noticeService.commentUpDown(commentLikeDto);
-		} catch (DuplicateKeyException de) {
-			return noticeService.commentUpDownCvt(commentLikeDto);
-		}
-	}
+	private final CommentService commentService;
 	
 	// 게시글 좋아요 or 싫어요
 	@RequestMapping("/forum/notice/thumbUpDown.do")
@@ -102,7 +61,7 @@ public class NoticeController {
 		int memberSeq = -1;
 		
 		try {
-			memberSeq = noticeService.getMemberSeq(logInUser);
+			memberSeq = boardService.getMemberSeq(logInUser);
 		} catch (NullPointerException nep) {
 			System.out.println("사용자 없음");
 			// exception 던지거나 로그인 페이지로
@@ -117,55 +76,17 @@ public class NoticeController {
 		// 좋아요 & 싫어요 정보 없는 게시물은 새로 db에 추가해주고
 		// db에 데이터가 있으면(DuplicateKeyException) update 해준다
 		try {
-			return noticeService.thumbUpDown(boardLikeDto);
+			return boardService.thumbUpDown(boardLikeDto);
 		} catch (DuplicateKeyException de) {
-			return noticeService.thumbUpDownCvt(boardLikeDto);
+			return boardService.thumbUpDownCvt(boardLikeDto);
 		}
 		
-	}
-
-	// 댓글삭제
-	@RequestMapping("/forum/notice/deleteComment.do")
-	public String deleteComment(@RequestParam HashMap<String, Object> params) {
-		System.out.println("======================= NoticeController > deleteComment =======================");
-
-		noticeService.deleteComment(params);
-
-		int boardSeq = Integer.parseInt((String) params.get("boardSeq"));
-		int boardTypeSeq = Integer.parseInt((String) params.get("boardTypeSeq"));
-		return "redirect:/forum/notice/readPage.do?boardTypeSeq=" + boardTypeSeq + "&boardSeq=" + boardSeq;
-	}
-
-	// 댓글수정
-	@RequestMapping("/forum/notice/updateComment.do")
-	public String updateComment(@RequestParam HashMap<String, Object> params) {
-		System.out.println("======================= NoticeController > updateComment =======================");
-
-		noticeService.updateComments(params);
-
-		int boardSeq = Integer.parseInt((String) params.get("boardSeq"));
-		int boardTypeSeq = Integer.parseInt((String) params.get("boardTypeSeq"));
-
-		return "redirect:/forum/notice/readPage.do?boardTypeSeq=" + boardTypeSeq + "&boardSeq=" + boardSeq;
-	}
-
-	// 댓글작성
-	@RequestMapping("/forum/notice/reply.do")
-	@ResponseBody
-	public int addComment(@RequestBody BoardCommentDto dto, HttpServletRequest request) {
-		System.out.println("======================= NoticeController > reply.do =======================");
-
-		if (noticeService.addComment(dto, request) == 1) {
-			return 1;
-		} else {
-			return -1;
-		}
 	}
 
 	// 수정페이지 파일삭제
 	@RequestMapping("/forum/notice/deleteFile.do")
 	public String deleteFile(@RequestParam HashMap<String, Object> params) {
-		noticeService.deleteFile(params);
+		boardService.deleteFile(params);
 
 		Integer boardSeq = Integer.parseInt((String) params.get("boardSeq"));
 		Integer boardTypeSeq = Integer.parseInt((String) params.get("boardTypeSeq"));
@@ -182,7 +103,7 @@ public class NoticeController {
 
 		System.out.println("============ NoticeController > downloadAll.do 진입 ============");
 
-		HashMap<String, Object> boardInfo = noticeService.getReadBoard(boardSeq, boardTypeSeq);
+		HashMap<String, Object> boardInfo = boardService.getReadBoard(boardSeq, boardTypeSeq);
 
 		// 파일이름 저장할 List 생성
 		List<String> fileNames = (List<String>) boardInfo.get("fileNames");
@@ -201,7 +122,7 @@ public class NoticeController {
 	// 첨부파일 개별 다운로드
 	@RequestMapping("/forum/notice/download.do")
 	public String download(@RequestParam int attachSeq, Model model) {
-		BoardAttachDto dto = noticeService.getDownloadFileInfo(attachSeq);
+		BoardAttachDto dto = boardService.getDownloadFileInfo(attachSeq);
 		File file = new File(dto.getSavePath());
 
 		Map<String, Object> fileInfo = new HashMap<>();
@@ -224,7 +145,7 @@ public class NoticeController {
 		int boardSeq = Integer.parseInt(params.get("boardSeq"));
 		String memberId = params.get("memberId");
 
-		String updateResult = String.valueOf(noticeService.updateBoard(params, request, attFiles));
+		String updateResult = String.valueOf(boardService.updateBoard(params, request, attFiles));
 		
 		if(updateResult.equals(MessageEnum.FAILD_BOARD_SIZE.getCode())) {
 		    redirectAttributes.addFlashAttribute("errorMsg", MessageEnum.FAILD_BOARD_SIZE.getDescription());
@@ -252,7 +173,7 @@ public class NoticeController {
 		int boardTypeSeq = Integer.parseInt((String)params.get("boardTypeSeq"));
 		String memberId = params.get("memberId");
 
-		HashMap<String, Object> getBoard = noticeService.getReadBoard(boardSeq, boardTypeSeq);
+		HashMap<String, Object> getBoard = boardService.getReadBoard(boardSeq, boardTypeSeq);
 
 		List<BoardAttachDto> fileList = (List<BoardAttachDto>) getBoard.get("fileList");
 
@@ -279,18 +200,18 @@ public class NoticeController {
 
 	    String boardTypeSeq = (String) params.get("boardTypeSeq");
 
-	    String createResult = noticeService.boardCreate(params, request, attFiles);
+	    String createResult = boardService.boardCreate(params, request, attFiles);
 	    
 	    if (createResult.equals(MessageEnum.FAILD_BOARD.getCode())) {
 	        redirectAttributes.addFlashAttribute("errorMsg", MessageEnum.FAILD_BOARD.getDescription());
 	    } else if (createResult.equals(MessageEnum.FAILD_BOARD_LOGIN.getCode())) {
 	        redirectAttributes.addFlashAttribute("errorMsg", MessageEnum.FAILD_BOARD_LOGIN.getDescription());
 	    } else if (createResult.equals(MessageEnum.FAILD_BOARD_SIZE.getCode())) {
-	        Integer memberSeq = noticeService.getMemberSeq(String.valueOf(params.get("memberId")));
+	        Integer memberSeq = boardService.getMemberSeq(String.valueOf(params.get("memberId")));
 	        
 	        // 에러 처리 로직을 Service 메서드로 위임
 	        // 문자열 구분자로 title과 content 전달받음, map을 활용하는게 더 나은듯? 경험삼아 해봄
-	        String[] titleAndContent = noticeService.fileUploadSizeError(memberSeq, Integer.parseInt(boardTypeSeq), String.valueOf(params.get("memberId"))).split("\\|");
+	        String[] titleAndContent = boardService.fileUploadSizeError(memberSeq, Integer.parseInt(boardTypeSeq), String.valueOf(params.get("memberId"))).split("\\|");
 	        String title = titleAndContent[0];
 	        String content = titleAndContent[1];
 	        
@@ -303,18 +224,16 @@ public class NoticeController {
 	    return "redirect:/forum/notice/listPage.do?bdTypeSeq=" + boardTypeSeq;
 	}
 
-	// 게시글 삭제 > 댓글이 있을 경우 댓글도 다 같이 삭제해줘야 함 noticeService에서 처리할 것
+	// 게시글 삭제 > 댓글이 있을 경우 댓글도 다 같이 삭제해줘야 함 commentService에서 처리할 것
 	@RequestMapping("/forum/notice/deleteBoard.do")
 	public String deleteBoard(@RequestParam String memberId, @RequestParam int boardTypeSeq,
 			@RequestParam int boardSeq) {
 		
-		noticeService.boardDelete(memberId, boardTypeSeq, boardSeq);
+		boardService.boardDelete(memberId, boardTypeSeq, boardSeq);
 
 		return "redirect:/forum/notice/listPage.do?bdTypeSeq=" + boardTypeSeq;
 	}
-
 	
-	// ----------------------------------------------------------------------------------------------
 	// 게시글 list 불러오기
 	@RequestMapping("/forum/notice/listPage.do")
 	public ModelAndView listPage(@RequestParam HashMap<String, String> params, HttpServletRequest request) {
@@ -329,7 +248,7 @@ public class NoticeController {
 	    int page = Integer.parseInt(params.get("page"));
 	    int size = Integer.parseInt(params.get("size"));
 	    int start = (page - 1) * size;
-	    int totalCnt = noticeService.totalCnt(Integer.parseInt(params.get("bdTypeSeq")));
+	    int totalCnt = boardService.totalCnt(Integer.parseInt(params.get("bdTypeSeq")));
 
 	    setPagingAttributes(mv, page, totalCnt, size);
 
@@ -337,12 +256,12 @@ public class NoticeController {
 	    Integer loginMemberSeq = getMemberSeq(loginMember);
 	    
 	    // 아이디 인증여부 확인
-	    String authYN = noticeService.getAuthYN(loginMember);
+	    String authYN = boardService.getAuthYN(loginMember);
 	    
 		if("N".equals(authYN)) {
 			params.put("logInUser", loginMember);
-			noticeService.updateAuthNum(params);
-			String getEmail = noticeService.getEmail(loginMember);
+			boardService.updateAuthNum(params);
+			String getEmail = boardService.getEmail(loginMember);
 			mv.setViewName("auth/authNum");
 			mv.addObject("alert", "이메일 인증이 필요합니다 가입 시 입력하신 이메일을 확인해주세요.");
 			mv.addObject("idAuth", "idAuth");
@@ -359,7 +278,7 @@ public class NoticeController {
 	    mv.addObject("loginMember", loginMember);
 	    
 	    // 좋아요 top 5 게시글 가져오기
-	    List<Map<String, Integer>> topFive = noticeService.getLikeTopFive(Integer.parseInt(params.get("bdTypeSeq")));
+	    List<Map<String, Integer>> topFive = boardService.getLikeTopFive(Integer.parseInt(params.get("bdTypeSeq")));
 	    
 	    mv.setViewName("forum/notice/list");
 	    mv.addObject("topFive", topFive);
@@ -411,7 +330,7 @@ public class NoticeController {
 	
 	// 회원 번호를 가져오고 null일 경우 기본값으로 설정
 	private Integer getMemberSeq(String loginMember) {
-	    Integer loginMemberSeq = noticeService.getMemberSeq(loginMember);
+	    Integer loginMemberSeq = boardService.getMemberSeq(loginMember);
 	    if (loginMemberSeq == null) {
 	        loginMemberSeq = -999999;
 	    }
@@ -427,13 +346,10 @@ public class NoticeController {
 	    boardList.put("size", size);
 	    boardList.put("loginMemberSeq", loginMemberSeq);
 
-	    return noticeService.getList(boardList);
+	    return boardService.getList(boardList);
 	}
 	
 	
-	
-	// ----------------------------------------------------------------------------------------------
-
 	@RequestMapping("/forum/notice/writePage.do")
 	public ModelAndView writePage(@RequestParam HashMap<String, String> params,
 			ServletRequest request,
@@ -473,7 +389,7 @@ public class NoticeController {
 		int boardTypeSeq = Integer.parseInt(params.get("boardTypeSeq"));
 
 		// 클릭한 게시글 가져오기
-		HashMap<String, Object> selectBoard = noticeService.getReadBoard(boardSeq, boardTypeSeq);
+		HashMap<String, Object> selectBoard = boardService.getReadBoard(boardSeq, boardTypeSeq);
 
 		List<BoardAttachDto> fileList = (List<BoardAttachDto>) selectBoard.get("fileList");
 
@@ -483,9 +399,9 @@ public class NoticeController {
 
 		String logInUser = (String) session.getAttribute("logInUser");
 		
-		int loginMemberSeq = noticeService.getMemberSeq(logInUser);
+		int loginMemberSeq = boardService.getMemberSeq(logInUser);
 		
-		String isLike = noticeService.selectIsLike(loginMemberSeq,boardSeq,boardTypeSeq);
+		String isLike = boardService.selectIsLike(loginMemberSeq,boardSeq,boardTypeSeq);
 		
 		mv.addObject("title", selectBoard.get("title"));
 		mv.addObject("content", selectBoard.get("content"));
@@ -497,7 +413,7 @@ public class NoticeController {
 		mv.addObject("boardTypeSeq", boardTypeSeq);
 		mv.addObject("logInUser", logInUser);
 		mv.addObject("isLike", isLike);
-		mv.addObject("cmtIsLike", noticeService.commentIsLike(loginMemberSeq,boardSeq,boardTypeSeq));
+		mv.addObject("cmtIsLike", commentService.commentIsLike(loginMemberSeq,boardSeq,boardTypeSeq));
 
 		return mv;
 	}
@@ -509,5 +425,82 @@ public class NoticeController {
 		mv.setViewName("auth/contact");
 
 		return mv;
+	}
+	
+	// 댓글 좋아요 or 싫어요
+	@RequestMapping("/forum/notice/commentIsLike.do")
+	@ResponseBody
+	public int commentIsLike(@RequestParam("boardSeq") int boardSeq,
+			@RequestParam("boardTypeSeq") int boardTypeSeq,
+			@RequestParam("cmtIsLike") String cmtIsLike,
+			@RequestParam("commentSeq") int commentSeq,
+			HttpServletRequest request) {
+		System.out.println("======================= NoticeController > commentIsLike =======================");
+		
+		HttpSession session = request.getSession();
+		String logInUser = (String)session.getAttribute("logInUser");
+		
+		int memberSeq = -1;
+		
+		try {
+			memberSeq = boardService.getMemberSeq(logInUser);
+		} catch (NullPointerException nep) {
+			System.out.println("사용자 없음");
+			// exception 던지거나 로그인 페이지로
+		}
+		CommentLikeDto commentLikeDto = new CommentLikeDto();
+		
+		commentLikeDto.setBoardTypeSeq(boardTypeSeq);
+		commentLikeDto.setBoardSeq(boardSeq);
+		commentLikeDto.setMemberSeq(memberSeq);
+		commentLikeDto.setIsLike(cmtIsLike);
+		commentLikeDto.setCommentSeq(commentSeq);
+
+		// 좋아요 & 싫어요 정보 없는 댓글은 새로 db에 추가해주고
+		// db에 데이터가 있으면(DuplicateKeyException) update 해준다
+		try {
+			return commentService.commentUpDown(commentLikeDto);
+		} catch (DuplicateKeyException de) {
+			return commentService.commentUpDownCvt(commentLikeDto);
+		}
+	}
+	
+	
+	// 댓글삭제
+	@RequestMapping("/forum/notice/deleteComment.do")
+	public String deleteComment(@RequestParam HashMap<String, Object> params) {
+		System.out.println("======================= NoticeController > deleteComment =======================");
+
+		commentService.deleteComment(params);
+
+		int boardSeq = Integer.parseInt((String) params.get("boardSeq"));
+		int boardTypeSeq = Integer.parseInt((String) params.get("boardTypeSeq"));
+		return "redirect:/forum/notice/readPage.do?boardTypeSeq=" + boardTypeSeq + "&boardSeq=" + boardSeq;
+	}
+
+	// 댓글수정
+	@RequestMapping("/forum/notice/updateComment.do")
+	public String updateComment(@RequestParam HashMap<String, Object> params) {
+		System.out.println("======================= NoticeController > updateComment =======================");
+
+		commentService.updateComments(params);
+
+		int boardSeq = Integer.parseInt((String) params.get("boardSeq"));
+		int boardTypeSeq = Integer.parseInt((String) params.get("boardTypeSeq"));
+
+		return "redirect:/forum/notice/readPage.do?boardTypeSeq=" + boardTypeSeq + "&boardSeq=" + boardSeq;
+	}
+
+	// 댓글작성
+	@RequestMapping("/forum/notice/reply.do")
+	@ResponseBody
+	public int addComment(@RequestBody BoardCommentDto dto, HttpServletRequest request) {
+		System.out.println("======================= NoticeController > reply.do =======================");
+
+		if (commentService.addComment(dto, request) == 1) {
+			return 1;
+		} else {
+			return -1;
+		}
 	}
 }
