@@ -21,14 +21,14 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.portfolio.www.dao.mybatis.AuthRepository;
+import com.portfolio.www.dao.mybatis.BoardRepository;
+import com.portfolio.www.dao.mybatis.CommentRepository;
 import com.portfolio.www.dao.mybatis.JoinRepository;
 import com.portfolio.www.dao.mybatis.MemberRepository;
-import com.portfolio.www.dao.mybatis.NoticeRepository;
 import com.portfolio.www.dto.BoardAttachDto;
 import com.portfolio.www.dto.BoardCommentDto;
 import com.portfolio.www.dto.BoardDto;
 import com.portfolio.www.dto.BoardLikeDto;
-import com.portfolio.www.dto.CommentLikeDto;
 import com.portfolio.www.dto.EmailDto;
 import com.portfolio.www.message.MessageEnum;
 import com.portfolio.www.util.EmailUtil;
@@ -38,9 +38,11 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class NoticeService {
-
-	private final NoticeRepository noticeRepository;
+public class BoardService {
+	
+	private final CommentRepository commentRepository;
+	
+	private final BoardRepository boardRepository;
 	
 	private final JoinRepository joinRepository;
 	
@@ -54,7 +56,7 @@ public class NoticeService {
 	
 	// 작성중이던 글 내용 가져오기
 	public HashMap<String, Object> getSave(int memberSeq, int boardTypeSeq) {
-		return noticeRepository.getSave(memberSeq, boardTypeSeq);
+		return boardRepository.getSave(memberSeq, boardTypeSeq);
 	}
 	
 	// 아이디로 email 가져오기
@@ -119,7 +121,7 @@ public class NoticeService {
 	    
 	    for (BoardDto board : list) {
 	        Integer boardSeq = board.getBoardSeq(); // BoardDto의 getter 메서드 사용
-	        Integer likeCount = noticeRepository.like(boardSeq, bdTypeSeq);
+	        Integer likeCount = boardRepository.like(boardSeq, bdTypeSeq);
 	        likes.add(likeCount);
 	    }
 	    return likes;
@@ -127,7 +129,7 @@ public class NoticeService {
 	
 	// 좋아요 여부 가져오기
     public Map<Integer, String> getIsLikeMap(Integer memberSeq, List<Integer> boardSeqs, int boardTypeSeq) {
-        List<Map<String, Object>> isLikeList = noticeRepository.selectIsLikeList(memberSeq, boardSeqs, boardTypeSeq);
+        List<Map<String, Object>> isLikeList = boardRepository.selectIsLikeList(memberSeq, boardSeqs, boardTypeSeq);
 
         // Map 변환
         Map<Integer, String> isLikeMap = isLikeList.stream()
@@ -139,73 +141,24 @@ public class NoticeService {
         return isLikeMap;
     }
 	
-	// 댓글 좋아요 Y or N 셀렉트
-	public List<HashMap<String, Object>> commentIsLike(int memberSeq, int boardSeq, int boardTypeSeq) {
-		return noticeRepository.commentIsLike(memberSeq, boardSeq, boardTypeSeq);
-	}
-	
-	// 댓글 좋아요 Y or N
-	public int commentUpDownCvt(CommentLikeDto commentLikeDto) {
-		return noticeRepository.commentUpDownCvt(commentLikeDto);
-	}
-	
-	// 댓글 좋아요
-	public int commentUpDown(CommentLikeDto commentLikeDto) {
-		return noticeRepository.commentUpDown(commentLikeDto);
-	}
-	
 	// 게시글 좋아요 Y or N 셀렉트
 	public String selectIsLike(int memberSeq, int boardSeq, int boardTypeSeq) {
-		return noticeRepository.selectIsLike(memberSeq, boardSeq, boardTypeSeq);
+		return boardRepository.selectIsLike(memberSeq, boardSeq, boardTypeSeq);
 	}
 	
 	// 게시글 좋아요 Y or N
 	public int thumbUpDownCvt(BoardLikeDto boardLikeDto) {
-		return noticeRepository.thumbUpDownCvt(boardLikeDto);
+		return boardRepository.thumbUpDownCvt(boardLikeDto);
 	}
 	
 	// 게시글 좋아요
 	public int thumbUpDown(BoardLikeDto boardLikeDto) {
-		return noticeRepository.thumbUpDown(boardLikeDto);
+		return boardRepository.thumbUpDown(boardLikeDto);
 	}
 	
 	// member_seq 가져오기
 	public Integer getMemberSeq(String memberId) {
 		return joinRepository.getMemberSeq(memberId);
-	}
-	
-	// 댓글 삭제하기
-	public int deleteComment(HashMap<String,Object> params) {
-		return noticeRepository.deleteComment(params);
-	}
-	
-	// 댓글 수정하기
-	public int updateComments(HashMap<String,Object> params) {
-		return noticeRepository.updateComments(params);
-	}
-	
-	// 댓글 작성하기
-	public int addComment(BoardCommentDto dto,
-			HttpServletRequest request) {
-		
-		System.out.println("======= NoticeService > addComment =======");
-		HttpSession session = request.getSession();
-		
-		String memberId = (String) session.getAttribute("logInUser");
-		
-		if(joinRepository.getMemberSeq(memberId) > 0) {
-			dto.setMemberSeq(joinRepository.getMemberSeq(memberId));
-		} else {
-			return -1;
-		}
-		
-	    // parentCommentSeq가 null이거나 0이면 null로 설정
-	    if (dto.getParentCommentSeq() == null || dto.getParentCommentSeq() == 0) {
-	        dto.setParentCommentSeq(null);
-	    }
-		noticeRepository.insertComment(dto);
-		
-		return 1;
 	}
 	
 	// 수정페이지 파일 개별 삭제
@@ -214,12 +167,12 @@ public class NoticeService {
 		int boardSeq = Integer.parseInt((String)params.get("boardSeq"));
 		int boardTypeSeq = Integer.parseInt((String)params.get("boardTypeSeq"));
 		
-		return noticeRepository.deleteFile(attachSeq, boardSeq, boardTypeSeq);
+		return boardRepository.deleteFile(attachSeq, boardSeq, boardTypeSeq);
 	}
 
 	// attach_seq로 첨부파일 정보 가져오기
 	public BoardAttachDto getDownloadFileInfo(int attachSeq) {
-		return noticeRepository.getAttachInfo(attachSeq);
+		return boardRepository.getAttachInfo(attachSeq);
 	}
 
 	// 게시글 수정
@@ -270,7 +223,7 @@ public class NoticeService {
 					if(mf.getOriginalFilename().isEmpty()) {
 						continue;
 					} else {
-						noticeRepository.insertBoardAttach(boardAttachDto);
+						boardRepository.insertBoardAttach(boardAttachDto);
 					}
 				} catch (MaxUploadSizeExceededException e) {
 					return Integer.parseInt(MessageEnum.FAILD_BOARD_SIZE.getCode());
@@ -279,7 +232,7 @@ public class NoticeService {
 					return Integer.parseInt(MessageEnum.FAILD_BOARD.getCode());
 				}
 			}
-			return noticeRepository.updateBoard(params);
+			return boardRepository.updateBoard(params);
 		}
 
 	}
@@ -296,7 +249,7 @@ public class NoticeService {
 		String memberId = memberRepository.selectMemberId(regMemberSeq).get("member_id");
 
 		// 저장된 파일 리스트 가져오기
-		List<BoardAttachDto> fileList = noticeRepository.selectAllFile(boardTypeSeq, boardSeq);
+		List<BoardAttachDto> fileList = boardRepository.selectAllFile(boardTypeSeq, boardSeq);
 		
         // 파일이름 저장할 List 생성
         List<String> fileNames = new ArrayList<>();
@@ -310,7 +263,7 @@ public class NoticeService {
         }
         
         // 댓글 목록 가져오기
-        List<BoardCommentDto> comments = noticeRepository.selectComments(boardSeq, boardTypeSeq);
+        List<BoardCommentDto> comments = commentRepository.selectComments(boardSeq, boardTypeSeq);
         
         for (BoardCommentDto comment : comments) {
         	int memberSeq = comment.getMemberSeq();
@@ -333,7 +286,7 @@ public class NoticeService {
 
 	// 게시글 하나만 가져오기
 	public HashMap<String, Object> selectBoard(int boardSeq, int boardTypeSeq) {
-		return noticeRepository.selectBoard(boardSeq, boardTypeSeq);
+		return boardRepository.selectBoard(boardSeq, boardTypeSeq);
 	}
 
 	// 게시글 작성
@@ -360,7 +313,7 @@ public class NoticeService {
 			params.put("now", now);
 
 			// 게시글 생성
-			noticeRepository.boardCreate(params);
+			boardRepository.boardCreate(params);
 
 			int boardTypeSeq = Integer.parseInt((String) params.get("boardTypeSeq"));
 			int boardSeq = (int) params.get("boardSeq");
@@ -383,13 +336,13 @@ public class NoticeService {
 					if(mf.getOriginalFilename().isEmpty()) {
 						continue;
 					} else {
-						noticeRepository.insertBoardAttach(boardAttachDto);
+						boardRepository.insertBoardAttach(boardAttachDto);
 					}
 				} catch (MaxUploadSizeExceededException e) {
-					//noticeRepository.boardDelete(logInUser, boardTypeSeq, boardSeq); // 게시글 삭제
+					//commentRepository.boardDelete(logInUser, boardTypeSeq, boardSeq); // 게시글 삭제
 					return MessageEnum.FAILD_BOARD_SIZE.getCode();
 				} catch (FileUploadException e) {
-					noticeRepository.boardDelete(logInUser, boardTypeSeq, boardSeq); // 게시글 삭제
+					boardRepository.boardDelete(logInUser, boardTypeSeq, boardSeq); // 게시글 삭제
 					return MessageEnum.FAILD_BOARD.getCode();
 				} catch (NullPointerException e) {
 					return "빈파일";
@@ -403,16 +356,16 @@ public class NoticeService {
 	// 게시글 삭제하기
 	public int boardDelete(String memberId, int boardTypeSeq, int boardSeq) {
 		System.out.println("=========================== service > boardDelete ===========================");
-		noticeRepository.deleteBoardAttach(boardTypeSeq, boardSeq); // 첨부파일 삭제
-		noticeRepository.deleteAllComment(boardTypeSeq, boardSeq); // 댓글 삭제
-		return noticeRepository.boardDelete(memberId, boardTypeSeq, boardSeq); // 게시글 삭제
+		boardRepository.deleteBoardAttach(boardTypeSeq, boardSeq); // 첨부파일 삭제
+		commentRepository.deleteAllComment(boardTypeSeq, boardSeq); // 댓글 삭제
+		return boardRepository.boardDelete(memberId, boardTypeSeq, boardSeq); // 게시글 삭제
 	}
 	
 	// ---------------------------------------------------------------------------------------
 	// 게시판 내 게시글 불러오기
 	
 	public List<BoardDto> getList(HashMap<String, Integer> params) {
-	    List<BoardDto> getList = noticeRepository.getList(params);
+	    List<BoardDto> getList = boardRepository.getList(params);
 	    int boardTypeSeq = params.get("bdTypeSeq");
 
 	    // 모든 boardSeq 값을 추출
@@ -425,7 +378,7 @@ public class NoticeService {
 	    }
 
 	    // 게시글의 파일 개수, 댓글 개수, 좋아요 개수를 한 번에 가져옴
-	    List<Map<String, Object>> boardDetails = noticeRepository.getBoardDetails(boardSeqs, boardTypeSeq);
+	    List<Map<String, Object>> boardDetails = boardRepository.getBoardDetails(boardSeqs, boardTypeSeq);
 
 	    // 파일 개수와 댓글 개수를 Map으로 변환
 	    Map<Integer, Integer> fileCountMap = boardDetails.stream()
@@ -461,12 +414,12 @@ public class NoticeService {
 
 	// 게시판 내 총 게시글 수
 	public int totalCnt(int bdTypeSeq) {
-		return noticeRepository.totalCnt(bdTypeSeq);
+		return boardRepository.totalCnt(bdTypeSeq);
 	}
 	
 	// 게시판 내 인기글 top5 가져오기
 	public List<Map<String, Integer>> getLikeTopFive(int boardTypeSeq) {
-		return noticeRepository.getLikeTopFive(boardTypeSeq);
+		return boardRepository.getLikeTopFive(boardTypeSeq);
 	}
 	
 	// 파일 업로드 사이즈 에러
