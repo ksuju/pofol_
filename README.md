@@ -208,3 +208,7 @@ Index 재구성
 
 #### 2024-11-08
 SRP > notice로 뭉쳐있던 기능 board, comment로 세분화
+
+#### 2024-11-09
+게시글 수정 > 파일추가 시 NullPointerException 발생하는 문제 해결
+
