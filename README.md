@@ -211,4 +211,6 @@ SRP > notice로 뭉쳐있던 기능 board, comment로 세분화
 
 #### 2024-11-09
 게시글 수정 > 파일추가 시 NullPointerException 발생하는 문제 해결
+게시글 수정 > 파일삭제 시 원하는 파일 삭제되지 않는 문제 해결
+
 
