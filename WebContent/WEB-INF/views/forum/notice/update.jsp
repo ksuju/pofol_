@@ -12,7 +12,7 @@
 		lang : 'kr'
 	});
 
-	// 파일삭제여부 확인하는 js코드
+/* 	// 파일삭제여부 확인하는 js코드
 	function confirmDelete() {
 		event.preventDefault();
 
@@ -21,11 +21,12 @@
 
 		if (confirmed) {
 			alert("파일이 삭제되었습니다.");
+			// 아래 부분에서 삭제 요청을 보내기 전에 redirect 되기 때문에 원하는 파일이 삭제되지 않음
 			window.location.href = deleteFile.href;
 		} else {
 			alert("삭제가 취소되었습니다.");
 		}
-	}
+	} */
 </script>
 <!--================================
             START DASHBOARD AREA

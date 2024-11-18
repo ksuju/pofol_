@@ -13,7 +13,7 @@
                                 <a href="#">Ksuju</a>의&nbsp;<a href="#">Portfolio</a>에&nbsp;오신것을&nbsp;환영합니다!
                             </p>
                             <p>
-                            	&copy;&nbsp;2024&nbsp;Ksuju.&nbsp;마지막 업데이트 : 2024년 11월 08일
+                            	&copy;&nbsp;2024&nbsp;Ksuju.&nbsp;마지막 업데이트 : 2024년 11월 09일
                             </p>
                         </div>
 

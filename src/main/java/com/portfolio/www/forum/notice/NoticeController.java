@@ -86,6 +86,7 @@ public class NoticeController {
 	// 수정페이지 파일삭제
 	@RequestMapping("/forum/notice/deleteFile.do")
 	public String deleteFile(@RequestParam HashMap<String, Object> params) {
+		
 		boardService.deleteFile(params);
 
 		Integer boardSeq = Integer.parseInt((String) params.get("boardSeq"));
