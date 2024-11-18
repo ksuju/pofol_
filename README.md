@@ -214,3 +214,26 @@ SRP > notice로 뭉쳐있던 기능 board, comment로 세분화
 게시글 수정 > 파일삭제 시 원하는 파일 삭제되지 않는 문제 해결
 
 
+#### 2024-11-18
+채팅기능 구현 중 웹소켓 연결이 안되는 문제 발생</br>
+
+1. web.xml, context-beans.xml, pf-servlet.xml 파일 검토
+
+2. server.xml 파일을 검토하여 Tomcat 서버 설정이 WebSocket을 지원하는지 확인
+
+3. WebSocketConfig 클래스와 ChatHandler 클래스의 구현을 검토
+
+4. 클라이언트 측 WebSocket 연결 코드(webSocketTest.html)를 작성하고 테스트
+
+5. pom.xml에 spring-websocket, spring-messaging 제대로 있는지 확인
+
+6. 서버 로그와 클라이언트 콘솔 로그 확인, WebSocket 연결 시도 시 발생하는 오류 메시지 분석
+
+7. 클라이언트 측에서 발생하는 WebSocket 연결 오류를 브라우저의 개발자 도구를 통해 확인
+
+8. context root가 pf임 > WebSocket 연결 URL이 'ws://localhost:8080/pf/chat'이 맞는지 확인
+
+9. WebSocketConfig가 context-beans.xml에 빈으로 등록되어 있는지 확인
+
+- Bean등록 이상X, 코드이상 X, 새로운 프로젝트 생성 후 연결 O
+- 현재 포트폴리오 작업 중단 후 새로 Spring Boot를 적용해서 포트폴리오 재구성 결정.
