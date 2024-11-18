@@ -163,6 +163,7 @@ public class BoardService {
 	
 	// 수정페이지 파일 개별 삭제
 	public boolean deleteFile(@RequestParam HashMap<String, Object> params) {
+		
 		int attachSeq = Integer.parseInt((String)params.get("attachSeq"));
 		int boardSeq = Integer.parseInt((String)params.get("boardSeq"));
 		int boardTypeSeq = Integer.parseInt((String)params.get("boardTypeSeq"));
@@ -229,6 +230,8 @@ public class BoardService {
 					return Integer.parseInt(MessageEnum.FAILD_BOARD_SIZE.getCode());
 				}
 				catch (FileUploadException e) {
+					return Integer.parseInt(MessageEnum.FAILD_BOARD.getCode());
+				} catch (NullPointerException e) {
 					return Integer.parseInt(MessageEnum.FAILD_BOARD.getCode());
 				}
 			}
